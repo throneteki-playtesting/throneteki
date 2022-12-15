@@ -1,8 +1,11 @@
 const DrawCard = require('../../drawcard.js');
 const GameActions = require('../../GameActions');
+const EventAggregator = require('../../gamesteps/EventAggregator');
 
 class TheWardenOfTheWest extends DrawCard {
     setupCardAbilities(ability) {
+        this.addEventAggregator(new EventAggregator('onCardDiscarded', 'controller-aggregate', event => event.card.controller));
+
         this.attachmentRestriction({ faction: 'lannister', trait: 'Lord' });
 
         this.whileAttached({
@@ -14,8 +17,7 @@ class TheWardenOfTheWest extends DrawCard {
         
         this.reaction({
             when: {
-                // TODO: Implement player-aggregate so it only looks at cards being discarded from an individuals hands rather than aggregating all cards being discarded at once
-                'onCardDiscarded:aggregate': event => this.getNumberToDraw(event) > 0 && this.parent.isParticipating()
+                'onCardDiscarded:controller-aggregate': event => this.getNumberToDraw(event) > 0 && this.parent.isParticipating()
             },
             limit: ability.limit.perRound(1),
             message: {
@@ -27,10 +29,7 @@ class TheWardenOfTheWest extends DrawCard {
     }
 
     getNumberToDraw(event) {
-        return event.events.filter(discardEvent => (
-            discardEvent.cardStateWhenDiscarded.controller !== this.controller &&
-            ['hand', 'draw deck'].includes(discardEvent.cardStateWhenDiscarded.location)
-        )).length;
+        return event.events.filter(discardEvent => (['hand', 'draw deck'].includes(discardEvent.cardStateWhenDiscarded.location))).length;
     }
 }
 

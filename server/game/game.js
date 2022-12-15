@@ -40,6 +40,7 @@ const EndRound = require('./GameActions/EndRound');
 const TimeLimit = require('./timeLimit.js');
 const PrizedKeywordListener = require('./PrizedKeywordListener');
 const GameWonPrompt = require('./gamesteps/GameWonPrompt');
+const EventAggregator = require('./gamesteps/EventAggregator');
 
 class Game extends EventEmitter {
     constructor(details, options = {}) {
@@ -96,6 +97,12 @@ class Game extends EventEmitter {
         this.winnerOfDominanceInLastRound = undefined;
         this.prizedKeywordListener = new PrizedKeywordListener(this);
         this.muteSpectators = details.muteSpectators;
+
+        this.eventAggregates = [
+            new EventAggregator('onCardDiscarded'),
+            new EventAggregator('onCharacterKilled'),
+            new EventAggregator('onSacrificed')
+        ];
 
         for(let player of Object.values(details.players || {})) {
             this.playersAndSpectators[player.user.username] = new Player(player.id, player.user, this.owner === player.user.username, this);

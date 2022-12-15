@@ -122,6 +122,13 @@ class BaseCard {
         this.eventsForRegistration = events;
     }
 
+    addEventAggregator(aggregator) {
+        if(this.game.eventAggregates.some(a => a.eventName === aggregator.eventName && a.name === aggregator.name)) {
+            throw new Error(`Cannot register EventAggregator \'${aggregator.name}\' as one already exists with that name & event name`)
+        }
+        this.game.eventAggregates.push(aggregator);
+    }
+
     setupCardAbilities() {
     }
 
