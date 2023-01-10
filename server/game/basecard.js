@@ -750,7 +750,11 @@ class BaseCard {
         return 'card';
     }
 
-    getShortSummary() {
+    getShortSummary(activePlayer) {
+        if(activePlayer && !this.game.isCardVisible(this, activePlayer)) {
+            return { facedown: true };
+        }
+
         return {
             code: this.cardData.code,
             label: this.cardData.label,
