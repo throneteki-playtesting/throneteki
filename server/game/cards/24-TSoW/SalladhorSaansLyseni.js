@@ -5,7 +5,7 @@ class SalladhorSaansLyseni extends DrawCard {
     setupCardAbilities(ability) {
         this.interrupt({
             when: {
-                onCardKneeled: event => event.card.getType() === 'location' && event.card.controller !== this.controller && event.card.controller.faction.power > 0 // TODO: Clean up kneeling to always identify if it is a card effect or not (eg. setting a cause where appropriate)
+                onCardKneeled: event => event.card.getType() === 'location' && event.card.controller !== this.controller && event.card.controller.faction.power > 0 && event.reason === 'ability'
             },
             target: {
                 cardCondition: { type: 'character', location: 'play area' }

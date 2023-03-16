@@ -6,13 +6,13 @@ class KneelCost {
     }
 
     isEligible(card) {
-        return GameActions.kneelCard({ card }).allow();
+        return GameActions.kneelCard({ card, reason: 'cost' }).allow();
     }
 
     pay(cards, context) {
         context.game.resolveGameAction(
             GameActions.simultaneously(
-                cards.map(card => GameActions.kneelCard({ card }))
+                cards.map(card => GameActions.kneelCard({ card, reason: 'cost' }))
             )
         );
     }
