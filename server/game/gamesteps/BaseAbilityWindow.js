@@ -32,19 +32,23 @@ class BaseAbilityWindow extends BaseStep {
     }
 
     createAggregateEvents() {
-        const needsAggregate = ['onCardDiscarded', 'onCharacterKilled', 'onSacrificed'];
-
-        let aggregates = new Map();
-        let concurrentEvents = this.event.getConcurrentEvents().filter(event => needsAggregate.includes(event.name));
-        for(let event of concurrentEvents) {
-            let eventsByName = aggregates.get(event.name) || [];
-            eventsByName.push(event);
-            aggregates.set(event.name, eventsByName);
+        let aggregates = [];
+        for(let eventAggregate of this.game.eventAggregates) {
+            let concurrentEvents = this.event.getConcurrentEvents().filter(event => eventAggregate.eventName === event.name);
+            for(let event of concurrentEvents) {
+                let temp = { ...eventAggregate, compareVal: eventAggregate.compareValFunc(event), events: [] };
+                let aggregate = aggregates.find(aggr => aggr.eventName === temp.eventName && aggr.name === temp.name && aggr.compareVal === temp.compareVal) || temp;
+                aggregate.events.push(event);
+                
+                if(aggregate.events.length === 1) {
+                    aggregates.push(aggregate);
+                }
+            }
         }
 
         let aggregateEvents = [];
-        for(let [eventName, events] of aggregates) {
-            aggregateEvents.push(new Event(`${eventName}:aggregate`, { events }));
+        for(let aggregate of aggregates) {
+            aggregateEvents.push(new Event(`${aggregate.eventName}:${aggregate.name}`, { aggregateValue: aggregate.compareVal, events: aggregate.events }));
         }
 
         return aggregateEvents;

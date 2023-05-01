@@ -1,0 +1,9 @@
+class EventAggregator {
+    constructor(eventName, name, compareValFunc) {
+        this.eventName = eventName;
+        this.name = name || 'aggregate';
+        this.compareValFunc = compareValFunc || (() => true);
+    }
+}
+
+module.exports = EventAggregator;
