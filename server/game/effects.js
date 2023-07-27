@@ -1326,6 +1326,17 @@ const Effects = {
             isStateDependent: true
         };
     },
+    choosesIntrigueClaim: function() {
+        return {
+            targetType: 'player',
+            apply: function(player) {
+                player.choosesIntrigueClaim = true;
+            },
+            unapply: function(player) {
+                player.choosesIntrigueClaim = false;
+            }
+        };
+    },
     mustChooseAsClaim: function(cardFunc) {
         return {
             targetType: 'player',
@@ -1395,6 +1406,25 @@ const Effects = {
 
                 context.game.cardVisibility.removeRule(revealFunc);
                 delete context.lookAtTopCard[player.name];
+            }
+        };
+    },
+    lookAtBottomCard: function(playersFunc) {
+        return {
+            targetType: 'player',
+            apply: function(player, context) {
+                playersFunc = playersFunc || (() => [player]);
+                let revealFunc = (card, viewingPlayer) => viewingPlayer === player && playersFunc().filter(target => target.drawDeck.length > 0).map(target => target.drawDeck[target.drawDeck.length - 1]).includes(card);
+
+                context.lookAtBottomCard = context.lookAtBottomCard || {};
+                context.lookAtBottomCard[player.name] = revealFunc;
+                context.game.cardVisibility.addRule(revealFunc);
+            },
+            unapply: function(player, context) {
+                let revealFunc = context.lookAtBottomCard[player.name];
+
+                context.game.cardVisibility.removeRule(revealFunc);
+                delete context.lookAtBottomCard[player.name];
             }
         };
     },
