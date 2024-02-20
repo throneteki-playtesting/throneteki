@@ -20,7 +20,6 @@ class AtTheTowerOfJoy extends PlotCard {
     }
 }
 
-AtTheTowerOfJoy.code = '25611';
-AtTheTowerOfJoy.version = '1.2';
+AtTheTowerOfJoy.code = '25019';
 
 module.exports = AtTheTowerOfJoy;

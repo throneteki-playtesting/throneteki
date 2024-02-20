@@ -14,7 +14,6 @@ class HighgardenTreasury extends DrawCard {
     }
 }
 
-HighgardenTreasury.code = '25591';
-HighgardenTreasury.version = '1.1';
+HighgardenTreasury.code = '25016';
 
 module.exports = HighgardenTreasury;

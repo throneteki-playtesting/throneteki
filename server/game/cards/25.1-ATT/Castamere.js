@@ -22,7 +22,6 @@ class Castamere extends DrawCard {
     }
 }
 
-Castamere.code = '25531';
-Castamere.version = '1.1';
+Castamere.code = '25006';
 
 module.exports = Castamere;

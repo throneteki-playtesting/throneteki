@@ -20,7 +20,6 @@ class RedAppleKnight extends DrawCard {
     }
 }
 
-RedAppleKnight.code = '25590';
-RedAppleKnight.version = '1.0';
+RedAppleKnight.code = '25015';
 
 module.exports = RedAppleKnight;

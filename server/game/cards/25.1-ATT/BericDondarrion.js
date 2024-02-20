@@ -24,7 +24,6 @@ class BericDondarrion extends DrawCard {
     }
 }
 
-BericDondarrion.code = '25501';
-BericDondarrion.version = '1.1';
+BericDondarrion.code = '25001';
 
 module.exports = BericDondarrion;

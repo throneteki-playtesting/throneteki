@@ -23,7 +23,6 @@ class FreeBrothers extends DrawCard {
     }
 }
 
-FreeBrothers.code = '25577';
-FreeBrothers.version = '1.0';
+FreeBrothers.code = '25013';
 
 module.exports = FreeBrothers;

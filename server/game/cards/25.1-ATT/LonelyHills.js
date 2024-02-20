@@ -11,7 +11,6 @@ class LonelyHills extends DrawCard {
     }
 }
 
-LonelyHills.code = '25568';
-LonelyHills.version = '1.2';
+LonelyHills.code = '25012';
 
 module.exports = LonelyHills;

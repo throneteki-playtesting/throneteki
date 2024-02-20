@@ -22,7 +22,6 @@ class CalmAsStillWater extends DrawCard {
     }
 }
 
-CalmAsStillWater.code = '25608';
-CalmAsStillWater.version = '1.1';
+CalmAsStillWater.code = '25018';
 
 module.exports = CalmAsStillWater;

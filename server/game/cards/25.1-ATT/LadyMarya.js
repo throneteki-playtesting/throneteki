@@ -45,7 +45,6 @@ class LadyMarya extends DrawCard {
     }
 }
 
-LadyMarya.code = '25508';
-LadyMarya.version = '1.2';
+LadyMarya.code = '25002';
 
 module.exports = LadyMarya;

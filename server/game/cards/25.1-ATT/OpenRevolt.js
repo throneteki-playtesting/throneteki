@@ -23,7 +23,6 @@ class OpenRevolt extends PlotCard {
     }
 }
 
-OpenRevolt.code = '25617';
-OpenRevolt.version = '1.2';
+OpenRevolt.code = '25020';
 
 module.exports = OpenRevolt;

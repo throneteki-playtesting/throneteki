@@ -19,7 +19,6 @@ class ABedOfScorpions extends DrawCard {
     }
 }
 
-ABedOfScorpions.code = '25547';
-ABedOfScorpions.version = '1.1';
+ABedOfScorpions.code = '25008';
 
 module.exports = ABedOfScorpions;

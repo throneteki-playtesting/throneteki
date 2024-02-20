@@ -13,7 +13,6 @@ class Gared extends DrawCard {
     }
 }
 
-Gared.code = '25551';
-Gared.version = '1.0';
+Gared.code = '25009';
 
 module.exports = Gared;

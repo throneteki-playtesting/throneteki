@@ -19,7 +19,6 @@ class CastMeForth extends PlotCard {
     }
 }
 
-CastMeForth.code = '25524';
-CastMeForth.version = '1.0';
+CastMeForth.code = '25004';
 
 module.exports = CastMeForth;

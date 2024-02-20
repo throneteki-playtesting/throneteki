@@ -31,7 +31,6 @@ class DanceOfTheDragons extends PlotCard {
     }
 }
 
-DanceOfTheDragons.code = '25584';
-DanceOfTheDragons.version = '1.0';
+DanceOfTheDragons.code = '25014';
 
 module.exports = DanceOfTheDragons;
