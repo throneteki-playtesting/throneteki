@@ -309,7 +309,7 @@ class Player extends Spectator {
         this.discardCards(cards, false, discarded => {
             this.game.addMessage('{0} discards {1} at random', this, discarded);
             callback(discarded);
-        });
+        }, { isRandom: true });
     }
 
     canInitiateChallenge(challengeType, opponent) {
@@ -317,7 +317,23 @@ class Player extends Spectator {
             return false;
         }
 
-        return this.challenges.canInitiate(challengeType, opponent);
+        if(this.nextChallengeOpponent && this.nextChallengeOpponent !== opponent) {
+            return false;
+        }
+
+        if(this.nextChallengeType && this.canInitiateChallengeInternal(this.nextChallengeType, opponent)) {
+            return challengeType === this.nextChallengeType;
+        }
+
+        return this.canInitiateChallengeInternal(challengeType, opponent);
+    }
+
+    canInitiateChallengeInternal(challengeType, opponent) {
+        if(!this.challenges.canInitiate(challengeType, opponent)) {
+            return false;
+        }
+
+        return this.anyCardsInPlay(card => card.canParticipate({ attacking: true, challengeType }));
     }
 
     canGainGold() {
@@ -890,6 +906,7 @@ class Player extends Spectator {
                 card,
                 allowSave,
                 isPillage: options.isPillage,
+                isRandom: options.isRandom,
                 source: options.source,
                 force: options.force
             }))

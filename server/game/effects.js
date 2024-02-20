@@ -803,6 +803,7 @@ const Effects = {
     cannotBeTargetedByAssault: cannotEffect('targetByAssault'),
     cannotBeBypassedByStealth: cannotEffect('bypassByStealth'),
     cannotBeDiscarded: cannotEffect('discard'),
+    cannotBeDiscardedAtRandom: cannotEffect('discardAtRandom'),
     cannotBeKneeled: cannotEffect('kneel'),
     cannotBeStood: cannotEffect('stand'),
     cannotBeKilled: cannotEffect('kill'),
@@ -826,6 +827,8 @@ const Effects = {
             }
         };
     },
+    cannotGainIcons: cannotEffect('gainIcon'),
+    cannotLoseIcons: cannotEffect('loseIcon'),
     cannotTarget: cannotEffect('target'),
     cannotTargetUsingAssault: cannotEffect('assault'),
     cannotTargetUsingStealth: cannotEffect('stealth'),
@@ -930,6 +933,28 @@ const Effects = {
             },
             unapply: function(player) {
                 player.removeChallengeRestriction(restriction);
+            }
+        };
+    },
+    forceNextChallengeAgainst(opponent) {
+        return {
+            targetType: 'player',
+            apply: function(player) {
+                player.nextChallengeOpponent = opponent;
+            },
+            unapply: function(player) {
+                player.nextChallengeOpponent = null;
+            }
+        };
+    },
+    forceNextChallengeType: function(challengeType) {
+        return {
+            targetType: 'player',
+            apply: function(player) {
+                player.nextChallengeType = challengeType;
+            },
+            unapply: function(player) {
+                player.nextChallengeType = null;
             }
         };
     },
@@ -1071,6 +1096,34 @@ const Effects = {
             },
             unapply: function(player) {
                 player.cannotWinChallenge = false;
+            }
+        };
+    },
+    choosesWinnerForInitiativeTies: function() {
+        return {
+            targetType: 'player',
+            apply: function(player, context) {
+                player.choosesWinnerForInitiativeTies = true;
+                for(let opponent of context.game.getOpponents(player)) {
+                    delete opponent.choosesWinnerForInitiativeTies;
+                }
+            },
+            unapply: function(player) {
+                delete player.choosesWinnerForInitiativeTies;
+            }
+        };
+    },
+    choosesWinnerForDominanceTies: function() {
+        return {
+            targetType: 'player',
+            apply: function(player, context) {
+                player.choosesWinnerForDominanceTies = true;
+                for(let opponent of context.game.getOpponents(player)) {
+                    delete opponent.choosesWinnerForDominanceTies;
+                }
+            },
+            unapply: function(player) {
+                delete player.choosesWinnerForDominanceTies;
             }
         };
     },
@@ -1339,6 +1392,17 @@ const Effects = {
             isStateDependent: true
         };
     },
+    choosesIntrigueClaim: function() {
+        return {
+            targetType: 'player',
+            apply: function(player) {
+                player.choosesIntrigueClaim = true;
+            },
+            unapply: function(player) {
+                player.choosesIntrigueClaim = false;
+            }
+        };
+    },
     mustChooseAsClaim: function(cardFunc) {
         return {
             targetType: 'player',
@@ -1437,6 +1501,25 @@ const Effects = {
 
                 context.game.cardVisibility.removeRule(revealFunc);
                 delete context.lookAtTopCard[player.name];
+            }
+        };
+    },
+    lookAtBottomCard: function(playersFunc) {
+        return {
+            targetType: 'player',
+            apply: function(player, context) {
+                playersFunc = playersFunc || (() => [player]);
+                let revealFunc = (card, viewingPlayer) => viewingPlayer === player && playersFunc().filter(target => target.drawDeck.length > 0).map(target => target.drawDeck[target.drawDeck.length - 1]).includes(card);
+
+                context.lookAtBottomCard = context.lookAtBottomCard || {};
+                context.lookAtBottomCard[player.name] = revealFunc;
+                context.game.cardVisibility.addRule(revealFunc);
+            },
+            unapply: function(player, context) {
+                let revealFunc = context.lookAtBottomCard[player.name];
+
+                context.game.cardVisibility.removeRule(revealFunc);
+                delete context.lookAtBottomCard[player.name];
             }
         };
     },
@@ -1561,6 +1644,17 @@ const Effects = {
             },
             unapply: function(player) {
                 player.flags.remove('cannotRevealPlot');
+            }
+        };
+    },
+    setPrintedValue: function(stat, value) {
+        return {
+            apply: function(card) {
+                card.printedValues[stat].push(value);
+            },
+            unapply: function(card) {
+                const index = card.printedValues[stat].lastIndexOf(value);
+                card.printedValues[stat].splice(index, 1);
             }
         };
     },
