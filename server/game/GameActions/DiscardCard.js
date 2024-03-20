@@ -1,5 +1,6 @@
 const GameAction = require('./GameAction');
 const LeavePlay = require('./LeavePlay');
+const Message = require('../Message');
 const MoveCardEventGenerator = require('./MoveCardEventGenerator');
 
 class DiscardCard extends GameAction {
