@@ -23,11 +23,11 @@ class DominancePhase extends Phase {
         var potentialWinners = result.playerDominance.filter(p => p.dominance === distinctSorted[0]);
 
         result.totalTied = potentialWinners.length > 1;
-        
+
         if(result.totalTied) {
             result.difference = 0;
             this.game.addMessage('There was a tie for dominance');
-            let choosingPlayer = this.game.getPlayers().find(player => player.choosesWinnerForInitiativeTies);
+            let choosingPlayer = this.game.getPlayers().find(player => player.choosesWinnerForDominanceTies);
             if(choosingPlayer) {
                 // If a player can choose winner for ties, prompt
                 let prompt = new ChoosePlayerPrompt(this.game, choosingPlayer, {
@@ -45,7 +45,6 @@ class DominancePhase extends Phase {
                         this.determineWinner(result);
                     }
                 });
-        
                 this.game.queueStep(prompt);
             } else {
                 // Otherwise, nobody wins dominance

@@ -88,20 +88,21 @@ class RevealPlots extends BaseStep {
         });
         let initiativeValues = playerInitiatives.map(p => p.initiative);
         let highestInitiative = Math.max(...initiativeValues);
-        let potentialWinners = result.potentialWinners = playerInitiatives.filter(p => p.initiative === highestInitiative);
+        result.potentialWinners = playerInitiatives.filter(p => p.initiative === highestInitiative);
 
-        result.initiativeTied = potentialWinners.length > 1;
+        result.initiativeTied = result.potentialWinners.length > 1;
 
         if(result.initiativeTied) {
             let choosingPlayer = this.game.getPlayers().find(player => player.choosesWinnerForInitiativeTies);
             if(choosingPlayer) {
                 let prompt = new ChoosePlayerPrompt(this.game, choosingPlayer, {
-                    condition: player => potentialWinners.map(pw => pw.player).includes(player),
+                    condition: player => result.potentialWinners.map(pw => pw.player).includes(player),
                     activePromptTitle: 'Choose player to win initiative',
                     waitingPromptTitle: 'Waiting for opponent to choose initiative winner',
                     onSelect: chosenPlayer => {
                         result.chosenBy = choosingPlayer;
                         result.player = chosenPlayer;
+                        result.potentialWinners = result.potentialWinners.filter(p => p.player === chosenPlayer);
 
                         this.determineWinner(result);
                     },
@@ -130,7 +131,7 @@ class RevealPlots extends BaseStep {
     determineWinner(result) {
         result.powerTied = result.potentialWinners.length > 1;
 
-        if(result.potentialWinners.length > 0) {
+        if(!result.player && result.potentialWinners.length > 0) {
             result.player = this.sampleFunc(result.potentialWinners).player;
         }
         delete result.potentialWinners;

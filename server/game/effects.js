@@ -198,13 +198,10 @@ const Effects = {
         return Effects.addKeyword(`No attachments except <i>${trait}</i>`);
     },
     addAttachmentRestriction: function(restriction) {
-        // TODO: Properly move this into below add/remove function
-        // It is required here so that "remove" function can properly find/filter the restriction if it's a CardMatcher
-        const attachmentRestriction = typeof(restriction) === 'function' ? restriction : CardMatcher.createAttachmentMatcher(restriction);
         return {
             apply: function(card, context) {
                 context.addAttachmentRestriction = context.addAttachmentRestriction || {};
-                context.addAttachmentRestriction[card.uuid] = attachmentRestriction;
+                context.addAttachmentRestriction[card.uuid] = typeof(restriction) === 'function' ? restriction : CardMatcher.createAttachmentMatcher(restriction);
                 card.addAdditionalAttachmentRestriction(context.addAttachmentRestriction[card.uuid]);
             },
             unapply: function(card, context) {
@@ -1464,8 +1461,11 @@ const Effects = {
         return {
             targetType: 'player',
             apply: function(player, context) {
-                // TODO: Account for any level of looking loops (eg. PlayerA > PlayerB > PlayerC > PlayerA will cause issue)
-                // TODO: Likely redesign this closer to release to properly manage cascading 'mustShowPlotSelections'
+                // TODO: Update this to actually wait for targeted player to choose their plot first, then allow you to choose. This will require
+                //       some updates to account for the loop scenario (eg. PlayerA > PlayerB > PlayerC > PlayerA), which is ruled to allow first
+                //       player to choose the order of simultaneous resolution. This could be part of a wider update to ensure first player chooses
+                //       the priority of delayed persistent effects happening simultaneously (eg. multiple "at end of phase, discard X" at once).
+                //       For now, this will allow the players to choose at the same time, and they can simply wait to see the choice.
                 player.mustShowPlotSelection.push(opponent);
                 // Only add visibility rule if it previously would not have been active
                 if(player.mustShowPlotSelection.length === 1) {
