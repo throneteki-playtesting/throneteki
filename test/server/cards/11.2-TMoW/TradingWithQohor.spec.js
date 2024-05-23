@@ -8,9 +8,7 @@ describe('Trading With Qohor', function () {
                         'Banner of the Kraken',
                         'Trading With Qohor',
                         'A Noble Cause',
-                        'Hedge Knight',
-                        'Little Bird',
-                        'Noble Lineage'
+                        'Hedge Knight', 'Little Bird (Core)', 'Noble Lineage'
                     ]);
                     this.player1.selectDeck(deck);
                     this.player2.selectDeck(deck);
@@ -18,7 +16,7 @@ describe('Trading With Qohor', function () {
                     this.keepStartingHands();
 
                     this.character = this.player1.findCardByName('Hedge Knight');
-                    this.origAttachment = this.player1.findCardByName('Little Bird');
+                    this.origAttachment = this.player1.findCardByName('Little Bird (Core)');
                     this.deckAttachment = this.player1.findCardByName('Noble Lineage');
 
                     this.player1.clickCard(this.character);

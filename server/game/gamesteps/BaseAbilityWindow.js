@@ -29,7 +29,7 @@ class BaseAbilityWindow extends BaseStep {
     }
 
     createAggregateEvents() {
-        const needsAggregate = ['onCardDiscarded', 'onCharacterKilled', 'onSacrificed'];
+        const needsAggregate = ['onCardDiscarded', 'onCharacterKilled', 'onSacrificed', 'onCardRevealed'];
 
         let aggregates = new Map();
         let concurrentEvents = this.event

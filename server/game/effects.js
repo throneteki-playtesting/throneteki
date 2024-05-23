@@ -944,6 +944,8 @@ const Effects = {
             }
         };
     },
+    cannotGainIcons: cannotEffect('gainIcon'),
+    cannotLoseIcons: cannotEffect('loseIcon'),
     cannotTarget: cannotEffect('target'),
     cannotTargetUsingAssault: cannotEffect('assault'),
     cannotTargetUsingStealth: cannotEffect('stealth'),
@@ -1053,7 +1055,29 @@ const Effects = {
             }
         };
     },
-    canSpendGold: function (allowSpendingFunc) {
+    forceNextChallengeAgainst(opponent) {
+        return {
+            targetType: 'player',
+            apply: function(player) {
+                player.nextChallengeOpponent = opponent;
+            },
+            unapply: function(player) {
+                player.nextChallengeOpponent = null;
+            }
+        };
+    },
+    forceNextChallengeType: function(challengeType) {
+        return {
+            targetType: 'player',
+            apply: function(player) {
+                player.nextChallengeType = challengeType;
+            },
+            unapply: function(player) {
+                player.nextChallengeType = null;
+            }
+        };
+    },
+    canSpendGold: function(allowSpendingFunc) {
         return {
             apply: function (card, context) {
                 let goldSource = new GoldSource(card, allowSpendingFunc);
@@ -1516,7 +1540,18 @@ const Effects = {
             isStateDependent: true
         };
     },
-    mustChooseAsClaim: function (cardFunc) {
+    choosesIntrigueClaim: function() {
+        return {
+            targetType: 'player',
+            apply: function(player) {
+                player.choosesIntrigueClaim = true;
+            },
+            unapply: function(player) {
+                player.choosesIntrigueClaim = false;
+            }
+        };
+    },
+    mustChooseAsClaim: function(cardFunc) {
         return {
             targetType: 'player',
             apply: function (player) {
@@ -1627,8 +1662,27 @@ const Effects = {
             }
         };
     },
-    revealTopCards: function (amount) {
-        let topCardsFunc = (player) => player.drawDeck.slice(0, amount);
+    lookAtBottomCard: function(playersFunc) {
+        return {
+            targetType: 'player',
+            apply: function(player, context) {
+                playersFunc = playersFunc || (() => [player]);
+                let revealFunc = (card, viewingPlayer) => viewingPlayer === player && playersFunc().filter(target => target.drawDeck.length > 0).map(target => target.drawDeck[target.drawDeck.length - 1]).includes(card);
+
+                context.lookAtBottomCard = context.lookAtBottomCard || {};
+                context.lookAtBottomCard[player.name] = revealFunc;
+                context.game.cardVisibility.addRule(revealFunc);
+            },
+            unapply: function(player, context) {
+                let revealFunc = context.lookAtBottomCard[player.name];
+
+                context.game.cardVisibility.removeRule(revealFunc);
+                delete context.lookAtBottomCard[player.name];
+            }
+        };
+    },
+    revealTopCards: function(amount) {
+        let topCardsFunc = player => player.drawDeck.slice(0, amount);
         return {
             targetType: 'player',
             apply: function (player, context) {
@@ -1764,6 +1818,17 @@ const Effects = {
             },
             unapply: function (player) {
                 player.flags.remove('cannotRevealPlot');
+            }
+        };
+    },
+    setPrintedValue: function(stat, value) {
+        return {
+            apply: function(card) {
+                card.printedValues[stat].push(value);
+            },
+            unapply: function(card) {
+                const index = card.printedValues[stat].lastIndexOf(value);
+                card.printedValues[stat].splice(index, 1);
             }
         };
     },

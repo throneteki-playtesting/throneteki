@@ -36,52 +36,38 @@ class ChallengeFlow extends BaseStep {
             new SimpleStep(this.game, () => this.atEndOfChallenge())
         ]);
 
-        this.attackerPrompt = new ChooseParticipantsPrompt(
-            this.game,
-            this.challenge.attackingPlayer,
-            {
-                attacking: true,
-                challenge: this.challenge,
-                cannotCancel: this.challenge.declareDefendersFirst,
-                gameAction: 'declareAsAttacker',
-                mustBeDeclaredOption: 'mustBeDeclaredAsAttacker',
-                limitsProperty: 'attackerLimits',
-                activePromptTitle: 'Select challenge attackers',
-                waitingPromptTitle: 'Waiting for opponent to select attackers',
-                messages: {
-                    autoDeclareSingular: '{0} is automatically declared as an attacker',
-                    autoDeclarePlural: '{0} are automatically declared as attackers',
-                    notEnoughSingular:
-                        '{0} did not declare at least {1} attacker but had characters to do so',
-                    notEnoughPlural:
-                        '{0} did not declare at least {1} attackers but had characters to do so'
-                },
-                onSelect: (attackers) => this.chooseAttackers(attackers)
-            }
-        );
+        this.attackerPrompt = new ChooseParticipantsPrompt(this.game, this.challenge.attackingPlayer, {
+            attacking: true,
+            challenge: this.challenge,
+            cannotCancel: this.challenge.declareDefendersFirst,
+            mustBeDeclaredOption: 'mustBeDeclaredAsAttacker',
+            limitsProperty: 'attackerLimits',
+            activePromptTitle: 'Select challenge attackers',
+            waitingPromptTitle: 'Waiting for opponent to select attackers',
+            messages: {
+                autoDeclareSingular: '{0} is automatically declared as an attacker',
+                autoDeclarePlural: '{0} are automatically declared as attackers',
+                notEnoughSingular: '{0} did not declare at least {1} attacker but had characters to do so',
+                notEnoughPlural: '{0} did not declare at least {1} attackers but had characters to do so'
+            },
+            onSelect: attackers => this.chooseAttackers(attackers)
+        });
 
-        this.defenderPrompt = new ChooseParticipantsPrompt(
-            this.game,
-            this.challenge.defendingPlayer,
-            {
-                attacking: false,
-                challenge: this.challenge,
-                gameAction: 'declareAsDefender',
-                mustBeDeclaredOption: 'mustBeDeclaredAsDefender',
-                limitsProperty: 'defenderLimits',
-                activePromptTitle: 'Select defenders',
-                waitingPromptTitle: 'Waiting for opponent to defend',
-                messages: {
-                    autoDeclareSingular: '{0} is automatically declared as a defender',
-                    autoDeclarePlural: '{0} are automatically declared as defenders',
-                    notEnoughSingular:
-                        '{0} did not declare at least {1} defender but had characters to do so',
-                    notEnoughPlural:
-                        '{0} did not declare at least {1} defenders but had characters to do so'
-                },
-                onSelect: (defenders) => this.chooseDefenders(defenders)
-            }
-        );
+        this.defenderPrompt = new ChooseParticipantsPrompt(this.game, this.challenge.defendingPlayer, {
+            attacking: false,
+            challenge: this.challenge,
+            mustBeDeclaredOption: 'mustBeDeclaredAsDefender',
+            limitsProperty: 'defenderLimits',
+            activePromptTitle: 'Select defenders',
+            waitingPromptTitle: 'Waiting for opponent to defend',
+            messages: {
+                autoDeclareSingular: '{0} is automatically declared as a defender',
+                autoDeclarePlural: '{0} are automatically declared as defenders',
+                notEnoughSingular: '{0} did not declare at least {1} defender but had characters to do so',
+                notEnoughPlural: '{0} did not declare at least {1} defenders but had characters to do so'
+            },
+            onSelect: defenders => this.chooseDefenders(defenders)
+        });
     }
 
     resetCards() {
@@ -131,36 +117,8 @@ class ChallengeFlow extends BaseStep {
         if (this.challenge.isSinglePlayer || !this.challenge.declareDefendersFirst) {
             return;
         }
-
-        if (
-            !this.challenge.attackingPlayer.anyCardsInPlay((card) =>
-                this.attackerPrompt.canParticipate(card)
-            )
-        ) {
-            this.game.promptWithMenu(this.challenge.attackingPlayer, this, {
-                activePrompt: {
-                    menuTitle:
-                        'You do not control enough elibile characters to legally initiate this challenge. Do you want to continue with defenders being declared anyway?',
-                    buttons: [
-                        { text: 'Yes', method: 'illegallyPromptForDefenders' },
-                        { text: 'No', method: 'cancelChallenge' }
-                    ]
-                },
-                source: this
-            });
-        } else {
-            this.game.queueStep(this.defenderPrompt);
-        }
-    }
-
-    illegallyPromptForDefenders() {
-        this.game.addAlert(
-            'danger',
-            '{0} does not control enough eligible characters to legally initiate this challenge, but has chosen to continue with declaring defenders anyway',
-            this.challenge.attackingPlayer
-        );
+        
         this.game.queueStep(this.defenderPrompt);
-        return true;
     }
 
     promptForDefenders() {

@@ -142,6 +142,10 @@ class TriggeredAbilityWindow extends BaseAbilityWindow {
         );
     }
 
+    getCardFromChoice(choice) {
+        return choice.context.event.card || choice.context.event.target || choice.context.event.plot;
+    }
+
     chooseCardToTrigger(player, card) {
         let choices = this.abilityChoices.filter(
             (choice) => choice.player === player && choice.card === card
@@ -151,9 +155,7 @@ class TriggeredAbilityWindow extends BaseAbilityWindow {
             return false;
         }
 
-        let availableTargets = choices
-            .map((choice) => choice.context.event.card || choice.context.event.target)
-            .filter((card) => !!card);
+        let availableTargets = choices.map(choice => this.getCardFromChoice(choice)).filter(card => !!card);
 
         if (choices.length === 1 || availableTargets.length <= 1) {
             this.chooseAbility(choices[0]);
@@ -163,13 +165,10 @@ class TriggeredAbilityWindow extends BaseAbilityWindow {
         this.game.promptForSelect(player, {
             activePromptTitle: `Choose triggering card for ${card.name}`,
             isCardEffect: false,
-            cardCondition: (card) => availableTargets.includes(card),
+            cardCondition: card => availableTargets.includes(card),
+            cardType: ['agenda', 'attachment', 'character', 'event', 'location', 'plot', 'title'],
             onSelect: (player, selectedCard) => {
-                let choice = choices.find(
-                    (choice) =>
-                        choice.context.event.card === selectedCard ||
-                        choice.context.event.target === selectedCard
-                );
+                let choice = choices.find(choice => this.getCardFromChoice(choice) === selectedCard);
 
                 if (!choice || choice.player !== player) {
                     return false;
