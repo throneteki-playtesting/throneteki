@@ -1,11 +1,12 @@
-const GameActions = require('../../GameActions/index.js');
-const DrawCard = require('../../drawcard.js');
+import GameActions from '../../GameActions/index.js';
+import DrawCard from '../../drawcard.js';
 
 class DickonTarly extends DrawCard {
     setupCardAbilities(ability) {
         this.reaction({
             when: {
-                onCardStood: event => event.card.controller === this.controller && event.card.isFaction('tyrell')
+                onCardStood: (event) =>
+                    event.card.controller === this.controller && event.card.isFaction('tyrell')
             },
             limit: ability.limit.perPhase(1),
             message: '{player} uses {source} to stand {source}',
@@ -17,4 +18,4 @@ class DickonTarly extends DrawCard {
 DickonTarly.code = '25588';
 DickonTarly.version = '1.1';
 
-module.exports = DickonTarly;
+export default DickonTarly;

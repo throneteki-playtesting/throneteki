@@ -1,5 +1,5 @@
-const BaseCard = require('./basecard.js');
-const CardWhenRevealed = require('./cardwhenrevealed.js');
+import BaseCard from './basecard.js';
+import CardWhenRevealed from './cardwhenrevealed.js';
 
 class PlotCard extends BaseCard {
     constructor(owner, cardData) {
@@ -30,26 +30,34 @@ class PlotCard extends BaseCard {
     }
 
     getWhenRevealedAbility() {
-        return this.abilities.reactions.find(ability => ability instanceof CardWhenRevealed);
+        return this.abilities.reactions.find((ability) => ability instanceof CardWhenRevealed);
     }
 
     getInitiative() {
-        const baseValue = this.canProvidePlotModifier['initiative'] ? this.getPrintedInitiative() : 0;
+        const baseValue = this.canProvidePlotModifier['initiative']
+            ? this.getPrintedInitiative()
+            : 0;
         return Math.max(baseValue + this.initiativeModifier, 0);
     }
 
     getPrintedInitiative() {
-        return this.getPrintedNumberFor(this.printedValues.initiative[this.printedValues.initiative.length - 1]);
+        return this.getPrintedNumberFor(
+            this.printedValues.initiative[this.printedValues.initiative.length - 1]
+        );
     }
 
     getIncome() {
-        let baseValue = this.canProvidePlotModifier['gold'] ? (this.baseIncome || this.getPrintedIncome()) : 0;
+        let baseValue = this.canProvidePlotModifier['gold']
+            ? this.baseIncome || this.getPrintedIncome()
+            : 0;
 
         return baseValue + this.goldModifier;
     }
 
     getPrintedIncome() {
-        return this.getPrintedNumberFor(this.printedValues.income[this.printedValues.income.length - 1]);
+        return this.getPrintedNumberFor(
+            this.printedValues.income[this.printedValues.income.length - 1]
+        );
     }
 
     getReserve() {
@@ -58,17 +66,21 @@ class PlotCard extends BaseCard {
     }
 
     getPrintedReserve() {
-        return this.getPrintedNumberFor(this.printedValues.reserve[this.printedValues.reserve.length - 1]);
+        return this.getPrintedNumberFor(
+            this.printedValues.reserve[this.printedValues.reserve.length - 1]
+        );
     }
 
     getPrintedClaim() {
-        return this.getPrintedNumberFor(this.printedValues.claim[this.printedValues.claim.length - 1]);
+        return this.getPrintedNumberFor(
+            this.printedValues.claim[this.printedValues.claim.length - 1]
+        );
     }
 
     getClaim() {
         let baseClaim = this.getPrintedClaim();
 
-        if(typeof(this.claimSet) === 'number') {
+        if (typeof this.claimSet === 'number') {
             return this.claimSet;
         }
 
@@ -84,4 +96,4 @@ class PlotCard extends BaseCard {
     }
 }
 
-module.exports = PlotCard;
+export default PlotCard;

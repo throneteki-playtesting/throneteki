@@ -1,5 +1,5 @@
-const GameActions = require('../../GameActions/index.js');
-const DrawCard = require('../../drawcard.js');
+import GameActions from '../../GameActions/index.js';
+import DrawCard from '../../drawcard.js';
 
 class TheGreenFork extends DrawCard {
     setupCardAbilities() {
@@ -8,7 +8,12 @@ class TheGreenFork extends DrawCard {
         });
         this.reaction({
             when: {
-                afterChallenge: event => event.challenge.isMatch({ winner: this.controller, by5: true, challengeType: 'intrigue' })
+                afterChallenge: (event) =>
+                    event.challenge.isMatch({
+                        winner: this.controller,
+                        by5: true,
+                        challengeType: 'intrigue'
+                    })
             },
             location: 'discard pile',
             message: '{player} uses {source} to put {source} into play from their discard pile',
@@ -20,4 +25,4 @@ class TheGreenFork extends DrawCard {
 TheGreenFork.code = '25604';
 TheGreenFork.version = '1.0';
 
-module.exports = TheGreenFork;
+export default TheGreenFork;

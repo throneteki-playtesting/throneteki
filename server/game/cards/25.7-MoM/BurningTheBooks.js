@@ -1,5 +1,5 @@
-const GameActions = require('../../GameActions');
-const PlotCard = require('../../plotcard');
+import GameActions from '../../GameActions/index.js';
+import PlotCard from '../../plotcard.js';
 
 class BurningTheBooks extends PlotCard {
     setupCardAbilities(ability) {
@@ -7,19 +7,32 @@ class BurningTheBooks extends PlotCard {
             target: {
                 choosingPlayer: 'eachOpponent',
                 ifAble: true,
-                cardCondition: { type: 'attachment', not: { trait: 'The Seven' }, location: 'play area', controller: 'choosingPlayer' }
+                cardCondition: {
+                    type: 'attachment',
+                    not: { trait: 'The Seven' },
+                    location: 'play area',
+                    controller: 'choosingPlayer'
+                }
             },
             message: '{player} uses {source} to discard {target}',
-            handler: context => {
+            handler: (context) => {
                 this.game.resolveGameAction(
                     GameActions.simultaneously(
-                        context.targets.getTargets().map(card => GameActions.discardCard({ card, source: this }))
-                    ).then(originalContext => ({
+                        context.targets
+                            .getTargets()
+                            .map((card) => GameActions.discardCard({ card, source: this }))
+                    ).then((originalContext) => ({
                         condition: () => this.hasValidTargets(originalContext.player),
-                        cost: ability.costs.discardPower(1, card => card.getType() === 'character'),
-                        message: 'Then, {player} discards 1 power from {costs.discardPower} to initiate the effect of {source} again',
+                        cost: ability.costs.discardPower(
+                            1,
+                            (card) => card.getType() === 'character'
+                        ),
+                        message:
+                            'Then, {player} discards 1 power from {costs.discardPower} to initiate the effect of {source} again',
                         handler: () => {
-                            let newContext = originalContext.ability.createContext(originalContext.event);
+                            let newContext = originalContext.ability.createContext(
+                                originalContext.event
+                            );
                             this.game.resolveAbility(newContext.ability, newContext);
                         }
                     })),
@@ -30,11 +43,13 @@ class BurningTheBooks extends PlotCard {
     }
 
     hasValidTargets(player) {
-        return this.game.getOpponents(player).some(opponent => opponent.anyCardsInPlay(card => card.getType() === 'attachment'));
+        return this.game
+            .getOpponents(player)
+            .some((opponent) => opponent.anyCardsInPlay((card) => card.getType() === 'attachment'));
     }
 }
 
 BurningTheBooks.code = '25613';
 BurningTheBooks.version = '1.1';
 
-module.exports = BurningTheBooks;
+export default BurningTheBooks;

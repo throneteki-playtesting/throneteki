@@ -1,5 +1,5 @@
-const GameActions = require('../../GameActions/index.js');
-const DrawCard = require('../../drawcard.js');
+import GameActions from '../../GameActions/index.js';
+import DrawCard from '../../drawcard.js';
 
 class DesperateDeserter extends DrawCard {
     setupCardAbilities() {
@@ -9,14 +9,18 @@ class DesperateDeserter extends DrawCard {
         });
         this.reaction({
             when: {
-                onCardOutOfShadows: event => event.card.controller === this.controller
+                onCardOutOfShadows: (event) => event.card.controller === this.controller
             },
             chooseOpponent: true,
             message: '{player} uses {source} to give control of {source} to {opponent}',
-            handler: context => {
+            handler: (context) => {
                 this.game.resolveGameAction(
-                    GameActions.takeControl(context => ({ player: context.opponent, card: this, context }))
-                    , context
+                    GameActions.takeControl((context) => ({
+                        player: context.opponent,
+                        card: this,
+                        context
+                    })),
+                    context
                 );
             }
         });
@@ -26,4 +30,4 @@ class DesperateDeserter extends DrawCard {
 DesperateDeserter.code = '25553';
 DesperateDeserter.version = '1.3';
 
-module.exports = DesperateDeserter;
+export default DesperateDeserter;

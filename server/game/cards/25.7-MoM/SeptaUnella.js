@@ -1,10 +1,11 @@
-const DrawCard = require('../../drawcard.js');
+import DrawCard from '../../drawcard.js';
 
 class SeptaUnella extends DrawCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
             condition: () => this.isParticipating(),
-            match: card => !card.hasTrait('The Seven') && card.getType() === 'character' && card.power > 0,
+            match: (card) =>
+                !card.hasTrait('The Seven') && card.getType() === 'character' && card.power > 0,
             targetController: 'any',
             effect: ability.effects.blankExcludingTraits
         });
@@ -14,4 +15,4 @@ class SeptaUnella extends DrawCard {
 SeptaUnella.code = '25599';
 SeptaUnella.version = '1.0';
 
-module.exports = SeptaUnella;
+export default SeptaUnella;

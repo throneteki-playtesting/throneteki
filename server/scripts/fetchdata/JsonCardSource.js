@@ -1,7 +1,8 @@
 /*eslint no-console:0 */
-const fs = require('fs');
-const path = require('path');
-const _ = require('underscore');
+import fs from 'fs';
+
+import path from 'path';
+import _ from 'underscore';
 
 class JsonCardSource {
     constructor(directory) {
@@ -14,13 +15,18 @@ class JsonCardSource {
         let packs = [];
         let cards = [];
         let files = fs.readdirSync(path.join(directory, 'packs'));
-        for(let file of files) {
+        for (let file of files) {
             let pack = JSON.parse(fs.readFileSync(path.join(directory, 'packs', file)));
-            for(let card of pack.cards) {
+            for (let card of pack.cards) {
                 card.packCode = pack.code;
             }
 
-            packs.push({ cgdbId: pack.cgdbId, code: pack.code, name: pack.name, releaseDate: pack.releaseDate });
+            packs.push({
+                cgdbId: pack.cgdbId,
+                code: pack.code,
+                name: pack.name,
+                releaseDate: pack.releaseDate
+            });
             cards = cards.concat(pack.cards);
         }
 
@@ -33,12 +39,12 @@ class JsonCardSource {
     }
 
     addLabelToCards(cards) {
-        for(let card of cards) {
-            let cardsByName = _.filter(cards, filterCard => {
+        for (let card of cards) {
+            let cardsByName = _.filter(cards, (filterCard) => {
                 return filterCard.name === card.name;
             });
 
-            if(cardsByName.length > 1) {
+            if (cardsByName.length > 1) {
                 card.label = card.name + ' (' + card.packCode + ')';
             } else {
                 card.label = card.name;
@@ -55,4 +61,4 @@ class JsonCardSource {
     }
 }
 
-module.exports = JsonCardSource;
+export default JsonCardSource;

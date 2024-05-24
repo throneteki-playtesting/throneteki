@@ -1,24 +1,34 @@
-const DrawCard = require('../../drawcard.js');
+import DrawCard from '../../drawcard.js';
+import GameActions from '../../GameActions/index.js';
 
 class RaidingTheBayOfIce extends DrawCard {
     setupCardAbilities(ability) {
         this.reaction({
             when: {
-                afterChallenge: event => event.challenge.winner === this.controller && event.challenge.attackingPlayer === this.controller
+                afterChallenge: (event) =>
+                    event.challenge.winner === this.controller &&
+                    event.challenge.attackingPlayer === this.controller
             },
-            cost: ability.costs.kneel(card => card.hasTrait('Warship') && card.getType() === 'location'),
+            cost: ability.costs.kneel(
+                (card) => card.hasTrait('Warship') && card.getType() === 'location'
+            ),
             target: {
                 activePromptTitle: 'Select a location',
-                cardCondition: card => (
+                cardCondition: (card) =>
                     card.location === 'play area' &&
                     !card.isLimited() &&
                     card.getType() === 'location' &&
-                    card.controller === this.game.currentChallenge.loser)
+                    card.controller === this.game.currentChallenge.loser &&
+                    GameActions.returnCardToDeck({ card }).allow()
             },
-            handler: context => {
-                context.target.owner.moveCardToTopOfDeck(context.target);
-                this.game.addMessage('{0} plays {1} to move {2} to the top of {3}\'s deck',
-                    this.controller, this, context.target, context.target.owner);
+            message: "{player} plays {source} to place {target} on top of its owner's deck",
+            handler: (context) => {
+                this.game.resolveGameAction(
+                    GameActions.returnCardToDeck((context) => ({
+                        card: context.target
+                    })),
+                    context
+                );
             }
         });
     }
@@ -26,4 +36,4 @@ class RaidingTheBayOfIce extends DrawCard {
 
 RaidingTheBayOfIce.code = '07028';
 
-module.exports = RaidingTheBayOfIce;
+export default RaidingTheBayOfIce;

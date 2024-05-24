@@ -1,21 +1,20 @@
-const GameActions = require('../../GameActions/index.js');
-const DrawCard = require('../../drawcard.js');
+import GameActions from '../../GameActions/index.js';
+import DrawCard from '../../drawcard.js';
 
 class WeirwoodGrove extends DrawCard {
     setupCardAbilities(ability) {
         this.reaction({
             when: {
-                onPlotRevealed: event => event.plot.controller !== this.controller && !!event.plot.getWhenRevealedAbility()
+                onPlotRevealed: (event) =>
+                    event.plot.controller !== this.controller &&
+                    !!event.plot.getWhenRevealedAbility()
             },
-            cost: [
-                ability.costs.kneelFactionCard(),
-                ability.costs.removeSelfFromGame()
-            ],
+            cost: [ability.costs.kneelFactionCard(), ability.costs.removeSelfFromGame()],
             message: {
                 format: '{player} kneels their faction card and removes {costs.removeFromGame} from the game to initiate the when revealed ability of {plot}',
-                args: { plot: context => context.event.plot }
+                args: { plot: (context) => context.event.plot }
             },
-            gameAction: GameActions.genericHandler(context => {
+            gameAction: GameActions.genericHandler((context) => {
                 let whenRevealed = context.event.plot.getWhenRevealedAbility();
                 // Attach the current When Revealed event to the new context
                 let newContext = whenRevealed.createContext(context.event);
@@ -29,4 +28,4 @@ class WeirwoodGrove extends DrawCard {
 WeirwoodGrove.code = '25556';
 WeirwoodGrove.version = '1.0';
 
-module.exports = WeirwoodGrove;
+export default WeirwoodGrove;
