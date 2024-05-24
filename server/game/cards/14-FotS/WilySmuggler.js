@@ -1,4 +1,5 @@
-const DrawCard = require('../../drawcard');
+import GameActions from '../../GameActions/index.js';
+import DrawCard from '../../drawcard.js';
 
 class WilySmuggler extends DrawCard {
     setupCardAbilities(ability) {
@@ -7,14 +8,22 @@ class WilySmuggler extends DrawCard {
             target: {
                 type: 'select',
                 activePromptTitle: 'Select a card',
-                cardCondition: card => card.location === 'hand' && card.controller === this.controller
+                cardCondition: (card) =>
+                    card.location === 'hand' &&
+                    card.controller === this.controller &&
+                    GameActions.returnCardToDeck({ card }).allow()
             },
             message: '{player} uses {source} to place a card on top of their deck',
-            handler: context => {
-                context.player.moveCardToTopOfDeck(context.target);
+            handler: (context) => {
+                this.game.resolveGameAction(
+                    GameActions.returnCardToDeck((context) => ({
+                        card: context.target
+                    })),
+                    context
+                );
 
                 this.game.once('onAtEndOfPhase', () => {
-                    if(!context.player.canDraw()) {
+                    if (!context.player.canDraw()) {
                         return;
                     }
 
@@ -29,4 +38,4 @@ class WilySmuggler extends DrawCard {
 
 WilySmuggler.code = '14016';
 
-module.exports = WilySmuggler;
+export default WilySmuggler;

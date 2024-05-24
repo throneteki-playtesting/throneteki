@@ -1,18 +1,24 @@
-const DrawCard = require('../../drawcard');
+import DrawCard from '../../drawcard.js';
+import GameActions from '../../GameActions/index.js';
 
 class Moqorro extends DrawCard {
     setupCardAbilities() {
         this.reaction({
             when: {
-                onCardOutOfShadows: event => event.card === this
+                onCardOutOfShadows: (event) => event.card === this
             },
             target: {
-                cardCondition: card => card.isDefending()
+                cardCondition: (card) =>
+                    card.isDefending() && GameActions.returnCardToDeck({ card }).allow()
             },
-            handler: context => {
-                context.target.owner.moveCardToTopOfDeck(context.target);
-                this.game.addMessage('{0} uses {1} to move {2} to the top of {3}\'s deck',
-                    context.player, this, context.target, context.target.owner);
+            message: "{player} uses {source} to place {target} on top of its owner's deck",
+            handler: (context) => {
+                this.game.resolveGameAction(
+                    GameActions.returnCardToDeck((context) => ({
+                        card: context.target
+                    })),
+                    context
+                );
             }
         });
     }
@@ -20,4 +26,4 @@ class Moqorro extends DrawCard {
 
 Moqorro.code = '11111';
 
-module.exports = Moqorro;
+export default Moqorro;

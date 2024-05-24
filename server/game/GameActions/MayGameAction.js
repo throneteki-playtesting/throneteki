@@ -1,10 +1,10 @@
-const GameAction = require('./GameAction');
-const AbilityMessage = require('../AbilityMessage');
+import GameAction from './GameAction.js';
+import AbilityMessage from '../AbilityMessage.js';
 
 class MayGameAction extends GameAction {
     constructor({ player, gameAction, message, title }) {
         super('may');
-        this.player = player || (context => context.player);
+        this.player = player || ((context) => context.player);
         this.gameAction = gameAction;
         this.abilityMessage = AbilityMessage.create(message, this.specialArgs());
         this.title = title;
@@ -12,7 +12,7 @@ class MayGameAction extends GameAction {
 
     specialArgs() {
         return {
-            choosingPlayer: context => context.choosingPlayer
+            choosingPlayer: (context) => context.choosingPlayer
         };
     }
 
@@ -29,14 +29,18 @@ class MayGameAction extends GameAction {
     }
 
     createEvent(context) {
-        return this.event('__PLACEHOLDER_EVENT__', {}, event => {
+        return this.event('__PLACEHOLDER_EVENT__', {}, (event) => {
             const title = this.title instanceof Function ? this.title(context) : this.title;
-            const choosingPlayer = this.player instanceof Function ? this.player(context) : this.player;
+            const choosingPlayer =
+                this.player instanceof Function ? this.player(context) : this.player;
             let tempContext = { ...context, choosingPlayer };
             const handler = new MayPromptHandler({
                 yesHandler: () => {
-                    if(this.gameAction.allow(tempContext)) {
-                        this.abilityMessage.output(tempContext.game, { ...tempContext, gameAction: this.gameAction });
+                    if (this.gameAction.allow(tempContext)) {
+                        this.abilityMessage.output(tempContext.game, {
+                            ...tempContext,
+                            gameAction: this.gameAction
+                        });
                         event.thenAttachEvent(this.gameAction.createEvent(tempContext));
                     }
                     return true;
@@ -53,7 +57,7 @@ class MayGameAction extends GameAction {
 }
 
 class MayPromptHandler {
-    constructor({ yesHandler, noHandler = (() => {}) }) {
+    constructor({ yesHandler, noHandler = () => {} }) {
         this.yesHandler = yesHandler;
         this.noHandler = noHandler;
     }
@@ -72,7 +76,7 @@ class MayPromptHandler {
     }
 
     handle(player, arg) {
-        if(arg) {
+        if (arg) {
             this.yesHandler();
         } else {
             this.noHandler();
@@ -81,4 +85,4 @@ class MayPromptHandler {
     }
 }
 
-module.exports = MayGameAction;
+export default MayGameAction;

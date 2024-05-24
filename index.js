@@ -1,7 +1,11 @@
-const runServer = require('./server');
+import runServer from './server/index.js';
+import logger from './server/log.js';
 
-const run = async () => {
-    await runServer();
-};
-
-run();
+runServer()
+    .then(() => {
+        logger.info('Server finished startup');
+    })
+    .catch((err) => {
+        logger.error('Server crashed', err);
+        throw err;
+    });

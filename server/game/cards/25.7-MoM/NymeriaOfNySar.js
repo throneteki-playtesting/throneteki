@@ -1,26 +1,34 @@
-const DrawCard = require('../../drawcard.js');
-const RevealPlots = require('../../gamesteps/revealplots');
-const SimpleStep = require('../../gamesteps/simplestep.js');
+import DrawCard from '../../drawcard.js';
+import RevealPlots from '../../gamesteps/revealplots.js';
+import SimpleStep from '../../gamesteps/simplestep.js';
 
 class NymeriaOfNySar extends DrawCard {
     setupCardAbilities(ability) {
-        this.attachmentRestriction({ type: 'location', faction: 'martell', controller: 'current', unique: true });
+        this.attachmentRestriction({
+            type: 'location',
+            faction: 'martell',
+            controller: 'current',
+            unique: true
+        });
         this.reaction({
             when: {
-                afterChallenge: event => event.challenge.winner === this.controller && event.challenge.strengthDifference >= 5 && !this.controller.hasFlag('cannotRevealPlot')
+                afterChallenge: (event) =>
+                    event.challenge.winner === this.controller &&
+                    event.challenge.strengthDifference >= 5 &&
+                    !this.controller.hasFlag('cannotRevealPlot')
             },
             cost: ability.costs.kneelSelf(),
             target: {
                 type: 'select',
                 activePromptTitle: 'Select a plot',
-                cardCondition: (card, context) => 
-                    card.controller === context.player && 
-                    card.location === 'plot deck' && 
+                cardCondition: (card, context) =>
+                    card.controller === context.player &&
+                    card.location === 'plot deck' &&
                     (card.hasTrait('Summer') || card.isFaction('martell')),
                 cardType: 'plot'
             },
             message: '{player} uses {source} and kneels their faction card to reveal {target}',
-            handler: context => this.trigger(context)
+            handler: (context) => this.trigger(context)
         });
 
         this.action({
@@ -30,26 +38,28 @@ class NymeriaOfNySar extends DrawCard {
             target: {
                 type: 'select',
                 activePromptTitle: 'Select a plot',
-                cardCondition: (card, context) => 
-                    card.controller === context.player && 
-                    card.location === 'plot deck' && 
+                cardCondition: (card, context) =>
+                    card.controller === context.player &&
+                    card.location === 'plot deck' &&
                     (card.hasTrait('Summer') || card.isFaction('martell')),
                 cardType: 'plot'
             },
-            handler: context => this.trigger(context)
+            handler: (context) => this.trigger(context)
         });
     }
 
     trigger(context) {
         context.player.selectedPlot = context.target;
         this.game.queueStep(new RevealPlots(this.game, [context.target]));
-        this.game.queueStep(new SimpleStep(this.game, () => {
-            context.player.recyclePlots();
-        }));
+        this.game.queueStep(
+            new SimpleStep(this.game, () => {
+                context.player.recyclePlots();
+            })
+        );
     }
 }
 
 NymeriaOfNySar.code = '25545';
 NymeriaOfNySar.version = '1.3';
 
-module.exports = NymeriaOfNySar;
+export default NymeriaOfNySar;

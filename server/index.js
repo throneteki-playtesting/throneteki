@@ -1,8 +1,8 @@
-const Server = require('./server.js');
-const Lobby = require('./lobby.js');
-const pmx = require('pmx');
-const monk = require('monk');
-const ServiceFactory = require('./services/ServiceFactory.js');
+import Server from './server.js';
+import Lobby from './lobby.js';
+import pmx from 'pmx';
+import monk from 'monk';
+import ServiceFactory from './services/ServiceFactory.js';
 
 let configService = ServiceFactory.configService();
 
@@ -11,14 +11,9 @@ async function runServer() {
         instance: configService.getValue('instance') || {}
     };
 
-    await monk(configService.getValue('dbPath'))
-        .then((db) => {
-            options.db = db;
-        })
-        .catch((err) => {
-            console.info(err);
-            throw err;
-        });
+    await monk(configService.getValue('dbPath')).then((db) => {
+        options.db = db;
+    });
 
     let server = new Server(process.env.NODE_ENV !== 'production');
     let httpServer = server.init(options);
@@ -57,4 +52,4 @@ async function runServer() {
     server.run();
 }
 
-module.exports = runServer;
+export default runServer;

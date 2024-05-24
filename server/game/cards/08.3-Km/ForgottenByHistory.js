@@ -1,4 +1,5 @@
-const DrawCard = require('../../drawcard.js');
+import DrawCard from '../../drawcard.js';
+import GameActions from '../../GameActions/index.js';
 
 class ForgottenByHistory extends DrawCard {
     setupCardAbilities(ability) {
@@ -7,13 +8,21 @@ class ForgottenByHistory extends DrawCard {
             phase: 'dominance',
             cost: ability.costs.kneelFactionCard(),
             target: {
-                cardCondition: card => card.location === 'play area' && card.getType() === 'character' &&
-                                       card.getPrintedCost() <= card.controller.faction.power
+                cardCondition: (card) =>
+                    card.location === 'play area' &&
+                    card.getType() === 'character' &&
+                    card.getPrintedCost() <= card.controller.faction.power &&
+                    GameActions.shuffleIntoDeck({ cards: [card] }).allow()
             },
-            handler: context => {
-                context.target.owner.shuffleCardIntoDeck(context.target);
-                this.game.addMessage('{0} plays {1} to shuffle {2} into {3}\'s deck',
-                    context.player, this, context.target, context.target.owner);
+            message: {
+                format: "{player} plays {source} to shuffle {target} into {owner}'s deck",
+                args: { owner: (context) => context.target.owner }
+            },
+            handler: (context) => {
+                this.game.resolveGameAction(
+                    GameActions.shuffleIntoDeck((context) => ({ cards: [context.target] })),
+                    context
+                );
             }
         });
     }
@@ -21,4 +30,4 @@ class ForgottenByHistory extends DrawCard {
 
 ForgottenByHistory.code = '08059';
 
-module.exports = ForgottenByHistory;
+export default ForgottenByHistory;

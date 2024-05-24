@@ -1,34 +1,50 @@
-const DrawCard = require('../../drawcard.js');
+import GameActions from '../../GameActions/index.js';
+import DrawCard from '../../drawcard.js';
 
 class TheDornishmansWife extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Gain gold/power/card',
-            chooseOpponent: opponent => (
+            chooseOpponent: (opponent) =>
                 this.opponentHasMorePower(opponent) ||
                 this.opponentHasMoreCardsInHand(opponent) ||
-                this.opponentControlsMoreCharacters(opponent)
-            ),
-            handler: context => {
-                let bonusMessage = [];
+                this.opponentControlsMoreCharacters(opponent),
+            handler: (context) => {
+                const action = GameActions.simultaneously((context) => [
+                    ...(this.opponentHasMorePower(context.opponent)
+                        ? [
+                              GameActions.gainGold((context) => ({
+                                  player: context.player,
+                                  amount: 2
+                              }))
+                          ]
+                        : []),
+                    ...(this.opponentHasMoreCardsInHand(context.opponent)
+                        ? [
+                              GameActions.gainPower((context) => ({
+                                  card: context.player.faction,
+                                  amount: 1
+                              }))
+                          ]
+                        : []),
+                    ...(this.opponentControlsMoreCharacters(context.opponent)
+                        ? [
+                              GameActions.drawCards((context) => ({
+                                  player: context.player,
+                                  amount: 1
+                              }))
+                          ]
+                        : [])
+                ]);
 
-                if(this.opponentHasMorePower(context.opponent) && this.controller.canGainGold()) {
-                    let gold = this.game.addGold(this.controller, 2);
-                    bonusMessage.push('gain {1} gold', gold);
-                }
+                this.game.addMessage(
+                    '{0} plays {1} and {2}',
+                    context.player,
+                    context.source,
+                    action.message(context)
+                );
 
-                if(this.opponentHasMoreCardsInHand(context.opponent) && this.controller.canGainFactionPower()) {
-                    this.game.addPower(this.controller, 1);
-                    bonusMessage.push('gain 1 power for their faction');
-                }
-
-                if(this.opponentControlsMoreCharacters(context.opponent) && this.controller.canDraw()) {
-                    this.controller.drawCardsToHand(1);
-                    bonusMessage.push('draw 1 card');
-                }
-
-                this.game.addMessage('{0} uses {1} to choose {2} and {3}',
-                    this.controller, this, context.opponent, bonusMessage);
+                this.game.resolveGameAction(action, context);
             }
         });
     }
@@ -42,11 +58,11 @@ class TheDornishmansWife extends DrawCard {
     }
 
     opponentControlsMoreCharacters(opponent) {
-        let ownChars = this.controller.filterCardsInPlay(card => {
+        let ownChars = this.controller.filterCardsInPlay((card) => {
             return card.getType() === 'character';
         });
 
-        let oppChars = opponent.filterCardsInPlay(card => {
+        let oppChars = opponent.filterCardsInPlay((card) => {
             return card.getType() === 'character';
         });
 
@@ -56,4 +72,4 @@ class TheDornishmansWife extends DrawCard {
 
 TheDornishmansWife.code = '06039';
 
-module.exports = TheDornishmansWife;
+export default TheDornishmansWife;

@@ -1,13 +1,15 @@
-const PlotCard = require('../../plotcard.js');
+import PlotCard from '../../plotcard.js';
 
 class CityBlockade extends PlotCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
             targetController: 'any',
             effect: [
-                ability.effects.cannotMarshal(card => card.hasKeyword('limited')),
-                ability.effects.cannotPlay(card => card.getPrintedType() === 'event' && card.hasKeyword('limited')),
-                ability.effects.cannotPutIntoPlay(card => card.hasKeyword('limited'))
+                ability.effects.cannotMarshal((card) => card.hasKeyword('limited')),
+                ability.effects.cannotPlay(
+                    (card) => card.getPrintedType() === 'event' && card.hasKeyword('limited')
+                ),
+                ability.effects.cannotPutIntoPlay((card) => card.hasKeyword('limited'))
             ]
         });
     }
@@ -16,4 +18,4 @@ class CityBlockade extends PlotCard {
 CityBlockade.code = '25614';
 CityBlockade.version = '1.1';
 
-module.exports = CityBlockade;
+export default CityBlockade;

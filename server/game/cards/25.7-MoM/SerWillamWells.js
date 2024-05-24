@@ -1,4 +1,4 @@
-const DrawCard = require('../../drawcard.js');
+import DrawCard from '../../drawcard.js';
 
 class SerWillamWells extends DrawCard {
     setupCardAbilities(ability) {
@@ -9,9 +9,10 @@ class SerWillamWells extends DrawCard {
             target: {
                 cardCondition: { location: 'play area', type: 'character' }
             },
-            message: '{player} kills {costs.kill} to remove a military, an intrigue, and a power icon from {target} until the end of the phase',
-            handler: context => {
-                this.untilEndOfPhase(ability => ({
+            message:
+                '{player} kills {costs.kill} to remove a military, an intrigue, and a power icon from {target} until the end of the phase',
+            handler: (context) => {
+                this.untilEndOfPhase((ability) => ({
                     match: context.target,
                     effect: [
                         ability.effects.removeIcon('military'),
@@ -27,4 +28,4 @@ class SerWillamWells extends DrawCard {
 SerWillamWells.code = '25540';
 SerWillamWells.version = '1.0';
 
-module.exports = SerWillamWells;
+export default SerWillamWells;

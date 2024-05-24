@@ -1,10 +1,10 @@
 /*eslint no-console:0 */
 
-const fs = require('fs');
-const mkdirp = require('mkdirp');
-const path = require('path');
+import fs from 'fs';
 
-const CardService = require('../../services/CardService.js');
+import { mkdirp } from 'mkdirp';
+import path from 'path';
+import CardService from '../../services/CardService.js';
 
 class CardImport {
     constructor(db, dataSource, imageSource, imageDir) {
@@ -18,7 +18,7 @@ class CardImport {
     async import() {
         try {
             await Promise.all([this.importCards(), this.importPacks()]);
-        } catch(e) {
+        } catch (e) {
             console.log('Unable to fetch data', e);
         } finally {
             this.db.close();
@@ -40,10 +40,10 @@ class CardImport {
 
         let i = 0;
 
-        for(let card of cards) {
+        for (let card of cards) {
             let imagePath = path.join(this.imageDir, card.code + '.png');
 
-            if(!fs.existsSync(imagePath) || this.isWorkInProgress(card)) {
+            if (!fs.existsSync(imagePath) || this.isWorkInProgress(card)) {
                 setTimeout(() => {
                     this.imageSource.fetchImage(card, imagePath);
                 }, i++ * 200);
@@ -52,7 +52,7 @@ class CardImport {
     }
 
     isWorkInProgress(card) {
-        let pack = this.imageSource.packs.find(pack => pack.code === card.packCode);
+        let pack = this.imageSource.packs.find((pack) => pack.code === card.packCode);
         return pack && pack.workInProgress;
     }
     async importPacks() {
@@ -64,4 +64,4 @@ class CardImport {
     }
 }
 
-module.exports = CardImport;
+export default CardImport;
