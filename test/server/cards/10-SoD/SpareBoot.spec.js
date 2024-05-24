@@ -3,7 +3,11 @@ describe('Spare Boot', function () {
         beforeEach(function () {
             const deck = this.buildDeck('thenightswatch', [
                 'Trading with the Pentoshi',
-                'Spare Boot', 'Bran Stark (Core)', 'Seal of the Hand', 'Syrio\'s Training', 'Little Bird (Core)'
+                'Spare Boot',
+                'Bran Stark (Core)',
+                'Seal of the Hand',
+                "Syrio's Training",
+                'Little Bird (Core)'
             ]);
 
             this.player1.selectDeck(deck);
@@ -14,7 +18,7 @@ describe('Spare Boot', function () {
             this.spareBoot = this.player1.findCardByName('Spare Boot', 'hand');
             this.otherCharacter = this.player1.findCardByName('Bran Stark', 'hand');
             this.nonUsableAttachment = this.player1.findCardByName('Seal of the Hand', 'hand');
-            this.usableAttachment = this.player1.findCardByName('Syrio\'s Training', 'hand');
+            this.usableAttachment = this.player1.findCardByName("Syrio's Training", 'hand');
             this.spareBootAttachment = this.player1.findCardByName('Little Bird (Core)', 'hand');
 
             this.player1.clickCard(this.spareBoot);

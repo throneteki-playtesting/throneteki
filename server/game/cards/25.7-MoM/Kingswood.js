@@ -1,5 +1,5 @@
-const GameActions = require('../../GameActions/index.js');
-const DrawCard = require('../../drawcard.js');
+import GameActions from '../../GameActions/index.js';
+import DrawCard from '../../drawcard.js';
 
 class Kingswood extends DrawCard {
     setupCardAbilities(ability) {
@@ -8,14 +8,14 @@ class Kingswood extends DrawCard {
         });
         this.reaction({
             when: {
-                onCardEntersPlay: event => event.playingType === 'ambush' && event.card.isMatch({ type: 'character', controller: 'current' })
+                onCardEntersPlay: (event) =>
+                    event.playingType === 'ambush' &&
+                    event.card.isMatch({ type: 'character', controller: 'current' })
             },
-            cost: [
-                ability.costs.kneelSelf(),
-                ability.costs.returnSelfToHand()
-            ],
-            message: '{player} kneels and returns {costs.returnToHand} to their hand to draw 1 card',
-            gameAction: GameActions.drawCards(context => ({ player: context.player, amount: 1 }))
+            cost: [ability.costs.kneelSelf(), ability.costs.returnSelfToHand()],
+            message:
+                '{player} kneels and returns {costs.returnToHand} to their hand to draw 1 card',
+            gameAction: GameActions.drawCards((context) => ({ player: context.player, amount: 1 }))
         });
     }
 }
@@ -23,4 +23,4 @@ class Kingswood extends DrawCard {
 Kingswood.code = '25532';
 Kingswood.version = '1.0';
 
-module.exports = Kingswood;
+export default Kingswood;

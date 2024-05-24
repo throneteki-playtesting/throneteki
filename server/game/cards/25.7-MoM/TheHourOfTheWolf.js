@@ -1,5 +1,5 @@
-const GameActions = require('../../GameActions/index.js');
-const PlotCard = require('../../plotcard.js');
+import GameActions from '../../GameActions/index.js';
+import PlotCard from '../../plotcard.js';
 
 class TheHourOfTheWolf extends PlotCard {
     setupCardAbilities() {
@@ -7,16 +7,23 @@ class TheHourOfTheWolf extends PlotCard {
             target: {
                 choosingPlayer: 'each',
                 ifAble: true,
-                cardCondition: { location: 'play area', type: 'character', loyal: false, controller: 'choosingPlayer' }
+                cardCondition: {
+                    location: 'play area',
+                    type: 'character',
+                    loyal: false,
+                    controller: 'choosingPlayer'
+                }
             },
             message: {
                 format: '{player} uses {source} to have each player sacrifice {targets}',
-                args: { targets: context => context.targets.getTargets() }
+                args: { targets: (context) => context.targets.getTargets() }
             },
-            handler: context => {
+            handler: (context) => {
                 this.game.resolveGameAction(
-                    GameActions.simultaneously(context =>
-                        context.targets.getTargets().map(card => GameActions.sacrificeCard({ card }))
+                    GameActions.simultaneously((context) =>
+                        context.targets
+                            .getTargets()
+                            .map((card) => GameActions.sacrificeCard({ card }))
                     ),
                     context
                 );
@@ -28,4 +35,4 @@ class TheHourOfTheWolf extends PlotCard {
 TheHourOfTheWolf.code = '25572';
 TheHourOfTheWolf.version = '2.4';
 
-module.exports = TheHourOfTheWolf;
+export default TheHourOfTheWolf;

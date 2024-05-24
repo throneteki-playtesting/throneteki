@@ -1,4 +1,4 @@
-const GameActions = require('../GameActions');
+import GameActions from '../GameActions';
 
 class DiscardFromPlayCost {
     constructor() {
@@ -6,20 +6,25 @@ class DiscardFromPlayCost {
     }
 
     isEligible(card) {
-        return card.location === 'play area' && GameActions.discardCard({ card, allowSave: false }).allow();
+        return (
+            card.location === 'play area' &&
+            GameActions.discardCard({ card, allowSave: false }).allow()
+        );
     }
 
     pay(cards, context) {
         context.game.resolveGameAction(
-            GameActions.simultaneously(cards.map(card => 
-                GameActions.discardCard({
-                    card,
-                    allowSave: false
-                })
-            )),
+            GameActions.simultaneously(
+                cards.map((card) =>
+                    GameActions.discardCard({
+                        card,
+                        allowSave: false
+                    })
+                )
+            ),
             context
         );
     }
 }
 
-module.exports = DiscardFromPlayCost;
+export default DiscardFromPlayCost;

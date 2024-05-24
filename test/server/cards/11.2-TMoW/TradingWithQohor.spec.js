@@ -8,7 +8,9 @@ describe('Trading With Qohor', function () {
                         'Banner of the Kraken',
                         'Trading With Qohor',
                         'A Noble Cause',
-                        'Hedge Knight', 'Little Bird (Core)', 'Noble Lineage'
+                        'Hedge Knight',
+                        'Little Bird (Core)',
+                        'Noble Lineage'
                     ]);
                     this.player1.selectDeck(deck);
                     this.player2.selectDeck(deck);

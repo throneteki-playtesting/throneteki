@@ -1,4 +1,4 @@
-const AgendaCard = require('../../agendacard');
+import AgendaCard from '../../agendacard';
 
 class UnitingTheRealm extends AgendaCard {
     // This card file is only required to track the card version. Remove this file on release!
@@ -7,4 +7,4 @@ class UnitingTheRealm extends AgendaCard {
 UnitingTheRealm.code = '25620';
 UnitingTheRealm.version = '1.1';
 
-module.exports = UnitingTheRealm;
+export default UnitingTheRealm;

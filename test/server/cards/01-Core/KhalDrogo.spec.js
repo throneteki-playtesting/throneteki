@@ -2,8 +2,10 @@ describe('Khal Drogo (Core)', function () {
     integration(function () {
         beforeEach(function () {
             const deck = this.buildDeck('targaryen', [
-                'A Noble Cause', 'A Noble Cause',
-                'Khal Drogo (Core)', 'Braided Warrior'
+                'A Noble Cause',
+                'A Noble Cause',
+                'Khal Drogo (Core)',
+                'Braided Warrior'
             ]);
             this.player1.selectDeck(deck);
             this.player2.selectDeck(deck);

@@ -5,7 +5,8 @@ describe('The White Book', function () {
                 const deck = this.buildDeck('lannister', [
                     'The White Book',
                     'A Noble Cause',
-                    'Hedge Knight', 'Ser Arys Oakheart (TC)'
+                    'Hedge Knight',
+                    'Ser Arys Oakheart (TC)'
                 ]);
                 this.player1.selectDeck(deck);
                 this.player2.selectDeck(deck);
@@ -72,7 +73,9 @@ describe('The White Book', function () {
                 const deck = this.buildDeck('lannister', [
                     'The White Book',
                     'A Noble Cause',
-                    'Hedge Knight', 'Ser Arys Oakheart (TC)', 'Jeyne Westerling'
+                    'Hedge Knight',
+                    'Ser Arys Oakheart (TC)',
+                    'Jeyne Westerling'
                 ]);
                 this.player1.selectDeck(deck);
                 this.player2.selectDeck(deck);

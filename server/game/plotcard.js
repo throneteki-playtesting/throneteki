@@ -41,7 +41,9 @@ class PlotCard extends BaseCard {
     }
 
     getPrintedInitiative() {
-        return this.getPrintedNumberFor(this.printedValues.initiative[this.printedValues.initiative.length - 1]);
+        return this.getPrintedNumberFor(
+            this.printedValues.initiative[this.printedValues.initiative.length - 1]
+        );
     }
 
     getIncome() {
@@ -53,7 +55,9 @@ class PlotCard extends BaseCard {
     }
 
     getPrintedIncome() {
-        return this.getPrintedNumberFor(this.printedValues.income[this.printedValues.income.length - 1]);
+        return this.getPrintedNumberFor(
+            this.printedValues.income[this.printedValues.income.length - 1]
+        );
     }
 
     getReserve() {
@@ -62,11 +66,15 @@ class PlotCard extends BaseCard {
     }
 
     getPrintedReserve() {
-        return this.getPrintedNumberFor(this.printedValues.reserve[this.printedValues.reserve.length - 1]);
+        return this.getPrintedNumberFor(
+            this.printedValues.reserve[this.printedValues.reserve.length - 1]
+        );
     }
 
     getPrintedClaim() {
-        return this.getPrintedNumberFor(this.printedValues.claim[this.printedValues.claim.length - 1]);
+        return this.getPrintedNumberFor(
+            this.printedValues.claim[this.printedValues.claim.length - 1]
+        );
     }
 
     getClaim() {

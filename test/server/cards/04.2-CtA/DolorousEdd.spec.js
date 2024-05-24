@@ -4,7 +4,8 @@ describe('Dolorous Edd', function () {
             const deck1 = this.buildDeck('thenightswatch', ['Sneak Attack', 'Dolorous Edd']);
             const deck2 = this.buildDeck('lannister', [
                 'Sneak Attack',
-                'Grand Maester Pycelle (Core)', 'Ser Jaime Lannister (LoCR)'
+                'Grand Maester Pycelle (Core)',
+                'Ser Jaime Lannister (LoCR)'
             ]);
             this.player1.selectDeck(deck1);
             this.player2.selectDeck(deck2);
@@ -23,7 +24,7 @@ describe('Dolorous Edd', function () {
             this.player2.clickPrompt('Intrigue');
         });
 
-        it('should allow Dolorous Edd to jump in to the challenge', function() {
+        it('should allow Dolorous Edd to jump in to the challenge', function () {
             this.player2.clickCard('Grand Maester Pycelle (Core)', 'play area');
             this.player2.clickPrompt('Done');
 
@@ -37,8 +38,8 @@ describe('Dolorous Edd', function () {
             expect(this.player1Object.faction.kneeled).toBe(true);
         });
 
-        describe('when the player wins the challenge Edd enters', function() {
-            beforeEach(function() {
+        describe('when the player wins the challenge Edd enters', function () {
+            beforeEach(function () {
                 this.player2.clickCard('Grand Maester Pycelle (Core)', 'play area');
                 this.player2.clickPrompt('Done');
 

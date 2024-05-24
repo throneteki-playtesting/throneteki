@@ -1,5 +1,5 @@
-const ChallengeTracker = require('../../EventTrackers/ChallengeTracker.js');
-const DrawCard = require('../../drawcard.js');
+import ChallengeTracker from '../../EventTrackers/ChallengeTracker.js';
+import DrawCard from '../../drawcard.js';
 
 class MartialLaw extends DrawCard {
     setupCardAbilities(ability) {
@@ -7,7 +7,8 @@ class MartialLaw extends DrawCard {
 
         this.attachmentRestriction({ type: 'location', limited: false });
         this.whileAttached({
-            condition: () => !this.tracker.some({ winner: this.parent.controller, challengeType: 'power' }),
+            condition: () =>
+                !this.tracker.some({ winner: this.parent.controller, challengeType: 'power' }),
             effect: ability.effects.cannotBeStood()
         });
     }
@@ -16,4 +17,4 @@ class MartialLaw extends DrawCard {
 MartialLaw.code = '25510';
 MartialLaw.version = '2.2';
 
-module.exports = MartialLaw;
+export default MartialLaw;

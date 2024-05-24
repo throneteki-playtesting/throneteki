@@ -8,7 +8,11 @@ describe('Pay The Iron Price', function () {
             ]);
             const deck2 = this.buildDeck('greyjoy', [
                 'A Noble Cause',
-                'Iron Islands Fishmonger', 'Little Bird (Core)', 'Fishing Net', 'Milk of the Poppy', 'Ward (TS)'
+                'Iron Islands Fishmonger',
+                'Little Bird (Core)',
+                'Fishing Net',
+                'Milk of the Poppy',
+                'Ward (TS)'
             ]);
 
             this.player1.selectDeck(deck1);

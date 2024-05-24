@@ -34,9 +34,9 @@ const CostBuilders = {
     }),
     discardFromPlay: new CostBuilder(new DiscardFromPlayCost(), {
         select: 'Select card to discard',
-        selectMultiple: number => `Select ${number} cards to discard`
+        selectMultiple: (number) => `Select ${number} cards to discard`
     }),
-    discardPower: function(amount = 1) {
+    discardPower: function (amount = 1) {
         return new CostBuilder(new DiscardPowerCost(amount), {
             select: `Select card to discard ${amount} power`,
             selectMultiple: (number) => `Select ${number} cards to discard ${amount} power`

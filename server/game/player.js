@@ -374,11 +374,14 @@ class Player extends Spectator {
             return false;
         }
 
-        if(this.nextChallengeOpponent && this.nextChallengeOpponent !== opponent) {
+        if (this.nextChallengeOpponent && this.nextChallengeOpponent !== opponent) {
             return false;
         }
 
-        if(this.nextChallengeType && this.canInitiateChallengeInternal(this.nextChallengeType, opponent)) {
+        if (
+            this.nextChallengeType &&
+            this.canInitiateChallengeInternal(this.nextChallengeType, opponent)
+        ) {
             return challengeType === this.nextChallengeType;
         }
 
@@ -386,11 +389,13 @@ class Player extends Spectator {
     }
 
     canInitiateChallengeInternal(challengeType, opponent) {
-        if(!this.challenges.canInitiate(challengeType, opponent)) {
+        if (!this.challenges.canInitiate(challengeType, opponent)) {
             return false;
         }
 
-        return this.anyCardsInPlay(card => card.canParticipate({ attacking: true, challengeType }));
+        return this.anyCardsInPlay((card) =>
+            card.canParticipate({ attacking: true, challengeType })
+        );
     }
 
     canGainGold() {

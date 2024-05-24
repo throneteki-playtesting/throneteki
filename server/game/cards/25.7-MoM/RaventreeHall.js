@@ -1,16 +1,16 @@
-const GameActions = require('../../GameActions/index.js');
-const DrawCard = require('../../drawcard.js');
+import GameActions from '../../GameActions/index.js';
+import DrawCard from '../../drawcard.js';
 
 class RaventreeHall extends DrawCard {
     setupCardAbilities(ability) {
         this.reaction({
             when: {
-                onCardPowerGained: event => this.isCharacter(event.card),
-                onCardPowerMoved: event => this.isCharacter(event.target)
+                onCardPowerGained: (event) => this.isCharacter(event.card),
+                onCardPowerMoved: (event) => this.isCharacter(event.target)
             },
             limit: ability.limit.perPhase(1),
             message: '{player} uses {source} to gain 1 gold',
-            gameAction: GameActions.gainGold(context => ({ player: context.player, amount: 1 }))
+            gameAction: GameActions.gainGold((context) => ({ player: context.player, amount: 1 }))
         });
     }
 
@@ -22,4 +22,4 @@ class RaventreeHall extends DrawCard {
 RaventreeHall.code = '25567';
 RaventreeHall.version = '1.0';
 
-module.exports = RaventreeHall;
+export default RaventreeHall;

@@ -23,7 +23,9 @@ class AbilityContext {
         let valueAsArray = Array.isArray(value) ? value : [value];
         this.costValues[name] = this.costValues[name].concat(valueAsArray);
         this.costs[name] = value;
-        this.costStatesWhenInitiated[name] = Array.isArray(value) ? value.map(v => v.createSnapshot()) : value.createSnapshot();
+        this.costStatesWhenInitiated[name] = Array.isArray(value)
+            ? value.map((v) => v.createSnapshot())
+            : value.createSnapshot();
     }
 
     getCostValuesFor(name) {

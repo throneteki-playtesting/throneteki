@@ -1,15 +1,16 @@
-const DrawCard = require('../../drawcard.js');
-const ChallengeTypes = require('../../ChallengeTypes');
+import DrawCard from '../../drawcard.js';
+import ChallengeTypes from '../../ChallengeTypes';
 
 class BowenMarsh extends DrawCard {
     setupCardAbilities(ability) {
         this.reaction({
             when: {
-                onCardOutOfShadows: event => event.card.controller === this.controller
+                onCardOutOfShadows: (event) => event.card.controller === this.controller
             },
             limit: ability.limit.perPhase(3),
             target: {
-                cardCondition: card => card.location === 'play area' && card.getType() === 'character'
+                cardCondition: (card) =>
+                    card.location === 'play area' && card.getType() === 'character'
             },
             handler: (context) => {
                 this.selectedCharacter = context.target;
@@ -26,15 +27,19 @@ class BowenMarsh extends DrawCard {
     }
 
     selectChallengeType(player, challengeType) {
-        this.untilEndOfPhase(ability => ({
+        this.untilEndOfPhase((ability) => ({
             condition: () => this.game.isDuringChallenge({ challengeType }),
             match: this.selectedCharacter,
             effect: ability.effects.cannotBeDeclaredAsAttacker()
-
         }));
 
-        this.game.addMessage('{0} uses {1} to make {2} unable to be declared as an attacker in {3} challenges this phase',
-            player, this, this.selectedCharacter, challengeType);
+        this.game.addMessage(
+            '{0} uses {1} to make {2} unable to be declared as an attacker in {3} challenges this phase',
+            player,
+            this,
+            this.selectedCharacter,
+            challengeType
+        );
 
         this.selectedCharacter = null;
 
@@ -45,4 +50,4 @@ class BowenMarsh extends DrawCard {
 BowenMarsh.code = '25549';
 BowenMarsh.version = '1.1';
 
-module.exports = BowenMarsh;
+export default BowenMarsh;
