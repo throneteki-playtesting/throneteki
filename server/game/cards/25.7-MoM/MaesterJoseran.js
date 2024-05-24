@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import GameActions from '../../GameActions';
-import { flatten } from '../../../Array';
+import DrawCard from '../../drawcard.js';
+import GameActions from '../../GameActions/index.js';
+import { flatten } from '../../../Array.js';
 
 class MaesterJoseran extends DrawCard {
     setupCardAbilities() {

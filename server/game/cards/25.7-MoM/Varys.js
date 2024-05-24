@@ -1,5 +1,5 @@
 import DrawCard from '../../drawcard.js';
-import { Tokens } from '../../Constants';
+import { Tokens } from '../../Constants/index.js';
 import GameActions from '../../GameActions/index.js';
 
 class Varys extends DrawCard {

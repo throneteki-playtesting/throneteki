@@ -1,6 +1,7 @@
 import GameActions from '../../GameActions/index.js';
 import PlotCard from '../../plotcard.js';
-import { ChallengeTracker } from '../../EventTrackers';
+import { ChallengeTracker } from '../../EventTrackers/ChallengeTracker.js';
+
 class RobertsRebellion extends PlotCard {
     setupCardAbilities() {
         this.tracker = ChallengeTracker.forRound(this.game);

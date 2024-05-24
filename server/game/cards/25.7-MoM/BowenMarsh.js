@@ -1,5 +1,5 @@
 import DrawCard from '../../drawcard.js';
-import ChallengeTypes from '../../ChallengeTypes';
+import ChallengeTypes from '../../ChallengeTypes.js';
 
 class BowenMarsh extends DrawCard {
     setupCardAbilities(ability) {

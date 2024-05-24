@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import GameActions from '../../GameActions';
+import DrawCard from '../../drawcard.js';
+import GameActions from '../../GameActions/index.js';
 
 class BlackhavenRider extends DrawCard {
     setupCardAbilities() {

@@ -1,6 +1,6 @@
 import GameActions from '../../GameActions/index.js';
 import DrawCard from '../../drawcard.js';
-import GenericTracker from '../../EventTrackers/GenericTracker';
+import GenericTracker from '../../EventTrackers/GenericTracker.js';
 
 class PinkGraces extends DrawCard {
     setupCardAbilities() {

@@ -1,5 +1,5 @@
-import GameActions from '../../GameActions';
-import PlotCard from '../../plotcard';
+import GameActions from '../../GameActions/index.js';
+import PlotCard from '../../plotcard.js';
 
 class BurningTheBooks extends PlotCard {
     setupCardAbilities(ability) {

@@ -1,6 +1,6 @@
-import AgendaCard from '../../agendacard';
-import GameActions from '../../GameActions';
-import { Tokens } from '../../Constants';
+import AgendaCard from '../../agendacard.js';
+import GameActions from '../../GameActions/index.js';
+import { Tokens } from '../../Constants/index.js';
 
 class TheGiftOfMercy extends AgendaCard {
     setupCardAbilities() {

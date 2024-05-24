@@ -1,4 +1,4 @@
-import PlotCard from '../../plotcard';
+import PlotCard from '../../plotcard.js';
 
 class TheLastGreenseer extends PlotCard {
     setupCardAbilities() {

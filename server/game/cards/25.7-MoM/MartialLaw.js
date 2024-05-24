@@ -1,4 +1,4 @@
-import ChallengeTracker from '../../EventTrackers/ChallengeTracker.js';
+import { ChallengeTracker } from '../../EventTrackers/ChallengeTracker.js';
 import DrawCard from '../../drawcard.js';
 
 class MartialLaw extends DrawCard {

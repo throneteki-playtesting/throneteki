@@ -3,7 +3,7 @@ describe("The Mad King's Command", function () {
         beforeEach(function () {
             const deck = this.buildDeck('targaryen', [
                 "The Mad King's Command",
-                'Aegon Targaryen',
+                'Aegon Targaryen (TSC)',
                 'Septa Lemore',
                 'Beggar King'
             ]);
@@ -12,7 +12,7 @@ describe("The Mad King's Command", function () {
             this.startGame();
             this.keepStartingHands();
 
-            this.aegon = this.player1.findCardByName('Aegon Targaryen');
+            this.aegon = this.player1.findCardByName('Aegon Targaryen (TSC)');
             this.lemore = this.player1.findCardByName('Septa Lemore');
             this.attachment = this.player1.findCardByName('Beggar King');
 

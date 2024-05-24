@@ -1,4 +1,4 @@
-import AgendaCard from '../../agendacard';
+import AgendaCard from '../../agendacard.js';
 
 class UnitingTheRealm extends AgendaCard {
     // This card file is only required to track the card version. Remove this file on release!

@@ -1,4 +1,4 @@
-import GameActions from '../GameActions';
+import GameActions from '../GameActions/index.js';
 
 class DiscardFromPlayCost {
     constructor() {

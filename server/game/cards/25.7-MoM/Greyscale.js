@@ -1,6 +1,6 @@
 import GameActions from '../../GameActions/index.js';
 import DrawCard from '../../drawcard.js';
-import Message from '../../Message';
+import Message from '../../Message.js';
 
 class Greyscale extends DrawCard {
     setupCardAbilities(ability) {

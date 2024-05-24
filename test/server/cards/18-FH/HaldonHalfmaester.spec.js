@@ -1,4 +1,4 @@
-const { Tokens } = require('../../../../server/game/Constants');
+import { Tokens } from '../../../../server/game/Constants/index.js';
 
 describe('Haldon Halfmaester', function () {
     integration(function () {

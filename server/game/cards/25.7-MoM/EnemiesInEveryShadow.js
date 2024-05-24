@@ -1,5 +1,5 @@
 import GameActions from '../../GameActions/index.js';
-import PlotCard from '../../plotcard';
+import PlotCard from '../../plotcard.js';
 
 class EnemiesInEveryShadow extends PlotCard {
     setupCardAbilities(ability) {
