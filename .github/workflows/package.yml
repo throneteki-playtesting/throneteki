@@ -2,7 +2,7 @@ name: Package
 on:
     workflow_run:
         workflows: ['Build and test']
-        branches: master
+        branches: playtesting
         types: completed
 jobs:
     package:
