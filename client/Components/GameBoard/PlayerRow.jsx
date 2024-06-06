@@ -60,10 +60,19 @@ class PlayerRow extends React.Component {
         if (this.props.agenda.code === '06018') {
             cards = this.props.bannerCards;
             title = 'Banners';
-        } else if (this.props.agenda.code === '09045') {
+        }
+        // The Conclave
+        else if(this.props.agenda.code === '09045') {
             cards = this.props.conclavePile;
             source = 'conclave';
             title = 'Conclave';
+            disablePopup = !this.props.isMe;
+        }
+        // Cards placed under a non-Alliance, non-Conclave agenda
+        else if(this.props.conclavePile.length > 0){
+            cards = this.props.conclavePile;
+            source = 'conclave';
+            title = 'Agenda';
             disablePopup = !this.props.isMe;
         }
 
