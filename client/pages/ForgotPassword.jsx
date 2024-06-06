@@ -66,7 +66,7 @@ class ForgotPassword extends React.Component {
                                 <div className='col-sm-offset-2 col-sm-3'>
                                     <ReCAPTCHA
                                         ref='recaptcha'
-                                        sitekey='6LfELhMUAAAAAKbD2kLd6OtbsBbrZJFs7grwOREZ'
+                                        sitekey='6Ld1cT0jAAAAABL_PgcgK7BPBRCoVDOw_WeT2uGo'
                                         theme='dark'
                                         onChange={this.onCaptchaChange.bind(this)}
                                     />
