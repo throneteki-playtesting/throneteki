@@ -7,11 +7,11 @@ export function deckStatusLabel(status) {
         return 'Banned';
     }
 
-    if (!status.faqJoustRules || !status.noUnreleasedCards) {
+    if (!status.faqJoustRules) {
         return 'Casual';
     }
 
-    return 'Legal';
+    return 'Playtest Legal';
 }
 
 export function cardSetLabel(cardSet) {

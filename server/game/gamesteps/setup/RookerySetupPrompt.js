@@ -101,11 +101,13 @@ class RookerySetupPrompt extends AllPlayerPrompt {
 
         if (!status.basicRules) {
             return 'Invalid';
-        } else if (!status.faqJoustRules || !status.noUnreleasedCards) {
+        } else if (!status.faqJoustRules) {
             return 'Casual Play';
+        } else if (!status.noUnreleasedCards) {
+            return 'Valid (Playtesting)'
         }
 
-        return 'Valid';
+        return 'Valid (Not Playtesting)';
     }
 }
 

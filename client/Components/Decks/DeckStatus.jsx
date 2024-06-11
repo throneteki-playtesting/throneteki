@@ -9,7 +9,7 @@ import StatusPopOver from './StatusPopOver';
 class DeckStatus extends React.Component {
     render() {
         let { status } = this.props;
-        const restrictionsFollowed = status.faqJoustRules && status.noUnreleasedCards;
+        const restrictionsFollowed = status.faqJoustRules;
         let className = classNames('deck-status', this.props.className, {
             invalid: !status.basicRules || !status.noBannedCards,
             'casual-play': status.basicRules && status.noBannedCards && !restrictionsFollowed,

@@ -49,7 +49,7 @@ class DeckValidator {
         if(deck.format !== 'draft') {
             for(const card of deck.getUniqueCards()) {
                 if(!this.releasedPackCodes.has(card.packCode)) {
-                    unreleasedCards.push(card.label + ' is not yet released');
+                    unreleasedCards.push(card.label + ' is being playtested');
                 }
             }
         }
