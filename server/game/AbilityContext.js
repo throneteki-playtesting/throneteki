@@ -9,6 +9,7 @@ class AbilityContext {
         this.source = properties.source;
         this.player = properties.player;
         this.costs = {};
+        this.costStatesWhenInitiated = {};
         this.costValues = {};
         this.costStatesWhenInitiated = {};
         this.targets = new ResolvedTargets();
