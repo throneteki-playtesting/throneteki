@@ -622,10 +622,6 @@ class BaseCard {
             return action.allowPlayer(player) && !action.isClickToActivate() && action.allowMenu();
         });
 
-        if (menuActionPairs.length === 0) {
-            return;
-        }
-
         return [{ command: 'click', text: 'Select Card' }].concat(
             menuActionPairs.map(([action, index]) => action.getMenuItem(index, player))
         );

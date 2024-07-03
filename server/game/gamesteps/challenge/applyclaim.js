@@ -47,38 +47,13 @@ class ApplyClaim extends BaseStep {
                 );
                 break;
             case 'intrigue':
-                if (winner.choosesIntrigueClaim) {
-                    this.game.promptForSelect(winner, {
-                        activePromptTitle: `Select ${TextHelper.count(this.claim.value, 'card')} for claim`,
-                        cardCondition: (card) =>
-                            card.location === 'hand' && card.controller === claimRecipient,
-                        numCards: this.claim.value,
-                        revealTargets: true,
-                        onSelect: (player, cards) => {
-                            this.game.addMessage(
-                                "{0} claim is applied. {1} looks at {2}'s hand and chooses to discard {3}",
-                                this.claim.challengeType,
-                                winner,
-                                claimRecipient,
-                                TextHelper.count(this.claim.value, 'card')
-                            );
-
-                            let discarding = Array.isArray(cards) ? cards : [cards];
-                            for (let card of discarding) {
-                                player.discardCard(card);
-                            }
-                            return true;
-                        }
-                    });
-                } else {
-                    this.game.addMessage(
-                        '{0} claim is applied.  {1} must discard {2} at random',
-                        this.claim.challengeType,
-                        claimRecipient,
-                        TextHelper.count(this.claim.value, 'card')
-                    );
-                    claimRecipient.discardAtRandom(this.claim.value);
-                }
+                this.game.addMessage(
+                    '{0} claim is applied.  {1} must discard {2} at random',
+                    this.claim.challengeType,
+                    claimRecipient,
+                    TextHelper.count(this.claim.value, 'card')
+                );
+                claimRecipient.discardAtRandom(this.claim.value);
                 break;
             case 'power': {
                 let appliedPower = Math.min(claimRecipient.faction.power, this.claim.value);
