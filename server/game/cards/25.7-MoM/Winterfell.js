@@ -1,4 +1,3 @@
-import GameActions from '../../GameActions/index.js';
 import DrawCard from '../../drawcard.js';
 
 class Winterfell extends DrawCard {
@@ -20,12 +19,12 @@ class Winterfell extends DrawCard {
             },
             message:
                 '{player} kneels {costs.kneel} to take control of {target} until the end of the phase',
-            gameAction: GameActions.genericHandler((context) => {
+            handler: (context) => {
                 this.untilEndOfPhase((ability) => ({
                     match: context.target,
                     effect: ability.effects.takeControl(this.controller)
                 }));
-            })
+            }
         });
     }
 }
