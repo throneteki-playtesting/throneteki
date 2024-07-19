@@ -33,27 +33,6 @@ class DiscardCard extends GameAction {
         if (card.location === 'play area' && !LeavePlay.allow({ card })) {
             return false;
         }
-        if (card.location === 'duplicate') {
-            return Message.fragment('discards a duplicate from {parent}', { parent: card.parent });
-        }
-        if (card.location === 'underneath') {
-            return Message.fragment('discards {card} from underneath {parent}', {
-                card,
-                parent: card.parent
-            });
-        }
-
-        return Message.fragment("discards {card} from {controller}'s {location}", {
-            card,
-            controller: card.controller,
-            location: card.location
-        });
-    }
-
-    canChangeGameState({ card, isRandom = false, context }) {
-        if (card.location === 'play area' && !LeavePlay.allow({ card })) {
-            return false;
-        }
         // TODO: Change all random discards to use GameActions.discardAtRandom rather than this
         if (isRandom && !card.allowGameAction('discardAtRandom', { card, context })) {
             return false;
