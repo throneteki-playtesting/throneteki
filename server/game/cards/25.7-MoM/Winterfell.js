@@ -8,25 +8,22 @@ class Winterfell extends DrawCard {
         });
         this.reaction({
             when: {
-                onCardDiscarded: (event) =>
-                    event.isPillage &&
-                    event.source.controller === this.controller &&
-                    event.card.getType() === 'character'
+                afterChallenge: (event) =>
+                    event.challenge.winner === this.controller && event.challenge.isUnopposed()
             },
-            cost: [ability.costs.kneelSelf(), ability.costs.sacrificeSelf()],
-            message: {
-                format: '{player} kneels and sacrifices {costs.kneel} to put {card} into play under their control',
-                args: { card: (context) => context.event.card }
+            cost: ability.costs.kneelSelf(),
+            target: {
+                cardCondition: {
+                    type: 'character',
+                    condition: (card, context) => card.controller === context.event.challenge.loser
+                }
             },
-            gameAction: GameActions.putIntoPlay((context) => ({
-                player: context.player,
-                card: context.event.card
-            })).thenExecute((event) => {
-                this.atEndOfPhase((ability) => ({
-                    match: event.card,
-                    condition: () => ['play area', 'duplicate'].includes(event.card.location),
-                    targetLocation: 'any',
-                    effect: ability.effects.discardIfStillInPlay(false)
+            message:
+                '{player} kneels {costs.kneel} to take control of {target} until the end of the phase',
+            gameAction: GameActions.genericHandler((context) => {
+                this.untilEndOfPhase((ability) => ({
+                    match: context.target,
+                    effect: ability.effects.takeControl(this.controller)
                 }));
             })
         });
@@ -34,6 +31,6 @@ class Winterfell extends DrawCard {
 }
 
 Winterfell.code = '25520';
-Winterfell.version = '1.2';
+Winterfell.version = '1.3';
 
 export default Winterfell;
