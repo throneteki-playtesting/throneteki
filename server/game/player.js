@@ -373,32 +373,11 @@ class Player extends Spectator {
     }
 
     canInitiateChallenge(challengeType, opponent) {
-        if (this.isSupporter(opponent)) {
-            return false;
-        }
-
-        if (this.nextChallengeOpponent && this.nextChallengeOpponent !== opponent) {
-            return false;
-        }
-
-        if (
-            this.nextChallengeType &&
-            this.canInitiateChallengeInternal(this.nextChallengeType, opponent)
-        ) {
-            return challengeType === this.nextChallengeType;
-        }
-
-        return this.canInitiateChallengeInternal(challengeType, opponent);
+        return this.challenges.canInitiate(challengeType, opponent);
     }
 
-    canInitiateChallengeInternal(challengeType, opponent) {
-        if (!this.challenges.canInitiate(challengeType, opponent)) {
-            return false;
-        }
-
-        return this.anyCardsInPlay((card) =>
-            card.canParticipate({ attacking: true, challengeType })
-        );
+    mustInitiateChallenge(challengeType, opponent) {
+        return this.challenges.mustInitiate(challengeType, opponent);
     }
 
     canGainGold() {
@@ -431,6 +410,14 @@ class Player extends Spectator {
 
     removeAllowedChallenge(allowedChallenge) {
         this.challenges.removeAllowedChallenge(allowedChallenge);
+    }
+
+    addForcedChallenge(forcedChallenge) {
+        this.challenges.addForcedChallenge(forcedChallenge);
+    }
+
+    removeForcedChallenge(forcedChallenge) {
+        this.challenges.removeForcedChallenge(forcedChallenge);
     }
 
     setMaxChallenge(number) {
