@@ -11,7 +11,6 @@ class AbilityContext {
         this.costs = {};
         this.costStatesWhenInitiated = {};
         this.costValues = {};
-        this.costStatesWhenInitiated = {};
         this.targets = new ResolvedTargets();
         this.resolutionStage = 'effect';
     }
