@@ -20,7 +20,7 @@ class SatisfyClaim extends BaseStep {
         };
 
         for (let claimRecipient of this.claim.recipients) {
-            this.processClaimAgainstPlayer(this.claim.winner, claimRecipient);
+            this.processClaimAgainstPlayer(claimRecipient);
         }
 
         this.game.queueSimpleStep(() => {
@@ -33,7 +33,7 @@ class SatisfyClaim extends BaseStep {
         return true;
     }
 
-    processClaimAgainstPlayer(winner, claimRecipient) {
+    processClaimAgainstPlayer(claimRecipient) {
         switch (this.claim.challengeType) {
             case 'military':
                 this.game.addMessage(
