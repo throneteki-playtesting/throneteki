@@ -19,7 +19,7 @@ describe('Spare Boot', function () {
             this.otherCharacter = this.player1.findCardByName('Bran Stark', 'hand');
             this.nonUsableAttachment = this.player1.findCardByName('Seal of the Hand', 'hand');
             this.usableAttachment = this.player1.findCardByName("Syrio's Training", 'hand');
-            this.spareBootAttachment = this.player1.findCardByName('Little Bird (Core)', 'hand');
+            this.spareBootAttachment = this.player1.findCardByName('Little Bird', 'hand');
 
             this.player1.clickCard(this.spareBoot);
             this.player1.clickCard(this.otherCharacter);

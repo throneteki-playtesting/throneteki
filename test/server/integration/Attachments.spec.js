@@ -178,10 +178,7 @@ describe('attachments', function () {
                 this.keepStartingHands();
 
                 this.character = this.player1.findCardByName('Winterfell Steward', 'hand');
-                this.nonTerminalAttachment = this.player1.findCardByName(
-                    'Little Bird (Core)',
-                    'hand'
-                );
+                this.nonTerminalAttachment = this.player1.findCardByName('Little Bird', 'hand');
                 this.terminalAttachment = this.player2.findCardByName('Milk of the Poppy', 'hand');
 
                 this.player1.clickCard(this.character);
