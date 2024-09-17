@@ -51,6 +51,7 @@ class DominancePhase extends Phase {
                         this.determineWinner(result);
                     }
                 });
+
                 this.game.queueStep(prompt);
             } else {
                 // Otherwise, nobody wins dominance

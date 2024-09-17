@@ -18,7 +18,7 @@ describe('Trading With Qohor', function () {
                     this.keepStartingHands();
 
                     this.character = this.player1.findCardByName('Hedge Knight');
-                    this.origAttachment = this.player1.findCardByName('Little Bird (Core)');
+                    this.origAttachment = this.player1.findCardByName('Little Bird');
                     this.deckAttachment = this.player1.findCardByName('Noble Lineage');
 
                     this.player1.clickCard(this.character);

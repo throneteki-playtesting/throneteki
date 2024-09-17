@@ -2,25 +2,6 @@ import io from 'socket.io-client';
 
 import * as actions from '../actions';
 
-export function receiveGames(games) {
-    return {
-        type: 'RECEIVE_GAMES',
-        games: games
-    };
-}
-
-export function startNewGame() {
-    return {
-        type: 'START_NEWGAME'
-    };
-}
-
-export function cancelNewGame() {
-    return {
-        type: 'CANCEL_NEWGAME'
-    };
-}
-
 export function receiveGameState(game, username) {
     return (dispatch, getState) => {
         let state = getState();
@@ -43,16 +24,6 @@ export function receiveGameState(game, username) {
             }
         }
 
-        if (user) {
-            let previousRookery = getRookeryPrompt(previousGameState, user.username);
-            let currentRookery = getRookeryPrompt(game, user.username);
-            if (!previousRookery && currentRookery) {
-                dispatch(actions.openRookeryPrompt(currentRookery));
-            } else if (previousRookery && !currentRookery) {
-                dispatch(actions.closeRookeryPrompt());
-            }
-        }
-
         dispatch({
             type: 'LOBBY_MESSAGE_RECEIVED',
             message: 'gamestate',
@@ -67,36 +38,9 @@ function hasTimer(game, username) {
     return buttons.some((button) => button.timer);
 }
 
-function getRookeryPrompt(game, username) {
-    let player = (game && game.players[username]) || {};
-    let controls = (player && player.controls) || [];
-    return controls.find((control) => control.type === 'rookery');
-}
-
 export function clearGameState() {
     return {
         type: 'CLEAR_GAMESTATE'
-    };
-}
-
-export function joinPasswordGame(game, type) {
-    return {
-        type: 'JOIN_PASSWORD_GAME',
-        game: game,
-        joinType: type
-    };
-}
-
-export function receivePasswordError(message) {
-    return {
-        type: 'RECEIVE_PASSWORD_ERROR',
-        message: message
-    };
-}
-
-export function cancelPasswordJoin() {
-    return {
-        type: 'CANCEL_PASSWORD_JOIN'
     };
 }
 
@@ -213,25 +157,6 @@ export function gameSocketClose() {
     };
 }
 
-export function closeGameSocket() {
-    return (dispatch, getState) => {
-        let state = getState();
-
-        if (state.games.socket) {
-            state.games.socket.gameClosing = true;
-            state.games.socket.close();
-        }
-
-        return dispatch(gameSocketClosed());
-    };
-}
-
-export function gameStarting() {
-    return {
-        type: 'GAME_STARTING'
-    };
-}
-
 export function startGame(id) {
     return (dispatch, getState) => {
         let state = getState();
@@ -239,8 +164,6 @@ export function startGame(id) {
         if (state.lobby.socket) {
             state.lobby.socket.emit('startgame', id);
         }
-
-        return dispatch(gameStarting());
     };
 }
 

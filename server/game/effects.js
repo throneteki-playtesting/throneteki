@@ -11,6 +11,7 @@ import ChallengeRestriction from './ChallengeRestriction.js';
 import ImmunityRestriction from './immunityrestriction.js';
 import GoldSource from './GoldSource.js';
 import { Tokens } from './Constants/index.js';
+import ForcedChallenge from './ForcedChallenge.js';
 
 function cannotEffect(type) {
     return function (predicate) {
@@ -93,16 +94,65 @@ function dynamicCardModifier(propName) {
             apply: function (card, context) {
                 context[propName] = context[propName] || {};
                 context[propName][card.uuid] = calculate(card, context) || 0;
-                card[propName] += context[propName][card.uuid];
+                card[propName].modifier += context[propName][card.uuid];
             },
             reapply: function (card, context) {
-                let currentInitiative = context[propName][card.uuid];
-                let newInitiative = calculate(card, context) || 0;
-                context[propName][card.uuid] = newInitiative;
-                card[propName] += newInitiative - currentInitiative;
+                const currentValue = context[propName][card.uuid];
+                const newValue = calculate(card, context) || 0;
+                context[propName][card.uuid] = newValue;
+                card[propName].modifier += newValue - currentValue;
             },
             unapply: function (card, context) {
-                card[propName] -= context[propName][card.uuid];
+                card[propName].modifier -= context[propName][card.uuid];
+                delete context[propName][card.uuid];
+            },
+            isStateDependent
+        };
+    };
+}
+
+function setCardModifier(propName) {
+    return function (calculateOrValue) {
+        const isStateDependent = typeof calculateOrValue === 'function';
+        const calculate = isStateDependent ? calculateOrValue : () => calculateOrValue;
+
+        return {
+            apply: function (card, context) {
+                context[propName] = context[propName] || {};
+                context[propName][card.uuid] = calculate(card, context) || 0;
+                card[propName].setValue = context[propName][card.uuid];
+            },
+            reapply: function (card, context) {
+                const newValue = calculate(card, context) || 0;
+                context[propName][card.uuid] = newValue;
+                card[propName].setValue = newValue;
+            },
+            unapply: function (card, context) {
+                card[propName].setValue = context[propName][card.uuid];
+                delete context[propName][card.uuid];
+            },
+            isStateDependent
+        };
+    };
+}
+
+function setBaseCardModifier(propName) {
+    return function (calculateOrValue) {
+        const isStateDependent = typeof calculateOrValue === 'function';
+        const calculate = isStateDependent ? calculateOrValue : () => calculateOrValue;
+
+        return {
+            apply: function (card, context) {
+                context[propName] = context[propName] || {};
+                context[propName][card.uuid] = card[propName].baseValue;
+                card[propName].baseValue = calculate(card, context) || 0;
+            },
+            reapply: function (card, context) {
+                const newValue = calculate(card, context) || 0;
+                card[propName].baseValue = newValue;
+            },
+            unapply: function (card, context) {
+                card[propName].baseValue = context[propName][card.uuid];
                 delete context[propName][card.uuid];
             },
             isStateDependent
@@ -283,20 +333,19 @@ const Effects = {
             isStateDependent: true
         };
     },
-    modifyGold: dynamicCardModifier('goldModifier'),
-    modifyInitiative: dynamicCardModifier('initiativeModifier'),
-    modifyReserve: dynamicCardModifier('reserveModifier'),
-    modifyClaim: dynamicCardModifier('claimModifier'),
-    setClaim: function (value) {
-        return {
-            apply: function (card) {
-                card.claimSet = value;
-            },
-            unapply: function (card) {
-                card.claimSet = undefined;
-            }
-        };
-    },
+    // TODO: Move these into common effects (eg. modifyPlotStat('income') instead of modifyGold)
+    modifyGold: dynamicCardModifier('income'),
+    setGold: setCardModifier('income'),
+    setBaseGold: setBaseCardModifier('income'),
+    modifyInitiative: dynamicCardModifier('initiative'),
+    setInitiative: setCardModifier('initiative'),
+    setBaseInitiative: setBaseCardModifier('initiative'),
+    modifyClaim: dynamicCardModifier('claim'),
+    setClaim: setCardModifier('claim'),
+    setBaseClaim: setBaseCardModifier('claim'),
+    modifyReserve: dynamicCardModifier('reserve'),
+    setReserve: setCardModifier('reserve'),
+    setBaseReserve: setBaseCardModifier('reserve'),
     preventPlotModifier: function (modifier) {
         return {
             apply: function (card) {
@@ -793,6 +842,30 @@ const Effects = {
             }
         };
     },
+    removeFromGameIfStillInPlay: function (allowSave = true) {
+        return {
+            apply: function (card, context) {
+                context.removeFromGameIfStillInPlay = context.removeFromGameIfStillInPlay || [];
+                context.removeFromGameIfStillInPlay.push(card);
+            },
+            unapply: function (card, context) {
+                if (
+                    ['play area', 'duplicate'].includes(card.location) &&
+                    context.removeFromGameIfStillInPlay.includes(card)
+                ) {
+                    context.removeFromGameIfStillInPlay =
+                        context.removeFromGameIfStillInPlay.filter((c) => c !== card);
+                    context.game.resolveGameAction(GameActions.removeFromGame({ card, allowSave }));
+                    context.game.addMessage(
+                        '{0} removes {1} from the game at the end of the phase because of {2}',
+                        card.owner,
+                        card,
+                        context.source
+                    );
+                }
+            }
+        };
+    },
     removeFromGame: function () {
         return {
             apply: function (card, context) {
@@ -1055,25 +1128,15 @@ const Effects = {
             }
         };
     },
-    forceNextChallengeAgainst(opponent) {
+    mustInitiateNextChallenge(challengeType, opponentFunc) {
+        let forced = new ForcedChallenge(challengeType, opponentFunc);
         return {
             targetType: 'player',
             apply: function (player) {
-                player.nextChallengeOpponent = opponent;
+                player.addForcedChallenge(forced);
             },
             unapply: function (player) {
-                player.nextChallengeOpponent = null;
-            }
-        };
-    },
-    forceNextChallengeType: function (challengeType) {
-        return {
-            targetType: 'player',
-            apply: function (player) {
-                player.nextChallengeType = challengeType;
-            },
-            unapply: function (player) {
-                player.nextChallengeType = null;
+                player.removeForcedChallenge(forced);
             }
         };
     },
@@ -1652,30 +1715,6 @@ const Effects = {
             }
         };
     },
-    lookAtBottomCard: function (playersFunc) {
-        return {
-            targetType: 'player',
-            apply: function (player, context) {
-                playersFunc = playersFunc || (() => [player]);
-                let revealFunc = (card, viewingPlayer) =>
-                    viewingPlayer === player &&
-                    playersFunc()
-                        .filter((target) => target.drawDeck.length > 0)
-                        .map((target) => target.drawDeck[target.drawDeck.length - 1])
-                        .includes(card);
-
-                context.lookAtBottomCard = context.lookAtBottomCard || {};
-                context.lookAtBottomCard[player.name] = revealFunc;
-                context.game.cardVisibility.addRule(revealFunc);
-            },
-            unapply: function (player, context) {
-                let revealFunc = context.lookAtBottomCard[player.name];
-
-                context.game.cardVisibility.removeRule(revealFunc);
-                delete context.lookAtBottomCard[player.name];
-            }
-        };
-    },
     revealTopCards: function (amount) {
         let topCardsFunc = (player) => player.drawDeck.slice(0, amount);
         return {
@@ -1813,17 +1852,6 @@ const Effects = {
             },
             unapply: function (player) {
                 player.flags.remove('cannotRevealPlot');
-            }
-        };
-    },
-    setPrintedValue: function (stat, value) {
-        return {
-            apply: function (card) {
-                card.printedValues[stat].push(value);
-            },
-            unapply: function (card) {
-                const index = card.printedValues[stat].lastIndexOf(value);
-                card.printedValues[stat].splice(index, 1);
             }
         };
     },

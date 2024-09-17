@@ -19,7 +19,7 @@ describe('Seasoned Woodsman', function () {
 
                 this.selectFirstPlayer(this.player1);
 
-                this.player1.clickCard('Little Bird (Core)', 'hand');
+                this.player1.clickCard('Little Bird', 'hand');
                 this.player1.clickCard(this.character);
             });
 
