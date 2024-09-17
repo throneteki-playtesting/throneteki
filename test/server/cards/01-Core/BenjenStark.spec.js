@@ -3,8 +3,8 @@ describe('Benjen Stark', function () {
         beforeEach(function () {
             const deck1 = this.buildDeck('thenightswatch', [
                 'A Feast for Crows',
-                'Benjen Stark',
-                'Benjen Stark',
+                'Benjen Stark (Core)',
+                'Benjen Stark (Core)',
                 // Add sufficient cards so that we can test where Benjen ends up
                 // within the draw deck after being killed
                 'Hedge Knight',
