@@ -61,6 +61,10 @@ const Costs = {
      */
     sacrificeSelf: () => CostBuilders.sacrifice.self(),
     /**
+     * Cost that will sacrifice the parent card the current card is attached to.
+     */
+    sacrificeParent: () => CostBuilders.sacrifice.parent(),
+    /**
      * Cost that requires sacrificing a card that matches the passed condition
      * predicate function.
      */
