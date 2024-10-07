@@ -325,6 +325,43 @@ const agendaRules = {
             }
         ]
     },
+    // Armed to the Teeth
+    26618: {
+        cannotInclude: (card) => card.type === 'attachment' && !hasTrait(card, 'Weapon')
+    },
+    // The Small Council
+    26619: {
+        mayInclude: (card) =>
+            card.type === 'character' && hasTrait(card, 'Small Council') && !card.loyal,
+        rules: [
+            {
+                message: 'Must contain 7 or more different Small Council characters',
+                condition: (deck) =>
+                    deck.countDrawCards(
+                        (card) => card.getType() === 'character' && hasTrait(card, 'Small Council')
+                    ) >= 7
+            }
+        ]
+    },
+    // Trading with Braavos
+    26620: {
+        requiredDraw: 75,
+        mayInclude: (card) => card.type === 'location' && hasTrait(card, 'Warship') && !card.loyal,
+        rules: [
+            {
+                message: 'Cannot include more than 1 copy of each Warship location',
+                condition: (deck) => {
+                    const allCards = deck.drawCards.concat(deck.plotCards);
+                    const locations = allCards.filter(
+                        (cardQuantity) =>
+                            cardQuantity.card.type === 'location' &&
+                            hasTrait(cardQuantity.card, 'Warship')
+                    );
+                    return locations.every((location) => location.count <= 1);
+                }
+            }
+        ]
+    },
     // Draft Agendas
     // The Power of Wealth
     '00001': {
