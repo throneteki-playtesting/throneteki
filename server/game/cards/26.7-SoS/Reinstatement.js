@@ -17,7 +17,7 @@ class Reinstatement extends DrawCard {
             },
             cost: ability.costs.kneelFactionCard(),
             message:
-                '{player} plays {source} and kneels their faction card to put a Small Council character into play from their discard pile',
+                '{player} plays {source} and kneels their faction card to put {target} into play from their discard pile',
             handler: (context) => {
                 this.game.resolveGameAction(
                     GameActions.putIntoPlay((context) => ({ card: context.target })),

@@ -8,7 +8,7 @@ class TheRedViper extends DrawCard {
             condition: () => this.isAttacking(),
             cost: ability.costs.discardFromShadows(),
             message:
-                '{player} uses {source} and discards {costs.discardFromShadows} from shadows to raise the claim value on their revealed plot ard by 1 until the end of the challenge',
+                '{player} uses {source} and discards {costs.discardFromShadows} from shadows to raise the claim value on their revealed plot card by 1 until the end of the challenge',
             handler: () => {
                 this.untilEndOfChallenge((ability) => ({
                     match: (card) => card === this.controller.activePlot,

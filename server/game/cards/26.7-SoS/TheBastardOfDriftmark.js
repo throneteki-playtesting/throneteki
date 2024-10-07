@@ -12,7 +12,7 @@ class TheBastardOfDriftmark extends DrawCard {
                 title: 'Select a location',
                 match: { type: 'location', trait: 'Warship' },
                 message: '{player} {gameAction}',
-                gameAction: GameActions.addToHand((context) => ({
+                gameAction: GameActions.putIntoShadows((context) => ({
                     card: context.searchTarget
                 }))
             })

@@ -13,7 +13,7 @@ class QartheenGalley extends DrawCard {
                 cardCondition: {
                     location: 'discard pile',
                     controller: 'current',
-                    condition: (card) => card.hasShadow()
+                    condition: (card) => card.isShadow()
                 }
             },
             cost: [ability.costs.kneelSelf(), ability.costs.shuffleSelfIntoDeck()],
