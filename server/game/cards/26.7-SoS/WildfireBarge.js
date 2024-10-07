@@ -16,8 +16,10 @@ class WildfireBarge extends DrawCard {
                     card.getType() === 'character'
             },
             cost: ability.costs.sacrificeSelf(),
-            message:
-                '{player} sacrifices {costs.sacrifice} to have {choosingPlayer} each kill {target}',
+            message: {
+                format: '{player} sacrifices {costs.sacrifice} to have {choosingPlayer} each kill {target}',
+                args: { choosingPlayer: (context) => context.choosingPlayer }
+            },
             handler: (context) => {
                 this.game.resolveGameAction(
                     GameActions.simultaneously((context) =>
