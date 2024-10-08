@@ -304,6 +304,64 @@ const agendaRules = {
     25080: {
         cannotInclude: (card) => card.type === 'plot' && hasTrait(card, 'Omen')
     },
+    // Uniting the Realm
+    25120: {
+        mayInclude: (card) =>
+            !card.loyal && ['attachment', 'character', 'location'].includes(card.type),
+        rules: [
+            {
+                message: 'Cannot contain more than 3 different cards from any faction',
+                condition: (deck) => {
+                    const cardQuantities = deck.drawCards.concat(deck.plotCards);
+                    const factionCounts = new Map();
+                    for (const cardQuantity of cardQuantities) {
+                        if (cardQuantity.card.faction !== 'neutral') {
+                            let count = factionCounts.get(cardQuantity.card.faction) || 0;
+                            factionCounts.set(cardQuantity.card.faction, count + 1);
+                        }
+                    }
+                    return Array.from(factionCounts.values()).every((count) => count <= 3);
+                }
+            }
+        ]
+    },
+    // Armed to the Teeth
+    26618: {
+        cannotInclude: (card) => card.type === 'attachment' && !hasTrait(card, 'Weapon')
+    },
+    // The Small Council
+    26619: {
+        mayInclude: (card) =>
+            card.type === 'character' && hasTrait(card, 'Small Council') && !card.loyal,
+        rules: [
+            {
+                message: 'Must contain 7 or more different Small Council characters',
+                condition: (deck) =>
+                    deck.countDrawCards(
+                        (card) => card.getType() === 'character' && hasTrait(card, 'Small Council')
+                    ) >= 7
+            }
+        ]
+    },
+    // Trading with Braavos
+    26620: {
+        requiredDraw: 75,
+        mayInclude: (card) => card.type === 'location' && hasTrait(card, 'Warship') && !card.loyal,
+        rules: [
+            {
+                message: 'Cannot include more than 1 copy of each Warship location',
+                condition: (deck) => {
+                    const allCards = deck.drawCards.concat(deck.plotCards);
+                    const locations = allCards.filter(
+                        (cardQuantity) =>
+                            cardQuantity.card.type === 'location' &&
+                            hasTrait(cardQuantity.card, 'Warship')
+                    );
+                    return locations.every((location) => location.count <= 1);
+                }
+            }
+        ]
+    },
     // Draft Agendas
     // The Power of Wealth
     '00001': {
