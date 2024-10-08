@@ -338,7 +338,7 @@ const agendaRules = {
                 message: 'Must contain 7 or more different Small Council characters',
                 condition: (deck) =>
                     deck.countDrawCards(
-                        (card) => card.getType() === 'character' && hasTrait(card, 'Small Council')
+                        (card) => card.type === 'character' && hasTrait(card, 'Small Council')
                     ) >= 7
             }
         ]
