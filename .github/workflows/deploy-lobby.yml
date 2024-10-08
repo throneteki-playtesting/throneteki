@@ -22,3 +22,5 @@ jobs:
               run: docker network connect throneteki-db ${{ vars.CONTAINER_NAME }}
             - name: Fetch Data
               run: docker exec ${{ vars.CONTAINER_NAME }} node /usr/src/app/server/scripts/fetchdata.js
+            - name: Restart Lobby
+              run: docker restart throneteki-playtesting-lobby
