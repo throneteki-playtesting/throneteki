@@ -23,4 +23,4 @@ jobs:
             - name: Fetch Data
               run: docker exec ${{ vars.CONTAINER_NAME }} node /usr/src/app/server/scripts/fetchdata.js
             - name: Restart Lobby
-              run: docker restart throneteki-playtesting-lobby
+              run: docker restart ${{ vars.CONTAINER_NAME }}
