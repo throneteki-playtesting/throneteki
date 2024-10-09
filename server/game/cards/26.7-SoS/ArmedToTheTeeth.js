@@ -29,11 +29,11 @@ class ArmedToTheTeeth extends AgendaCard {
                     GameActions.putIntoPlay({ card }).allow()
             },
             message: {
-                format: '{player} uses {source}, kneels their faction card and pays {xValue} to put {target} into play from underneath {source}',
+                format: '{player} uses {source}, kneels their faction card and pays {xValue} gold to put {target} into play from underneath {source}',
                 args: { xValue: (context) => context.xValue }
             },
             handler: (context) => {
-                this.resolveGameAction(
+                this.game.resolveGameAction(
                     GameActions.putIntoPlay((context) => ({ card: context.target })),
                     context
                 );
@@ -45,7 +45,11 @@ class ArmedToTheTeeth extends AgendaCard {
         if (event.player !== this.controller) {
             return;
         }
-
+        const context = {
+            player: this.controller,
+            game: this.game,
+            source: this
+        };
         this.game.resolveGameAction(
             GameActions.search({
                 title: 'Select 7 attachments',
@@ -62,8 +66,16 @@ class ArmedToTheTeeth extends AgendaCard {
                         })
                     )
                 )
-            })
+            }),
+            context
         );
+    }
+
+    attachmentCosts() {
+        const attachments = this.controller.agenda.underneath.filter(
+            (card) => card.getType() === 'attachment' && card.hasPrintedCost()
+        );
+        return attachments.map((card) => card.getPrintedCost());
     }
 }
 
