@@ -34,9 +34,19 @@ class AbilityChoicePrompt extends BaseStep {
         this.context.choosingPlayer = this.choosingPlayer;
         let buttons = this.choices.map((choice) => {
             if (choice.card) {
-                return { card: choice.card, mapCard: true, method: 'chooseAbilityChoice' };
+                return {
+                    card: choice.card,
+                    mapCard: true,
+                    method: 'chooseAbilityChoice',
+                    disabled: () => !choice.condition(this.context)
+                };
             }
-            return { text: choice.text, arg: choice.text, method: 'chooseAbilityChoice' };
+            return {
+                text: choice.text,
+                arg: choice.text,
+                method: 'chooseAbilityChoice',
+                disabled: () => !choice.condition(this.context)
+            };
         });
 
         buttons.push({ text: this.cancelText, method: 'skipResolution' });

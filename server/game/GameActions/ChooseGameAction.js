@@ -72,7 +72,10 @@ class ChooseGameAction extends GameAction {
         let choices = [];
         for (let [text, action] of Object.entries(choiceDefinition)) {
             let gameAction = this.buildGameAction(action);
-            let condition = action.gameAction && action.condition ? action.condition : () => true;
+            let condition =
+                action.gameAction && action.condition
+                    ? action.condition
+                    : (context) => gameAction.allow(context);
             let message =
                 action.gameAction && action.message
                     ? AbilityMessage.create(action.message, this.specialArgs())
