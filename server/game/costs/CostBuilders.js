@@ -26,7 +26,8 @@ const CostBuilders = {
     }),
     discardFromHand: new CostBuilder(new DiscardFromHandCost(), {
         select: 'Select card to discard from hand',
-        selectMultiple: (number) => `Select ${number} cards to discard from hand`
+        selectMultiple: (number) => `Select ${number} cards to discard from hand`,
+        selectAny: 'Select any number of cards to discard from hand'
     }),
     discardFromShadows: new CostBuilder(new DiscardFromShadowsCost(), {
         select: 'Select card to discard from shadows',

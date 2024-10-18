@@ -557,6 +557,7 @@ const Effects = {
     losesAllFactions: losesAspectEffect('factions'),
     losesAllKeywords: losesAspectEffect('keywords'),
     losesAllTraits: losesAspectEffect('traits'),
+    losesAllImmunities: losesAspectEffect('immunities'),
     loseFaction: function (faction) {
         return losesAspectEffect(`factions.${faction.toLowerCase()}`)();
     },
@@ -1503,6 +1504,9 @@ const Effects = {
     },
     reduceNextMarshalledAmbushedOrOutOfShadowsCardCost: function (amount, match) {
         return this.reduceNextCardCost(['marshal', 'ambush', 'outOfShadows'], amount, match);
+    },
+    reduceNextMarshalledOrOutOfShadowsCardCost: function (amount, match) {
+        return this.reduceNextCardCost(['marshal', 'outOfShadows'], amount, match);
     },
     reduceNextOutOfShadowsCardCost: function (amount, match) {
         return this.reduceNextCardCost('outOfShadows', amount, match);

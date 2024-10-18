@@ -10,7 +10,9 @@ class SteelshanksWalton extends DrawCard {
                     loyal: false,
                     type: 'character',
                     controller: 'opponent',
-                    condition: (card, context) => card.owner === context.player && GameActions.takeControl({ card, player: context.player }).allow()
+                    condition: (card, context) =>
+                        card.owner === context.player &&
+                        GameActions.takeControl({ card, player: context.player }).allow()
                 }
             },
             handler: (context) => {
