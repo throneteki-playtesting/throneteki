@@ -5,7 +5,6 @@ class RaidersScythe extends DrawCard {
         this.attachmentRestriction({ trait: 'Raider' });
         this.whileAttached({
             condition: () =>
-                this.parent.isAttacking() &&
                 this.game.currentChallenge &&
                 this.hasMoreAttachmentsThanDefender(this.game.currentChallenge.defendingPlayer),
             match: (card) => card === this.parent,

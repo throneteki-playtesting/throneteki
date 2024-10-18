@@ -216,6 +216,12 @@ const Costs = {
     discardMultipleFromHand: (number, condition) =>
         CostBuilders.discardFromHand.selectMultiple(number, condition),
     /**
+     * Cost that requires discarding any number of cards from hand matching the passed
+     * condition predicate function.
+     */
+    discardAnyFromHand: (condition, zeroAllowed) =>
+        CostBuilders.discardFromHand.selectAny(condition, zeroAllowed),
+    /**
      * Cost that requires discarding a card from shadows matching the passed
      * condition predicate function.
      */

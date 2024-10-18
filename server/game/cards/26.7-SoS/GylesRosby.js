@@ -31,7 +31,7 @@ class GylesRosby extends DrawCard {
     }
 
     checkKill() {
-        if (this.controller.gold === 0) {
+        if (this.game.currentPhase === 'challenge' && this.controller.gold === 0) {
             this.game.resolveGameAction(GameActions.kill({ card: this }));
             this.game.addMessage(
                 '{0} is forced to kill {1} due to having no gold in their gold pool',

@@ -687,6 +687,9 @@ class BaseCard {
     }
 
     allowGameAction(actionType, context) {
+        if (this.losesAspects.contains('immunities')) {
+            return true;
+        }
         let currentAbilityContext = context || this.game.currentAbilityContext;
         return !this.abilityRestrictions.some((restriction) =>
             restriction.isMatch(actionType, currentAbilityContext)
