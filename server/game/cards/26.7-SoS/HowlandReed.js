@@ -4,9 +4,8 @@ class HowlandReed extends DrawCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
             targetController: 'current',
-            effect: ability.effects.reduceFirstOutOfShadowsCardCostEachRound(
-                2,
-                (card) => card.isFaction('stark')
+            effect: ability.effects.reduceFirstOutOfShadowsCardCostEachRound(2, (card) =>
+                card.isFaction('stark')
             )
         });
     }
