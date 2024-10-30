@@ -602,6 +602,36 @@ const Effects = {
     killByStrength: function (value) {
         return [Effects.burn, Effects.modifyStrength(value)];
     },
+    killIf: function (condition) {
+        return {
+            apply: function (card, context) {
+                if (condition(card)) {
+                    context.game.addMessage(
+                        '{0} kills {1} because of {2}',
+                        card.controller,
+                        card,
+                        context.source
+                    );
+                    context.game.resolveGameAction(GameActions.kill({ card }));
+                }
+            },
+            reapply: function (card, context) {
+                if (condition(card)) {
+                    context.game.addMessage(
+                        '{0} kills {1} because of {2}',
+                        card.controller,
+                        card,
+                        context.source
+                    );
+                    context.game.resolveGameAction(GameActions.kill({ card }));
+                }
+            },
+            unapply: function () {
+                // no-op
+            },
+            isStateDependent: true
+        };
+    },
     blankExcludingTraits: {
         apply: function (card) {
             card.setBlank('excludingTraits');
