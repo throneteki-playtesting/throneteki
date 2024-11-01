@@ -5,7 +5,7 @@ import classNames from 'classnames';
 
 const DeckStatusLabel = ({ className = 'h-10', status }) => {
     const text = status ? deckStatusLabel(status) : 'Loading...';
-    const restrictionsFollowed = status.faqJoustRules && status.noUnreleasedCards;
+    const restrictionsFollowed = status.faqJoustRules && !status.noUnreleasedCards;
 
     let bg = 'default';
 
