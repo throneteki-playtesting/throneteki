@@ -495,35 +495,11 @@ class Game extends EventEmitter {
      * The target object to which gold is being moved
      */
     transferGold(transferParams) {
-        let { from, to, amount } = transferParams;
-        let appliedGold = Math.min(from.gold, amount);
+        let { from, to, amount, activePlayer } = transferParams;
 
-        if (from.getGameElementType() === 'player') {
-            let activePlayer =
-                transferParams.activePlayer ||
-                (this.currentAbilityContext && this.currentAbilityContext.player);
-            appliedGold = Math.min(
-                from.getSpendableGold({ player: from, activePlayer: activePlayer }),
-                amount
-            );
-            this.spendGold(
-                { amount: appliedGold, player: from, activePlayer: activePlayer },
-                () => {
-                    to.modifyGold(appliedGold);
-                    this.raiseEvent('onGoldTransferred', {
-                        source: from,
-                        target: to,
-                        amount: appliedGold
-                    });
-                }
-            );
-            return;
-        }
-
-        from.modifyGold(-appliedGold);
-        to.modifyGold(appliedGold);
-
-        this.raiseEvent('onGoldTransferred', { source: from, target: to, amount: appliedGold });
+        this.resolveGameAction(
+            GameActions.transferGold({ source: from, target: to, amount, activePlayer })
+        );
     }
 
     /**
