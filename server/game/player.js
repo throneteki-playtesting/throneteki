@@ -61,6 +61,8 @@ class Player extends Spectator {
         this.maxGoldGain = new MinMaxProperty({ defaultMin: 0, defaultMax: undefined });
         this.drawnCards = 0;
         this.maxCardDraw = new MinMaxProperty({ defaultMin: 0, defaultMax: undefined });
+        this.gainedPower = 0;
+        this.maxPowerGain = new MinMaxProperty({ defaultMin: 0, defaultMax: undefined });
         this.doesNotReturnUnspentGold = false;
         this.cannotGainChallengeBonus = false;
         this.cannotWinGame = false;
@@ -813,6 +815,7 @@ class Player extends Spectator {
 
         this.gainedGold = 0;
         this.drawnCards = 0;
+        this.gainedPower = 0;
 
         this.limitedPlayed = 0;
 

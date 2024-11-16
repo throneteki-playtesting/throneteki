@@ -23,7 +23,7 @@ class EnameledGreenArmor extends DrawCard {
                     effect: ability.effects.contributeCharacterStrength(context.target)
                 }));
             }
-        })
+        });
     }
 }
 
