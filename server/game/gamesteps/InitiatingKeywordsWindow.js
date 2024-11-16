@@ -6,21 +6,18 @@ const initiatingKeywords = ['stealth', 'assault'];
 class InitiatingKeywordsWindow extends ChallengeKeywordsWindow {
     constructor(game, challenge) {
         super(game, challenge);
-        this.attackingCardsWithContext = this.buildContexts(
-            challenge.declaredAttackers,
-            this.challenge.attackingPlayer
-        );
+        this.cardsWithContext = this.buildContexts(challenge.declaredAttackers);
     }
 
     continue() {
         for (let keyword of initiatingKeywords) {
             let ability = GameKeywords[keyword];
-            let attackersWithKeyword = this.attackingCardsWithContext.filter((attacker) =>
-                ability.canResolve(attacker.context)
+            let participantsWithKeyword = this.cardsWithContext.filter((participant) =>
+                ability.canResolve(participant.context)
             );
 
-            if (attackersWithKeyword.length > 0) {
-                this.resolveAbility(ability, attackersWithKeyword);
+            if (participantsWithKeyword.length > 0) {
+                this.resolveAbility(ability, participantsWithKeyword);
             }
         }
 

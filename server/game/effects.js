@@ -1053,6 +1053,17 @@ const Effects = {
     cannotTarget: cannotEffect('target'),
     cannotTargetUsingAssault: cannotEffect('assault'),
     cannotTargetUsingStealth: cannotEffect('stealth'),
+    triggerChallengeKeywordOnLosing: function (keyword) {
+        return {
+            targetType: 'game',
+            apply: function (game) {
+                game.triggerOnLosing[keyword] = true;
+            },
+            unapply: function (game) {
+                game.triggerOnLosing[keyword] = false;
+            }
+        };
+    },
     setMaxGoldGain: function (max) {
         return {
             targetType: 'player',
@@ -1072,6 +1083,17 @@ const Effects = {
             },
             unapply: function (player) {
                 player.maxCardDraw.removeMax(max);
+            }
+        };
+    },
+    setMaxPowerGain: function (max) {
+        return {
+            targetType: 'player',
+            apply: function (player) {
+                player.maxPowerGain.setMax(max);
+            },
+            unapply: function (player) {
+                player.maxPowerGain.removeMax(max);
             }
         };
     },
