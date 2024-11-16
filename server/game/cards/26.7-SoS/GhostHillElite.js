@@ -11,10 +11,16 @@ class GhostHillElite extends DrawCard {
                 cardCondition: (card) =>
                     card.location === 'play area' &&
                     card.getType() === 'character' &&
-                    card.getNumberOfIcons() === 0
+                    card.getNumberOfIcons() === 0 &&
+                    GameActions.kill({ card }).allow()
             },
             message: '{player} uses {source} to kill {target}',
-            gameAction: GameActions.kill((context) => ({ card: context.target }))
+            handler: (context) => {
+                this.game.resolveGameAction(
+                    GameActions.kill((context) => ({ card: context.target })),
+                    context
+                );
+            }
         });
     }
 }
