@@ -7,6 +7,15 @@ import {
     sendRestartNodeMessage,
     sendToggleNodeMessage
 } from '../redux/reducers/lobby';
+import {
+    Button,
+    Table,
+    TableBody,
+    TableCell,
+    TableColumn,
+    TableHeader,
+    TableRow
+} from '@nextui-org/react';
 
 const NodeAdmin = () => {
     const dispatch = useDispatch();
@@ -20,24 +29,18 @@ const NodeAdmin = () => {
     }, [dispatch, isConnected]);
 
     const onToggleNodeClick = useCallback(
-        (node, event) => {
-            event.preventDefault();
+        (node) => {
             dispatch(sendToggleNodeMessage(node.name));
         },
         [dispatch]
     );
 
-    const onRefreshClick = useCallback(
-        (event) => {
-            event.preventDefault();
-            dispatch(sendGetNodeStausMessage('getnodestatus'));
-        },
-        [dispatch]
-    );
+    const onRefreshClick = useCallback(() => {
+        dispatch(sendGetNodeStausMessage('getnodestatus'));
+    }, [dispatch]);
 
     const onRestartNodeClick = useCallback(
-        (node, event) => {
-            event.preventDefault();
+        (node) => {
             dispatch(sendRestartNodeMessage(node.name));
         },
         [dispatch]
@@ -45,43 +48,33 @@ const NodeAdmin = () => {
 
     const getNodesTable = () => {
         const body = nodeStatus.map((node, index) => (
-            <tr key={index}>
-                <td>{node.name}</td>
-                <td>{node.numGames}</td>
-                <td>{node.status}</td>
-                <td>{node.version}</td>
-                <td>
-                    <button
-                        type='button'
-                        className='btn btn-primary'
-                        onClick={(event) => onToggleNodeClick(node, event)}
-                    >
+            <TableRow key={index}>
+                <TableCell>{node.name}</TableCell>
+                <TableCell>{node.numGames}</TableCell>
+                <TableCell>{node.status}</TableCell>
+                <TableCell>{node.version}</TableCell>
+                <TableCell className='flex gap-2'>
+                    <Button color='primary' onClick={(event) => onToggleNodeClick(node, event)}>
                         {node.status === 'active' ? 'Disable' : 'Enable'}
-                    </button>
-                    <button
-                        type='button'
-                        className='btn btn-primary'
-                        onClick={(event) => onRestartNodeClick(node, event)}
-                    >
+                    </Button>
+                    <Button color='danger' onClick={(event) => onRestartNodeClick(node, event)}>
                         Restart
-                    </button>
-                </td>
-            </tr>
+                    </Button>
+                </TableCell>
+            </TableRow>
         ));
 
         return (
-            <table className='table table-striped'>
-                <thead>
-                    <tr>
-                        <th>Node Name</th>
-                        <th>Num Games</th>
-                        <th>Status</th>
-                        <th>Version</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>{body}</tbody>
-            </table>
+            <Table isStriped>
+                <TableHeader>
+                    <TableColumn>Node Name</TableColumn>
+                    <TableColumn>Num Games</TableColumn>
+                    <TableColumn>Status</TableColumn>
+                    <TableColumn>Version</TableColumn>
+                    <TableColumn>Actions</TableColumn>
+                </TableHeader>
+                <TableBody>{body}</TableBody>
+            </Table>
         );
     };
 
@@ -96,13 +89,15 @@ const NodeAdmin = () => {
     }
 
     return (
-        <div className='col-sm-offset-1 col-sm-10'>
+        <div className='w-2/3 mx-auto'>
             <Panel title='Game Node Administration'>
                 {content}
 
-                <button className='btn btn-default' onClick={onRefreshClick}>
-                    Refresh
-                </button>
+                <div className='mt-2'>
+                    <Button color='primary' onClick={onRefreshClick}>
+                        Refresh
+                    </Button>
+                </div>
             </Panel>
         </div>
     );

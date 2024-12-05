@@ -1,15 +1,10 @@
 import React from 'react';
-import classNames from 'classnames';
 import Counter from './Counter';
 
 const CardCounters = ({ counters }) => {
     if (counters.length === 0) {
         return null;
     }
-
-    let countersClass = classNames('counters', 'ignore-mouse-events', {
-        'many-counters': counters.length > 3
-    });
 
     let counterDivs = [];
 
@@ -27,7 +22,17 @@ const CardCounters = ({ counters }) => {
         );
     }
 
-    return <div className={countersClass}>{counterDivs}</div>;
+    return (
+        <div className='w-full h-full flex items-center justify-center absolute top-0 left-0 z-20'>
+            <div
+                className={
+                    'text-white justify-center flex flex-wrap items-center gap-1 h-auto w-full flex-row ignore-mouse-events'
+                }
+            >
+                {counterDivs}
+            </div>
+        </div>
+    );
 };
 
 export default CardCounters;

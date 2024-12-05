@@ -61,6 +61,8 @@ class Player extends Spectator {
         this.maxGoldGain = new MinMaxProperty({ defaultMin: 0, defaultMax: undefined });
         this.drawnCards = 0;
         this.maxCardDraw = new MinMaxProperty({ defaultMin: 0, defaultMax: undefined });
+        this.gainedPower = 0;
+        this.maxPowerGain = new MinMaxProperty({ defaultMin: 0, defaultMax: undefined });
         this.doesNotReturnUnspentGold = false;
         this.cannotGainChallengeBonus = false;
         this.cannotWinGame = false;
@@ -813,6 +815,7 @@ class Player extends Spectator {
 
         this.gainedGold = 0;
         this.drawnCards = 0;
+        this.gainedPower = 0;
 
         this.limitedPlayed = 0;
 
@@ -1253,36 +1256,24 @@ class Player extends Spectator {
         }
     }
 
-    getTotalInitiative() {
-        if (!this.activePlot) {
-            return 0;
-        }
-
-        return this.activePlot.getInitiative();
+    getIncome() {
+        return this.activePlot ? this.activePlot.getIncome() : 0;
     }
 
-    getTotalIncome() {
-        if (!this.activePlot) {
-            return 0;
-        }
-
-        return this.activePlot.getIncome();
-    }
-
-    getTotalReserve() {
-        if (!this.activePlot) {
-            return 0;
-        }
-
-        return Math.max(this.activePlot.getReserve(), this.minReserve);
+    getInitiative() {
+        return this.activePlot ? this.activePlot.getInitiative() : 0;
     }
 
     getClaim() {
         return this.activePlot ? this.activePlot.getClaim() : 0;
     }
 
+    getReserve() {
+        return this.activePlot ? Math.max(this.activePlot.getReserve(), this.minReserve) : 0;
+    }
+
     isBelowReserve() {
-        return this.hand.length <= this.getTotalReserve();
+        return this.hand.length <= this.getReserve();
     }
 
     isRival(opponent) {
@@ -1374,9 +1365,9 @@ class Player extends Spectator {
     getStats(isActivePlayer) {
         return {
             claim: this.getClaim(),
-            initiative: this.getTotalInitiative(),
+            initiative: this.getInitiative(),
             gold: !isActivePlayer && this.game.currentPhase === 'setup' ? 0 : this.gold,
-            reserve: this.getTotalReserve(),
+            reserve: this.getReserve(),
             totalPower: this.getTotalPower()
         };
     }

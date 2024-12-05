@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { toastr } from 'react-redux-toastr';
 
 import AlertPanel from '../Site/AlertPanel';
 import Game from './Game';
@@ -10,6 +9,7 @@ import {
     sendRemoveGameMessage,
     sendWatchGameMessage
 } from '../../redux/reducers/lobby';
+import { toast } from 'react-toastify';
 
 const GameList = ({ gameFilter }) => {
     const dispatch = useDispatch();
@@ -20,7 +20,7 @@ const GameList = ({ gameFilter }) => {
     const joinGame = useCallback(
         (game) => {
             if (!user) {
-                toastr.error('Please login before trying to join a game');
+                toast.error('Please login before trying to join a game');
                 return;
             }
 
@@ -43,7 +43,7 @@ const GameList = ({ gameFilter }) => {
     const watchGame = useCallback(
         (game) => {
             if (!user) {
-                toastr.error('Please login before trying to watch a game');
+                toast.error('Please login before trying to watch a game');
                 return;
             }
 
@@ -79,7 +79,18 @@ const GameList = ({ gameFilter }) => {
 
         let isAdmin = user && user.permissions.canManageGames;
 
-        for (const game of games) {
+        // Orders games by whether they've started, followed by the time it was created (earliest first)
+        const compareGames = (a, b) => {
+            if (!a.started && b.started) {
+                return -1;
+            }
+            if (a.started && !b.started) {
+                return 1;
+            }
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        };
+
+        for (const game of [...games].sort(compareGames)) {
             if (gameFilter.showOnlyNewGames && game.started) {
                 continue;
             }
@@ -111,16 +122,16 @@ const GameList = ({ gameFilter }) => {
 
     if (gameList.length === 0) {
         return (
-            <div className='game-list col-xs-12'>
+            <div>
                 <AlertPanel
-                    type='info'
+                    variant='info'
                     message='There are no games matching the filters you have selected'
                 />
             </div>
         );
     }
 
-    return <div className='game-list col-xs-12'>{gameList}</div>;
+    return <div>{gameList}</div>;
 };
 
 export default GameList;

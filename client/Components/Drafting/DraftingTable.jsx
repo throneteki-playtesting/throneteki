@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import $ from 'jquery';
-import { toastr } from 'react-redux-toastr';
 
 import GameChat from '../GameBoard/GameChat';
 import CardTypeGroups from '../Decks/CardTypeGroups';
@@ -174,8 +173,8 @@ const DraftingTable = () => {
     }));
 
     return (
-        <div className='game-board'>
-            <div className='main-window'>
+        <div className='absolute bottom-0 left-0 top-0 right-0 flex flex-col justify-between'>
+            <div>
                 <CardZoom
                     imageUrl={cardToZoom ? '/img/cards/' + cardToZoom.code + '.png' : ''}
                     orientation={

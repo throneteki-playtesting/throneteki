@@ -1,11 +1,14 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
-import { toastr } from 'react-redux-toastr';
 
 import AlertPanel from '../Components/Site/AlertPanel';
 import Panel from '../Components/Site/Panel';
 import { useGetUserSessionsQuery, useRemoveSessionMutation } from '../redux/middleware/api';
+import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { toast } from 'react-toastify';
 
 const Security = () => {
     const user = useSelector((state) => state.auth.user);
@@ -17,14 +20,12 @@ const Security = () => {
     const [removeSession, { isLoading: isRemoving }] = useRemoveSessionMutation();
 
     const onRemoveClick = useCallback(
-        (session, event) => {
-            event.preventDefault();
-
+        (session) => {
             if (!user) {
                 return;
             }
 
-            toastr.confirm(
+            toast.confirm(
                 'Are you sure you want to remove this session?  It will be logged out and any games in progress may be abandonded.',
                 {
                     onOk: async () => {
@@ -33,13 +34,9 @@ const Security = () => {
                                 username: user.username,
                                 sessionId: session.id
                             }).unwrap();
-                            toastr.success('Session removed successfully');
-
-                            setTimeout(() => {
-                                toastr.clean();
-                            }, 5000);
+                            toast.success('Session removed successfully');
                         } catch (err) {
-                            toastr.error(
+                            toast.error(
                                 err.message ||
                                     'An error occured removing the session. Please try again later.'
                             );
@@ -58,20 +55,20 @@ const Security = () => {
 
         return sessions.map((session) => {
             return (
-                <tr key={session.id}>
-                    <td>{session.ip}</td>
-                    <td>{moment(session.lastUsed).format('YYYY-MM-DD HH:mm')}</td>
-                    <td>
+                <TableRow key={session.id}>
+                    <TableCell>{session.ip}</TableCell>
+                    <TableCell>{moment(session.lastUsed).format('YYYY-MM-DD HH:mm')}</TableCell>
+                    <TableCell>
                         <a
                             href='#'
                             onClick={(event) => onRemoveClick(session, event)}
                             className='btn'
                             disabled={isRemoving}
                         >
-                            <span className='glyphicon glyphicon-remove' />
+                            <FontAwesomeIcon className='text-red-700' icon={faTimes} />
                         </a>
-                    </td>
-                </tr>
+                    </TableCell>
+                </TableRow>
             );
         });
     }, [isRemoving, onRemoveClick, sessions]);
@@ -80,16 +77,14 @@ const Security = () => {
         sessions && sessions.length === 0 ? (
             <div>You have no active sessions. This shouldn&apos;t really happen.</div>
         ) : (
-            <table className='table table-striped'>
-                <thead>
-                    <tr>
-                        <th>IP Address</th>
-                        <th>Last Used</th>
-                        <th>Remove</th>
-                    </tr>
-                </thead>
-                <tbody>{sessionsList}</tbody>
-            </table>
+            <Table isStriped className='mt-2'>
+                <TableHeader>
+                    <TableColumn>IP Address</TableColumn>
+                    <TableColumn>Last Used</TableColumn>
+                    <TableColumn>Remove</TableColumn>
+                </TableHeader>
+                <TableBody>{sessionsList}</TableBody>
+            </Table>
         );
 
     if (isLoading) {
@@ -106,7 +101,7 @@ const Security = () => {
     }
 
     return (
-        <div className='col-sm-8 col-sm-offset-2 profile full-height'>
+        <div className='m-2 lg:w-2/3 lg:mx-auto profile'>
             <Panel title='Active Sessions'>
                 <p className='help-block'>
                     Below you will see the active &lsquo;sessions&rsquo; that you have on the

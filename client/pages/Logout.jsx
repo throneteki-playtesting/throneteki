@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { useLogoutAccountMutation } from '../redux/middleware/api';
-import AlertPanel from '../Components/Site/AlertPanel';
 import { startConnecting } from '../redux/reducers/lobby';
 import { accountLoggedOut } from '../redux/reducers/auth';
 import { navigate } from '../redux/reducers/navigation';
+import LoadingSpinner from '../Components/Site/LoadingSpinner';
+import { toast } from 'react-toastify';
 
 const Logout = () => {
     const [logout, { isLoading }] = useLogoutAccountMutation();
     const refreshToken = useSelector((state) => state.auth.refreshToken);
-    const [error, setError] = useState();
-    const [success, setSuccess] = useState();
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -19,7 +18,9 @@ const Logout = () => {
             try {
                 await logout(refreshToken.id).unwrap();
             } catch (err) {
-                setError(err || 'An error occurred logging you out. Please try again later.');
+                toast.error(
+                    err.message || 'An error occurred logging you out. Please try again later.'
+                );
 
                 return;
             }
@@ -28,10 +29,8 @@ const Logout = () => {
 
             dispatch(startConnecting());
 
-            setSuccess('You were successfully logged out, redirecting you shortly.');
-            setTimeout(() => {
-                dispatch(navigate('/'));
-            }, 3000);
+            toast.success('You were successfully logged out.');
+            dispatch(navigate('/'));
         }
 
         if (!refreshToken) {
@@ -43,10 +42,7 @@ const Logout = () => {
 
     return (
         <div className='col-sm-6 col-sm-offset-3'>
-            {success && <AlertPanel type='success' message={success} />}
-            {error && <AlertPanel type='error' message={error} />}
-
-            {isLoading && <span>Logging you out of your account, please wait...</span>}
+            {isLoading && <LoadingSpinner label='Logging you out of your account...' />}
         </div>
     );
 };

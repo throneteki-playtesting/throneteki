@@ -602,6 +602,36 @@ const Effects = {
     killByStrength: function (value) {
         return [Effects.burn, Effects.modifyStrength(value)];
     },
+    killIf: function (condition) {
+        return {
+            apply: function (card, context) {
+                if (condition(card)) {
+                    context.game.addMessage(
+                        '{0} kills {1} because of {2}',
+                        card.controller,
+                        card,
+                        context.source
+                    );
+                    context.game.resolveGameAction(GameActions.kill({ card }));
+                }
+            },
+            reapply: function (card, context) {
+                if (condition(card)) {
+                    context.game.addMessage(
+                        '{0} kills {1} because of {2}',
+                        card.controller,
+                        card,
+                        context.source
+                    );
+                    context.game.resolveGameAction(GameActions.kill({ card }));
+                }
+            },
+            unapply: function () {
+                // no-op
+            },
+            isStateDependent: true
+        };
+    },
     blankExcludingTraits: {
         apply: function (card) {
             card.setBlank('excludingTraits');
@@ -1023,6 +1053,17 @@ const Effects = {
     cannotTarget: cannotEffect('target'),
     cannotTargetUsingAssault: cannotEffect('assault'),
     cannotTargetUsingStealth: cannotEffect('stealth'),
+    triggerChallengeKeywordOnLosing: function (keyword) {
+        return {
+            targetType: 'game',
+            apply: function (game) {
+                game.triggerOnLosing[keyword] = true;
+            },
+            unapply: function (game) {
+                game.triggerOnLosing[keyword] = false;
+            }
+        };
+    },
     setMaxGoldGain: function (max) {
         return {
             targetType: 'player',
@@ -1042,6 +1083,17 @@ const Effects = {
             },
             unapply: function (player) {
                 player.maxCardDraw.removeMax(max);
+            }
+        };
+    },
+    setMaxPowerGain: function (max) {
+        return {
+            targetType: 'player',
+            apply: function (player) {
+                player.maxPowerGain.setMax(max);
+            },
+            unapply: function (player) {
+                player.maxPowerGain.removeMax(max);
             }
         };
     },

@@ -1,7 +1,5 @@
 import React, { useCallback, useState } from 'react';
 
-import Input from '../../Components/Form/Input';
-import TextArea from '../../Components/Form/TextArea';
 import { useDispatch } from 'react-redux';
 import {
     useGetCardsQuery,
@@ -11,6 +9,8 @@ import {
 } from '../../redux/middleware/api';
 import Panel from '../../Components/Site/Panel';
 import { navigate } from '../../redux/reducers/navigation';
+import { Input, Textarea } from '@nextui-org/react';
+import LoadingSpinner from '../../Components/Site/LoadingSpinner';
 
 const calculateMaxPacks = (rarities) => {
     const maxPacksPerRarity = rarities.map((rarity) => {
@@ -119,7 +119,9 @@ const DraftCubeEditor = ({ draftCubeId }) => {
                 await saveDraftCube(getDraftCubeFromState()).unwrap();
 
                 setTimeout(() => {}, 5000);
-            } catch (err) {}
+            } catch (err) {
+                // Empty
+            }
         },
         [getDraftCubeFromState, saveDraftCube]
     );
@@ -253,7 +255,7 @@ const DraftCubeEditor = ({ draftCubeId }) => {
     };
 
     if (isCardsLoading || isPacksLoading || isLoading) {
-        return 'Loading draft cube, please wait...';
+        return <LoadingSpinner label='Loading draft cube...' />;
     }
 
     return (
@@ -276,7 +278,7 @@ const DraftCubeEditor = ({ draftCubeId }) => {
                             <strong>{`Max ${maxPacks} packs of ${totalPerPack} cards`}</strong>
                         </div>
                     </div>
-                    <TextArea
+                    <Textarea
                         label='Card Rarities'
                         labelClass='col-sm-3'
                         fieldClass='col-sm-9'
@@ -284,7 +286,7 @@ const DraftCubeEditor = ({ draftCubeId }) => {
                         value={raritiesText}
                         onChange={handleRarityListChange}
                     />
-                    <TextArea
+                    <Textarea
                         label='Starter Deck'
                         labelClass='col-sm-3'
                         fieldClass='col-sm-9'

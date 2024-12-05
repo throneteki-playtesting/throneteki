@@ -1,4 +1,6 @@
 import passport from 'passport';
+import qs from 'qs';
+
 import DeckService from '../services/DeckService.js';
 import { wrapAsync } from '../util.js';
 
@@ -33,8 +35,11 @@ export const init = async function (server, options) {
         '/api/decks',
         passport.authenticate('jwt', { session: false }),
         wrapAsync(async function (req, res) {
-            let decks = await deckService.findByUserName(req.user.username);
-            res.send({ success: true, data: decks });
+            let decks = await deckService.findByUserName(
+                req.user.username,
+                qs.parse(req._parsedUrl.query, { allowDots: true })
+            );
+            res.send(decks);
         })
     );
 
@@ -54,7 +59,7 @@ export const init = async function (server, options) {
 
             let data = Object.assign({ id: req.params.id }, req.body);
 
-            deckService.update(data);
+            await deckService.update(data);
 
             res.send({ success: true });
         })
@@ -65,7 +70,63 @@ export const init = async function (server, options) {
         passport.authenticate('jwt', { session: false }),
         wrapAsync(async function (req, res) {
             let deck = Object.assign(req.body, { username: req.user.username });
+
+            if (!deck.name) {
+                return res.status(400).send({ message: 'Deck name is required' });
+            }
+
+            if (!deck.faction) {
+                return res.status(400).status({ message: 'Faction is required' });
+            }
+
             await deckService.create(deck);
+
+            res.send({ success: true });
+        })
+    );
+
+    server.post(
+        '/api/decks/:id/toggleFavourite',
+        passport.authenticate('jwt', { session: false }),
+        wrapAsync(async function (req, res) {
+            let deck = await deckService.getById(req.params.id);
+
+            if (!deck) {
+                return res.status(404).send({ message: 'No such deck' });
+            }
+
+            if (deck.username !== req.user.username) {
+                return res.status(401).send({ message: 'Unauthorized' });
+            }
+
+            deck.isFavourite = !deck.isFavourite;
+            deck.id = deck._id;
+
+            await deckService.update(deck);
+
+            res.send({ success: true });
+        })
+    );
+
+    server.delete(
+        '/api/decks',
+        passport.authenticate('jwt', { session: false }),
+        wrapAsync(async function (req, res) {
+            let deckIds = req.body.deckIds;
+
+            for (const deckId of deckIds) {
+                let deck = await deckService.getById(deckId);
+
+                if (!deck) {
+                    continue;
+                }
+
+                if (deck.username !== req.user.username) {
+                    return res.status(401).send({ message: 'Unauthorized' });
+                }
+
+                await deckService.delete(deckId);
+            }
             res.send({ success: true });
         })
     );

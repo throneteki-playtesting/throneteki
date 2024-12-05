@@ -42,8 +42,22 @@ class Lobby {
         this.io.use(this.handshake.bind(this));
         this.io.on('connection', this.onConnection.bind(this));
 
-        this.messageService.on('messageDeleted', (messageId) => {
-            this.io.emit('removemessage', messageId);
+        this.messageService.on('messageDeleted', (messageId, user) => {
+            for (let socket of Object.values(this.sockets)) {
+                if (socket.user === user || (socket.user && socket.user.hasUserBlocked(user))) {
+                    continue;
+                }
+
+                if (
+                    socket.user &&
+                    socket.user.permissions &&
+                    socket.user.permissions.canModerateChat
+                ) {
+                    socket.send('removemessage', messageId, user.username);
+                } else {
+                    socket.send('removemessage', messageId);
+                }
+            }
         });
 
         setInterval(() => this.clearStalePendingGames(), 60 * 1000);
@@ -190,9 +204,6 @@ class Lobby {
     mapGamesToGameSummaries(games) {
         return _.chain(games)
             .map((game) => game.getSummary())
-            .sortBy('createdAt')
-            .sortBy('started')
-            .reverse()
             .value();
     }
 
@@ -307,10 +318,12 @@ class Lobby {
     }
 
     sendFilteredMessages(socket) {
-        this.messageService.getLastMessages().then((messages) => {
-            let messagesToSend = this.filterMessages(messages, socket);
-            socket.send('lobbymessages', messagesToSend.reverse());
-        });
+        this.messageService
+            .getLastMessages(socket.user?.permissions?.canModerateChat)
+            .then((messages) => {
+                let messagesToSend = this.filterMessages(messages, socket);
+                socket.send('lobbymessages', messagesToSend.reverse());
+            });
     }
 
     filterMessages(messages, socket) {
@@ -558,8 +571,8 @@ class Lobby {
         this.broadcastGameMessage('updategame', game);
     }
 
-    onStartGame(socket, gameId) {
-        let game = this.games[gameId];
+    onStartGame(socket) {
+        let game = this.findGameForUser(socket.user.username);
 
         if (!game || game.started) {
             return;
@@ -698,10 +711,10 @@ class Lobby {
         }
     }
 
-    onSelectDeck(socket, gameId, deckId) {
-        let game = this.games[gameId];
+    onSelectDeck(socket, deckId) {
+        let game = this.findGameForUser(socket.user.username);
         if (!game) {
-            return Promise.reject('Game not found');
+            return;
         }
 
         return Promise.all([

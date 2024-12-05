@@ -1,25 +1,23 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
-import AlertPanel from '../Components/Site/AlertPanel';
 import Panel from '../Components/Site/Panel';
-import Form from '../Components/Form/Form';
 import Link from '../Components/Site/Link';
 import { useLoginAccountMutation } from '../redux/middleware/api';
 import { accountLoggedIn } from '../redux/reducers/auth';
 import { navigate } from '../redux/reducers/navigation';
 import { sendAuthenticateMessage } from '../redux/reducers/lobby';
+import * as yup from 'yup';
+import { Button, Input } from '@nextui-org/react';
+import { Formik } from 'formik';
+import { toast } from 'react-toastify';
 
 const Login = () => {
     const dispatch = useDispatch();
     const [loginAccount, { isLoading }] = useLoginAccountMutation();
-    const [error, setError] = useState();
-    const [success, setSuccess] = useState();
 
     const onLogin = useCallback(
         async (state) => {
-            setError(undefined);
-            setSuccess(undefined);
             try {
                 const response = await loginAccount({
                     username: state.username,
@@ -29,39 +27,54 @@ const Login = () => {
                 dispatch(accountLoggedIn(response.user, response.token, response.refreshToken));
                 dispatch(sendAuthenticateMessage(response.token));
 
-                setSuccess('You have successfully logged in. Redirecting you to the home page...');
+                toast.success('Logged in successfully');
 
-                setTimeout(() => {
-                    dispatch(navigate('/'));
-                }, 3000);
+                dispatch(navigate('/'));
             } catch (err) {
-                setError(err || 'An error occured logging in. Please try again later.');
+                toast.error(err || 'An error occured logging in. Please try again later.');
             }
         },
         [dispatch, loginAccount]
     );
 
-    const errorBar = error ? <AlertPanel type='error' message={error} /> : null;
-    const successBar = success ? <AlertPanel type='success' message={success} /> : null;
+    const schema = yup.object({
+        username: yup.string().required('You must specify a username'),
+        password: yup.string().required('You must specify a password')
+    });
 
     return (
-        <div className='col-sm-6 col-sm-offset-3'>
-            {errorBar}
-            {successBar}
-            <Panel title='Login'>
-                <Form
-                    name='login'
-                    apiLoading={isLoading}
-                    buttonClass='col-sm-offset-2 col-sm-3'
-                    buttonText='Log In'
+        <div className='md:mx-auto md:w-4/5 lg:w-2/5 mx-2'>
+            <Panel className='mt-1' title='Login'>
+                <Formik
+                    initialValues={{ username: '', password: '' }}
+                    validationSchema={schema}
                     onSubmit={onLogin}
                 >
-                    <div className='form-group'>
-                        <div className='col-sm-offset-2 col-sm-10'>
+                    {(formProps) => (
+                        <form onSubmit={formProps.handleSubmit}>
+                            <Input
+                                label='Username'
+                                {...formProps.getFieldProps('username')}
+                                isInvalid={formProps.errors.username && formProps.touched.username}
+                                errorMessage={formProps.errors.username}
+                            />
+                            <Input
+                                className='mt-2'
+                                label='Password'
+                                type='password'
+                                isInvalid={formProps.errors.password && formProps.touched.password}
+                                errorMessage={formProps.errors.password}
+                                {...formProps.getFieldProps('password')}
+                            />
                             <Link href='/forgot'>Forgot your password?</Link>
-                        </div>
-                    </div>
-                </Form>
+                            <div className='mt-2'>
+                                <Button isLoading={isLoading} type='submit' color='primary'>
+                                    Login
+                                </Button>
+                            </div>
+                        </form>
+                    )}
+                </Formik>
             </Panel>
         </div>
     );
