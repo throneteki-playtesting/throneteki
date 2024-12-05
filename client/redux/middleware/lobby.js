@@ -173,8 +173,8 @@ const lobbyMiddleware = (store) => {
                 dispatch(receiveNoChat());
             });
 
-            socket.on(LobbyMessage.RemoveMessage, (messageId) => {
-                dispatch(receiveRemoveMessage(messageId));
+            socket.on(LobbyMessage.RemoveMessage, (messageId, deletedBy) => {
+                dispatch(receiveRemoveMessage(messageId, deletedBy));
             });
 
             socket.on(LobbyMessage.Banner, (message) => {
@@ -244,11 +244,11 @@ const lobbyMiddleware = (store) => {
         if (sendNewGameMessage.match(action)) {
             socket.emit(LobbyMessage.NewGame, action.payload);
         } else if (sendSelectDeckMessage.match(action)) {
-            socket.emit(LobbyMessage.SelectDeck, action.payload.gameId, action.payload.deckId);
+            socket.emit(LobbyMessage.SelectDeck, action.payload);
         } else if (sendLeaveGameMessage.match(action)) {
             socket.emit(LobbyMessage.LeaveGame, action.payload);
         } else if (sendStartGameMessage.match(action)) {
-            socket.emit(LobbyMessage.StartGame, action.payload);
+            socket.emit(LobbyMessage.StartGame);
         } else if (sendChatMessage.match(action)) {
             socket.emit(LobbyMessage.Chat, action.payload);
         } else if (sendClearUserSessions.match(action)) {

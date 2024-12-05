@@ -2,17 +2,23 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import moment from 'moment';
 import $ from 'jquery';
 
-import Avatar from '../Site/Avatar';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { Avatar } from '@nextui-org/react';
+import { Constants } from '../../constants';
 
 const LobbyChat = ({ messages, isModerator, onRemoveMessageClick }) => {
     const [canScroll, setCanScroll] = useState(true);
     const messagesEndRef = useRef(null);
 
     const onScroll = useCallback(() => {
-        let messages = messagesEndRef.current;
+        let messagePanel = messagesEndRef.current;
 
         setTimeout(() => {
-            if (messages.scrollTop >= messages.scrollHeight - messages.offsetHeight - 20) {
+            if (
+                messagePanel.scrollTop >=
+                messagePanel.scrollHeight - messagePanel.offsetHeight - 20
+            ) {
                 setCanScroll(true);
             } else {
                 setCanScroll(false);
@@ -25,17 +31,6 @@ const LobbyChat = ({ messages, isModerator, onRemoveMessageClick }) => {
             $(messagesEndRef.current).scrollTop(999999);
         }
     }, [messages, canScroll]);
-
-    const handleRemoveMessageClick = useCallback(
-        (messageId, event) => {
-            event.preventDefault();
-
-            if (onRemoveMessageClick) {
-                onRemoveMessageClick(messageId);
-            }
-        },
-        [onRemoveMessageClick]
-    );
 
     const getMessages = useCallback(() => {
         const groupedMessages = {};
@@ -62,6 +57,7 @@ const LobbyChat = ({ messages, isModerator, onRemoveMessageClick }) => {
         return Object.values(groupedMessages).map((messages) => {
             let timestamp;
             const firstMessage = messages[0];
+
             if (!firstMessage.user) {
                 return undefined;
             }
@@ -77,40 +73,83 @@ const LobbyChat = ({ messages, isModerator, onRemoveMessageClick }) => {
                 if (!message.user) {
                     return undefined;
                 }
+
+                let messageText;
+
+                if (message.deleted) {
+                    if (isModerator) {
+                        messageText = (
+                            <>
+                                <span className='italic line-through'>{message.message}</span>
+                                <span className='italic'>
+                                    {' '}
+                                    - (Message removed by {message.deletedBy})
+                                </span>
+                            </>
+                        );
+                    } else {
+                        messageText = (
+                            <span className='italic'>Message deleted by a moderator</span>
+                        );
+                    }
+                } else {
+                    messageText = message.message;
+                }
+
                 return (
-                    <div key={message.user.username + i++} className='lobby-message'>
-                        {message.message}
+                    <div
+                        key={message.user.username + i++}
+                        className='break-words text-gray-300 text-sm leading-[1.15rem]'
+                    >
+                        {messageText}
                         {isModerator && (
                             <a
                                 href='#'
-                                className='btn no-padding'
-                                onClick={(event) => handleRemoveMessageClick(message._id, event)}
+                                className='ml-2 text-danger'
+                                onClick={() => onRemoveMessageClick(message._id)}
                             >
-                                <span className='chat-delete glyphicon glyphicon-remove' />
+                                <FontAwesomeIcon icon={faTimes} />
                             </a>
                         )}
                     </div>
                 );
             });
-            let userClass =
-                'username' + (firstMessage.user.role ? ` ${firstMessage.user.role}-role` : '');
+
+            const userClass =
+                'username font-bold' +
+                (firstMessage.user.role
+                    ? ` ${Constants.ColourClassByRole[firstMessage.user.role.toLowerCase()]}`
+                    : '');
+
             return (
-                <div key={timestamp + firstMessage.user.username + (index++).toString()}>
-                    <Avatar username={firstMessage.user.username} float />
-                    <span className={userClass}>{firstMessage.user.username}</span>
-                    <span className='timestamp'>{timestamp}</span>
-                    {renderedMessages}
+                <div
+                    key={timestamp + firstMessage.user.username + (index++).toString()}
+                    className='mb-2 flex'
+                >
+                    <div className='mr-2'>
+                        <Avatar
+                            src={`/img/avatar/${firstMessage.user.username}.png`}
+                            showFallback
+                        />
+                    </div>
+                    <div className='overflow-x-hidden'>
+                        <div className='flex'>
+                            <span className={userClass}>{firstMessage.user.username}</span>
+                            <span className='ml-2 text-gray-300 text-small'>{timestamp}</span>
+                        </div>
+                        {renderedMessages}
+                    </div>
                 </div>
             );
         });
-    }, [messages, isModerator, handleRemoveMessageClick]);
+    }, [messages, isModerator, onRemoveMessageClick]);
 
     if (messages.length === 0) {
         return <div>There are no messages at the moment.</div>;
     }
 
     return (
-        <div className='lobby-messages' ref={messagesEndRef} onScroll={onScroll}>
+        <div className='overflow-y-auto' ref={messagesEndRef} onScroll={onScroll}>
             {getMessages()}
         </div>
     );

@@ -3,43 +3,34 @@ import { useDispatch } from 'react-redux';
 
 import AlertPanel from '../Components/Site/AlertPanel';
 import Panel from '../Components/Site/Panel';
-import Form from '../Components/Form/Form';
 import { navigate } from '../redux/reducers/navigation';
 import { useResetPasswordMutation } from '../redux/middleware/api';
+import { Button, Input } from '@nextui-org/react';
+import { toast } from 'react-toastify';
 
 const ResetPassword = ({ id, token }) => {
     const dispatch = useDispatch();
 
     const [resetPassword, { isLoading }] = useResetPasswordMutation();
+    const [password, setPassword] = useState('');
 
-    const [successMessage, setSuccessMessage] = useState('');
-    const [errorMessage, setErrorMessage] = useState([]);
+    const onSubmit = useCallback(async () => {
+        try {
+            await resetPassword({
+                id: id,
+                token: token,
+                newPassword: password
+            }).unwrap();
 
-    const onSubmit = useCallback(
-        async (state) => {
-            setErrorMessage();
-            setSuccessMessage();
+            toast.success(
+                'Your password has been changed.  You will shortly be redirected to the login page'
+            );
 
-            try {
-                await resetPassword({
-                    id: id,
-                    token: token,
-                    newPassword: state.password
-                }).unwrap();
-
-                setSuccessMessage(
-                    'Your password has been changed.  You will shortly be redirected to the login page.'
-                );
-
-                setTimeout(() => {
-                    dispatch(navigate('/login'));
-                });
-            } catch (err) {
-                setErrorMessage(err || 'An error occurred resetting your password');
-            }
-        },
-        [dispatch, id, resetPassword, token]
-    );
+            dispatch(navigate('/login'));
+        } catch (err) {
+            toast.error(err.message || 'An error occurred resetting your password');
+        }
+    }, [dispatch, id, password, resetPassword, token]);
 
     if (!id || !token) {
         return (
@@ -52,16 +43,17 @@ const ResetPassword = ({ id, token }) => {
 
     return (
         <div>
-            <div className='col-sm-6 col-sm-offset-3'>
-                {errorMessage && <AlertPanel type='error' message={errorMessage} />}
-                {successMessage && <AlertPanel type='success' message={successMessage} />}
+            <div className='w-2/5 mx-auto'>
                 <Panel title='Reset password'>
-                    <Form
-                        name='resetpassword'
-                        apiLoading={isLoading}
-                        buttonText='Submit'
-                        onSubmit={onSubmit}
+                    <Input
+                        name='password'
+                        label='New password'
+                        type='password'
+                        onChange={setPassword}
                     />
+                    <Button onClick={onSubmit} loading={isLoading}>
+                        Submit
+                    </Button>
                 </Panel>
             </div>
         </div>

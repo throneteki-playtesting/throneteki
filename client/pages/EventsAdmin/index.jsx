@@ -7,8 +7,18 @@ import {
     useGetDraftCubesQuery,
     useGetEventsQuery
 } from '../../redux/middleware/api';
-import { toastr } from 'react-redux-toastr';
 import { navigate } from '../../redux/reducers/navigation';
+import {
+    Button,
+    Table,
+    TableBody,
+    TableCell,
+    TableColumn,
+    TableHeader,
+    TableRow
+} from '@nextui-org/react';
+import LoadingSpinner from '../../Components/Site/LoadingSpinner';
+import { toast } from 'react-toastify';
 
 const EventsAdmin = () => {
     const dispatch = useDispatch();
@@ -23,13 +33,9 @@ const EventsAdmin = () => {
             try {
                 await deleteEvent(id).unwrap();
 
-                toastr.success('Success', 'Event deleted successfully');
-
-                setTimeout(() => {
-                    toastr.clean();
-                }, 5000);
+                toast.success('Event deleted successfully');
             } catch (err) {
-                toastr.error('Error', err || 'An error occurred deleting the event');
+                toast.error('Error', err || 'An error occurred deleting the event');
             }
         },
         [deleteEvent]
@@ -40,13 +46,9 @@ const EventsAdmin = () => {
             try {
                 await deleteDraftCube(id).unwrap();
 
-                toastr.success('Success', 'Draft cube deleted successfully');
-
-                setTimeout(() => {
-                    toastr.clean();
-                }, 5000);
+                toast.success('Draft cube deleted successfully');
             } catch (err) {
-                toastr.error('Error', err || 'An error occurred deleting the draft cube');
+                toast.error('Error', err || 'An error occurred deleting the draft cube');
             }
         },
         [deleteDraftCube]
@@ -83,47 +85,49 @@ const EventsAdmin = () => {
     }, [dispatch, draftCubes, handleDeleteDraftCubeClick, isDeleteDraftCubeLoading]);
 
     if (isEventsLoading || isDraftCubesLoading) {
-        return 'Loading events, please wait...';
+        return <LoadingSpinner label='Loading events...' />;
     }
 
     return (
-        <div className='col-xs-12'>
+        <div className='w-full'>
             <Panel title='Events administration'>
-                <a className='btn btn-primary' onClick={() => dispatch(navigate('/events/add'))}>
-                    Add event
-                </a>
-                <table className='table table-striped'>
-                    <thead>
-                        <tr>
-                            <th className='col-sm-2'>Event</th>
-                            <th className='col-sm-2'>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <div>
+                    <Button color='primary' onClick={() => dispatch(navigate('/events/add'))}>
+                        Add event
+                    </Button>
+                </div>
+                <Table isStriped>
+                    <TableHeader>
+                        <TableColumn>Event</TableColumn>
+                        <TableColumn>Action</TableColumn>
+                    </TableHeader>
+                    <TableBody>
                         {events.map((event, index) => (
-                            <tr key={index}>
-                                <td>{event.name}</td>
-                                <td>
-                                    <button
-                                        className='btn btn-primary'
-                                        onClick={() => dispatch(navigate(`/events/${event._id}`))}
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        className='btn btn-danger'
-                                        onClick={() => handleDeleteClick(event._id)}
-                                    >
-                                        Delete
-                                        {isDeleteEventLoading && (
-                                            <span className='spinner button-spinner' />
-                                        )}
-                                    </button>
-                                </td>
-                            </tr>
+                            <TableRow key={index}>
+                                <TableCell>{event.name}</TableCell>
+                                <TableCell>
+                                    <div className='flex gap-2'>
+                                        <Button
+                                            color='primary'
+                                            onClick={() =>
+                                                dispatch(navigate(`/events/${event._id}`))
+                                            }
+                                        >
+                                            Edit
+                                        </Button>
+                                        <Button
+                                            color='danger'
+                                            isLoading={isDeleteEventLoading}
+                                            onClick={() => handleDeleteClick(event._id)}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </div>
+                                </TableCell>
+                            </TableRow>
                         ))}
-                    </tbody>
-                </table>
+                    </TableBody>
+                </Table>
             </Panel>
             <Panel title='Draft Cubes'>
                 <a

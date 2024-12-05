@@ -1,13 +1,13 @@
 import React, { useCallback } from 'react';
-import classNames from 'classnames';
 
 import CardPile from './CardPile';
 import Droppable from './Droppable';
+import { getCardDimensions } from '../../util';
+import classNames from 'classnames';
 
 const PlayerPlots = ({
     plotDiscard,
     onCardClick,
-    onDragDrop,
     onMenuItemClick,
     onCardMouseOut,
     onCardMouseOver,
@@ -20,13 +20,15 @@ const PlayerPlots = ({
     direction
 }) => {
     const renderPlotPiles = useCallback(() => {
-        let revealedPlots = (
+        const showSelectedPlot = mustShowPlotSelection && !!selectedPlot;
+        const plotsInFront = showSelectedPlot || !activePlot;
+
+        const revealedPlots = (
             <CardPile
-                key='activeplot'
                 cards={plotDiscard}
-                className='plot'
+                className={'plot'}
+                numColumns={4}
                 onCardClick={onCardClick}
-                onDragDrop={onDragDrop}
                 onMenuItemClick={onMenuItemClick}
                 onMouseOut={onCardMouseOut}
                 onMouseOver={onCardMouseOver}
@@ -35,61 +37,69 @@ const PlayerPlots = ({
                 source='revealed plots'
                 popupLocation={isMe ? 'bottom' : 'top'}
                 title='Used Plots'
+                titlePosition={direction === 'reverse' && plotsInFront ? 'bottom left' : 'top left'}
                 topCard={activePlot}
+                disableBackground={true}
             />
         );
 
-        let plotDeckElement = (
+        const plotDeckElement = (
             <CardPile
-                key='plots'
                 cards={plotDeck}
-                className={selectedPlot ? 'plot plot-selected' : 'plot'}
+                className={classNames('plot', {
+                    'plot-selected': selectedPlot
+                })}
                 closeOnClick={isMe}
-                hiddenTopCard={!mustShowPlotSelection}
+                hiddenTopCard={!showSelectedPlot}
                 disablePopup={!isMe}
-                onDragDrop={onDragDrop}
+                numColumns={4}
                 onCardClick={onCardClick}
                 onMouseOut={onCardMouseOut}
                 onMouseOver={onCardMouseOver}
                 orientation='horizontal'
                 source='plot deck'
                 title='Plots'
+                titlePosition={direction !== 'reverse' && activePlot ? 'bottom left' : 'top left'}
                 popupLocation={isMe ? 'bottom' : 'top'}
-                topCard={
-                    mustShowPlotSelection && !!selectedPlot
-                        ? selectedPlot
-                        : { facedown: true, kneeled: true }
-                }
+                topCard={showSelectedPlot ? selectedPlot : null}
                 size={cardSize}
+                disableBackground={true}
+                selected={!!selectedPlot}
             />
         );
 
-        let piles = [
-            isMe ? (
-                <Droppable key='usedplots' onDragDrop={onDragDrop} source='revealed plots'>
-                    {revealedPlots}
-                </Droppable>
-            ) : (
-                revealedPlots
-            ),
-            isMe ? (
-                <Droppable key='plotdeck' onDragDrop={onDragDrop} source='plot deck'>
-                    {plotDeckElement}
-                </Droppable>
-            ) : (
-                plotDeckElement
-            )
-        ];
+        const plotClass = classNames('rounded-md', {
+            'absolute bottom-0': direction !== 'reverse',
+            'z-50': plotsInFront
+        });
 
-        if (direction === 'reverse') {
-            piles.reverse();
-        }
+        const usedClass = classNames('rounded-md', {
+            'absolute bottom-0': direction === 'reverse',
+            'shadow-[0_0_5px_0] shadow-black': !!activePlot,
+            'z-50': !plotsInFront
+        });
+
+        let piles = [
+            <div key='plotdeck' className={plotClass}>
+                {isMe ? (
+                    <Droppable source='plot deck'>{plotDeckElement}</Droppable>
+                ) : (
+                    plotDeckElement
+                )}
+            </div>,
+            <div key='usedplots' className={usedClass}>
+                {isMe ? (
+                    <Droppable source='revealed plots'>{revealedPlots}</Droppable>
+                ) : (
+                    revealedPlots
+                )}
+            </div>
+        ];
 
         return piles;
     }, [
         plotDiscard,
         onCardClick,
-        onDragDrop,
         onMenuItemClick,
         onCardMouseOut,
         onCardMouseOver,
@@ -102,11 +112,14 @@ const PlayerPlots = ({
         direction
     ]);
 
-    let className = classNames('plot-group', {
-        'our-side': direction === 'default'
-    });
+    const height = getCardDimensions(cardSize).height;
 
-    return <div className={className}>{renderPlotPiles()}</div>;
+    return (
+        <div className={'relative flex flex-col'} style={{ height }}>
+            <div className=' inner-border absolute border-2 border-default-100/55 bg-black/55 w-full h-full rounded-md' />
+            {renderPlotPiles()}
+        </div>
+    );
 };
 
 export default PlayerPlots;

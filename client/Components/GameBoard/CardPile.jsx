@@ -5,30 +5,39 @@ import Card from './Card';
 import CardTiledList from './CardTiledList';
 import Droppable from './Droppable';
 import MovablePanel from './MovablePanel';
+import LabelledGameArea from './LabelledGameArea';
+
+import './CardPileLink.scss';
+import './CardPile.css';
+import { Button } from '@nextui-org/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const CardPile = ({
     cards,
     disablePopup,
+    disableBackground = false,
     onPopupChange,
     source,
     onCardClick: propsOnCardClick,
     topCard,
     closeOnClick,
     disableMouseOver,
+    numColumns,
     onMouseOut,
     onMouseOver,
     onTouchMove,
     onMenuItemClick,
     size,
     popupMenu,
-    onDragDrop,
     title,
+    titlePosition,
     popupLocation = 'bottom',
     className,
     cardCount,
     orientation = 'vertical',
     hiddenTopCard,
-    showCards
+    showCards,
+    selected
 }) => {
     const [showPopup, setShowPopup] = useState(cards && cards.some((card) => card.selectable));
     const prevCards = useRef(cards);
@@ -144,7 +153,8 @@ const CardPile = ({
             onTouchMove: onTouchMove,
             onMenuItemClick: onMenuItemClick,
             size: size,
-            source: source
+            source: source,
+            numColumns
         };
 
         if (cards && cards.some((card) => card.group)) {
@@ -173,27 +183,32 @@ const CardPile = ({
             return null;
         }
 
-        let popupClass = classNames('panel', {
-            'our-side': popupLocation === 'bottom'
-        });
+        const popupClass = classNames(
+            'card-list-popup relative box-content border-1 border-default-200 bg-black/75 rounded-b-md h-full',
+            {
+                'our-side': popupLocation === 'bottom',
+                [size]: true
+            }
+        );
 
-        let innerClass = classNames('inner', size);
+        let innerClass = classNames('inner overflow-y-auto px-2 py-2', size);
         let linkIndex = 0;
 
         let retPopupMenu = popupMenu && (
-            <div className='card-pile-buttons'>
+            <div className='flex'>
                 {popupMenu.map((menuItem) => {
                     return (
-                        <a
-                            className='btn btn-default'
+                        <Button
+                            color='primary'
+                            className='flex-1 mx-2 mt-2'
                             key={linkIndex++}
                             onClick={() => onPopupMenuItemClick(menuItem)}
                         >
-                            {menuItem.icon && (
-                                <span className={`glyphicon glyphicon-${menuItem.icon}`} />
-                            )}{' '}
-                            {menuItem.text}
-                        </a>
+                            <span>
+                                {menuItem.icon && <FontAwesomeIcon icon={menuItem.icon} />}{' '}
+                                {menuItem.text}
+                            </span>
+                        </Button>
                     );
                 })}
             </div>
@@ -205,8 +220,9 @@ const CardPile = ({
                 name={source}
                 onCloseClick={onCloseClick}
                 side={popupLocation}
+                size={size}
             >
-                <Droppable onDragDrop={onDragDrop} source={source}>
+                <Droppable source={source} size={size}>
                     <div className={popupClass} onClick={(event) => event.stopPropagation()}>
                         {retPopupMenu}
                         <div className={innerClass}>{cardList}</div>
@@ -225,6 +241,7 @@ const CardPile = ({
         onMenuItemClick,
         size,
         source,
+        numColumns,
         cards,
         disablePopup,
         showPopup,
@@ -232,12 +249,11 @@ const CardPile = ({
         popupMenu,
         title,
         onCloseClick,
-        onDragDrop,
         showCards,
         onPopupMenuItemClick
     ]);
 
-    let retClassName = classNames('panel', 'card-pile', className, {
+    let retClassName = classNames('card-pile box-border relative rounded-md', className, {
         [size]: size !== 'normal',
         horizontal: orientation === 'horizontal' || orientation === 'kneeled',
         vertical: orientation === 'vertical'
@@ -249,8 +265,8 @@ const CardPile = ({
     let cardOrientation =
         orientation === 'horizontal' && retTopCard && retTopCard.facedown ? 'kneeled' : orientation;
 
-    if (hiddenTopCard && !topCard) {
-        retTopCard = { facedown: true };
+    if (retTopCard && hiddenTopCard) {
+        retTopCard = { facedown: true, selected };
     }
 
     let menu;
@@ -261,8 +277,15 @@ const CardPile = ({
     }
 
     return (
-        <div className={retClassName} onClick={onCollectionClick}>
-            <div className='panel-header'>{headerText}</div>
+        <LabelledGameArea
+            label={headerText}
+            position={titlePosition}
+            className={retClassName}
+            onClick={onCollectionClick}
+        >
+            {!disableBackground && (
+                <div className=' inner-border absolute border-2 border-default-100/55 bg-black/55 w-full h-full rounded-md' />
+            )}
             {retTopCard ? (
                 <Card
                     card={retTopCard}
@@ -280,7 +303,7 @@ const CardPile = ({
                 <div className='card-placeholder' />
             )}
             {getPopup()}
-        </div>
+        </LabelledGameArea>
     );
 };
 
