@@ -7,7 +7,13 @@ class GuerrillaTactics extends DrawCard {
         this.action({
             title: 'Return attached to shadows',
             cost: ability.costs.sacrificeSelf(),
-            gameAction: GameActions.putIntoShadows({ card: this.parent })
+            message: {
+                format: '{player} sacrifices {costs.sacrifice} to return {parent} to shadows',
+                args: { parent: (context) => this.parent || context.cardStateWhenInitiated.parent }
+            },
+            gameAction: GameActions.putIntoShadows((context) => ({
+                card: this.parent || context.cardStateWhenInitiated.parent
+            }))
         });
     }
 }
