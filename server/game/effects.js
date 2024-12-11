@@ -981,6 +981,10 @@ const Effects = {
         let restriction = (card, playingType) => playingType === 'marshal' && condition(card);
         return this.cannotPutIntoPlay(restriction);
     },
+    cannotAmbush: function (condition) {
+        let restriction = (card, playingType) => playingType === 'ambush' && condition(card);
+        return this.cannotPutIntoPlay(restriction);
+    },
     cannotBringOutOfShadows: function (condition) {
         let restriction = (card, playingType) => playingType === 'outOfShadows' && condition(card);
         return this.cannotPutIntoPlay(restriction);
