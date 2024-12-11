@@ -10,7 +10,7 @@ class SeventyNineSentinels extends DrawCard {
                     defending: true,
                     faction: 'thenightswatch'
                 }),
-            phase: 'challenges',
+            phase: 'challenge',
             cost: ability.costs.kneelAny(
                 (card) =>
                     card.getType() === 'character' &&
