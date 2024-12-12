@@ -8,7 +8,7 @@ class TheMilkwater extends DrawCard {
         });
         this.reaction({
             when: {
-                onPhaseBegins: () => true
+                onPhaseStarted: () => true
             },
             cost: [ability.costs.kneelSelf(), ability.costs.sacrificeSelf()],
             message:

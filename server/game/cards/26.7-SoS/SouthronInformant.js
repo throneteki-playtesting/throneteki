@@ -14,9 +14,9 @@ class SouthronInformant extends DrawCard {
                     GameActions.takeControl({ card: this, player: context.opponent }).then({
                         message: {
                             format: "Then, {player} discards 1 card at random from {opponent}'s hand and draws 1 card",
-                            args: { opponent: (context) => context.parentContext.opponent }
+                            args: { opponent: (context) => context.opponent }
                         },
-                        gameAction: GameActions.simultaneously([
+                        gameAction: GameActions.simultaneously((context) => [
                             GameActions.discardAtRandom({
                                 player: context.parentContext.opponent,
                                 amount: 1

@@ -3,7 +3,7 @@ import GameActions from '../../GameActions/index.js';
 
 class QueenOfMeereen extends DrawCard {
     setupCardAbilities(ability) {
-        this.attachmentRestriction({ trait: ['Lord'] });
+        this.attachmentRestriction({ trait: ['Lady'] });
         this.whileAttached({
             effect: [ability.effects.addKeyword('Queen'), ability.effects.addKeyword('Insight')]
         });

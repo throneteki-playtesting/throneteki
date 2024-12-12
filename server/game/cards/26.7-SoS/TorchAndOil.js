@@ -25,9 +25,9 @@ class TorchAndOil extends DrawCard {
                         GameActions.discardCard((context) => ({
                             card: context.event.revealed[0]
                         })),
-                        GameActions.standCard({
+                        GameActions.standCard(() => ({
                             card: this.parent
-                        })
+                        }))
                     ])
                 })
             })

@@ -20,14 +20,23 @@ class ChooseGoldSourceAmounts extends BaseStep {
 
             this.currentSource = this.sources.shift();
             let currentAvailable = this.currentSource.gold;
+            let currentGoldMultiplier = this.currentSource.goldMultiplier;
             let maxAmount = Math.min(this.remainingAmount, currentAvailable);
             let minAmount = Math.max(0, this.remainingAmount - this.getMaxRemainingAvailable());
 
             if (this.sources.length > 0 && minAmount !== maxAmount) {
-                let buttons = range(minAmount, maxAmount + 1)
+                let buttons = range(
+                    Math.ceil(minAmount / currentGoldMultiplier),
+                    Math.ceil(maxAmount / currentGoldMultiplier) + 1
+                )
+                    .map((amount) => amount * currentGoldMultiplier)
                     .reverse()
                     .map((amount) => {
-                        return { text: amount.toString(), method: 'payGold', arg: amount };
+                        return {
+                            text: amount.toString(),
+                            method: 'payGold',
+                            arg: amount
+                        };
                     });
                 this.game.promptWithMenu(this.player, this, {
                     activePrompt: {
@@ -49,6 +58,7 @@ class ChooseGoldSourceAmounts extends BaseStep {
     payGold(player, amount) {
         this.remainingAmount -= amount;
         this.currentSource.modifyGold(-amount);
+        this.remainingAmount = Math.max(this.remainingAmount, 0);
 
         if (this.remainingAmount === 0) {
             this.callback();

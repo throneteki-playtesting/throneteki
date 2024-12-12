@@ -2,6 +2,7 @@ class GoldSource {
     constructor(playerOrCard, allowSpendingFunc = () => true) {
         this.playerOrCard = playerOrCard;
         this.allowSpendingFunc = allowSpendingFunc;
+        this.goldMultiplier = 1;
     }
 
     get gold() {
