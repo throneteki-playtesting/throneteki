@@ -5,7 +5,8 @@ class SouthronInformant extends DrawCard {
     setupCardAbilities() {
         this.reaction({
             when: {
-                onCardEntersPlay: (event) => event.card === this
+                onCardEntersPlay: (event) =>
+                    event.card === this && this.game.currentPhase === 'challenge'
             },
             chooseOpponent: true,
             message: '{player} uses {source} to give control of {source} to {opponent}',
@@ -32,6 +33,6 @@ class SouthronInformant extends DrawCard {
 }
 
 SouthronInformant.code = '26542';
-SouthronInformant.version = '1.0.0';
+SouthronInformant.version = '1.0.1';
 
 export default SouthronInformant;
