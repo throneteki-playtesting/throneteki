@@ -17,7 +17,7 @@ class SerGuilianQorgyle extends DrawCard {
             gameAction: GameActions.genericHandler((context) => {
                 this.game.promptForIcon(this.controller, this, (icon) => {
                     this.untilEndOfPhase((ability) => ({
-                        match: context.target,
+                        match: context.event.card,
                         effect: ability.effects.removeIcon(icon)
                     }));
 

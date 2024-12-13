@@ -7,14 +7,14 @@ class GylesRosby extends DrawCard {
 
         // TODO: Update all gold movements to encompass a single event name
         this.registerEvents([
-            'onPhaseBegins',
+            'onPhaseStarted',
             'onGoldTransferred',
             'onCardEntersPlay',
             'onCardAbilityInitiated'
         ]);
     }
 
-    onPhaseBegins() {
+    onPhaseStarted() {
         this.checkKill();
     }
 
