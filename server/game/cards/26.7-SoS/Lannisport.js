@@ -7,7 +7,7 @@ class Lannisport extends DrawCard {
         });
         this.persistentEffect({
             targetController: 'opponent',
-            match: (player) => player.hand.length < this.controller.hand.length,
+            match: (player) => player.getHandCount() < this.controller.getHandCount(),
             effect: [ability.effects.cannotInitiateChallengeType('power', () => this.controller)]
         });
     }

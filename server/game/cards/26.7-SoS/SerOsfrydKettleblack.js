@@ -6,7 +6,7 @@ class SerOsfrydKettleblack extends DrawCard {
             condition: () =>
                 this.game
                     .getOpponents(this.controller)
-                    .some((player) => this.controller.hand.length > player.hand.length),
+                    .some((player) => this.controller.getHandCount() > player.getHandCount()),
             match: this,
             effect: ability.effects.addKeyword('Renown')
         });

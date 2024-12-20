@@ -3,12 +3,16 @@ import GameActions from '../../GameActions/index.js';
 
 class QartheenGalley extends DrawCard {
     setupCardAbilities(ability) {
-        this.plotModifiers({
-            initiative: 1
+        // TODO: If this ability is released, probably worth a proper check of all abilities it affects & maybe a proper implement.
+        // Notably, it should affect anything which counts/compares hand size, but nothing which interacts with cards in hand
+        this.persistentEffect({
+            targetController: 'current',
+            effect: ability.effects.modifyHandCount(-1)
         });
-        this.action({
-            title: 'Place card in shadow',
-            phase: 'taxation',
+        this.reaction({
+            when: {
+                onCardOutOfShadows: (event) => event.card === this
+            },
             target: {
                 cardCondition: {
                     location: 'discard pile',
@@ -16,12 +20,11 @@ class QartheenGalley extends DrawCard {
                     condition: (card) => card.isShadow()
                 }
             },
-            cost: [ability.costs.kneelSelf(), ability.costs.shuffleSelfIntoDeck()],
             message:
-                '{player} kneels {costs.kneel} and shuffles it into their deck to place {target} in shadows from their discard pile',
+                '{player} uses {source} to return {target} to their hand from their discard pile',
             handler: (context) => {
                 this.game.resolveGameAction(
-                    GameActions.putIntoShadows((context) => ({ card: context.target })),
+                    GameActions.returnCardToHand((context) => ({ card: context.target })),
                     context
                 );
             }
@@ -30,6 +33,6 @@ class QartheenGalley extends DrawCard {
 }
 
 QartheenGalley.code = '26582';
-QartheenGalley.version = '1.0.0';
+QartheenGalley.version = '1.1.0';
 
 export default QartheenGalley;

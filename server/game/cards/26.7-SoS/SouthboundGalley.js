@@ -3,49 +3,35 @@ import GameActions from '../../GameActions/index.js';
 
 class SouthboundGalley extends DrawCard {
     setupCardAbilities() {
+        this.plotModifiers({
+            initiative: 1
+        });
         this.reaction({
             when: {
                 onCardOutOfShadows: (event) => event.card === this
             },
-            chooseOpponent: true,
-            message: '{player} uses {source} to choose {opponent} and name a card',
+            target: {
+                cardCondition: {
+                    location: 'play area',
+                    type: 'character',
+                    defending: true,
+                    printedStrengthOrLower: 3,
+                    condition: (card) => GameActions.kneelCard({ card }).allow()
+                }
+            },
+            message:
+                "{player} uses {source} to have {target} not contribute it's STR to this challenge",
             handler: (context) => {
-                this.game.promptForCardName({
-                    player: context.player,
-                    onSelect: (player, cardName) => this.selectCardName(cardName, context),
-                    source: context.source
-                });
+                this.untilEndOfChallenge((ability) => ({
+                    match: context.target,
+                    effect: ability.effects.doesNotContributeStrength()
+                }));
             }
         });
-    }
-
-    selectCardName(cardName, context) {
-        this.game.addMessage('{0} names {1}', cardName);
-        this.game.resolveGameAction(
-            GameActions.revealTopCards((context) => ({
-                player: context.player
-            })).then({
-                condition: (context) => context.event.cards[0].name === cardName,
-                message: '{player} {gameAction}',
-                gameAction: GameActions.simultaneously([
-                    GameActions.putIntoPlay((context) => ({
-                        card: context.event.cards[0],
-                        player: context.player
-                    })),
-                    GameActions.genericHandler((context) => {
-                        this.untilEndOfPhase((ability) => ({
-                            match: context.event.cards[0],
-                            effect: ability.effects.takeControl(this.controller)
-                        }));
-                    })
-                ])
-            }),
-            context
-        );
     }
 }
 
 SouthboundGalley.code = '26522';
-SouthboundGalley.version = '1.0.0';
+SouthboundGalley.version = '1.1.0';
 
 export default SouthboundGalley;
