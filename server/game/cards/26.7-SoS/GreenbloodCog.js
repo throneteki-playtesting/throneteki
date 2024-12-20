@@ -20,14 +20,14 @@ class GreenbloodCog extends DrawCard {
             handler: (context) => {
                 this.game.promptForIcon(this.controller, this, (icon) => {
                     this.untilEndOfPhase((ability) => ({
-                        match: context.event.card,
+                        match: context.target,
                         effect: ability.effects.removeIcon(icon)
                     }));
 
                     this.game.addMessage(
                         '{0} chooses to have {1} lose {2} {3} icon until the end of the phase',
                         this.controller,
-                        context.event.card,
+                        context.target,
                         icon === 'intrigue' ? 'an' : 'a',
                         icon
                     );
