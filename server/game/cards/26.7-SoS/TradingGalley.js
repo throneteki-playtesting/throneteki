@@ -1,33 +1,34 @@
 import DrawCard from '../../drawcard.js';
-import GameActions from '../../GameActions/index.js';
 
 class TradingGalley extends DrawCard {
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
+        this.plotModifiers({
+            gold: 1
+        });
         this.reaction({
             when: {
-                onCardOutOfShadows: (event) => event.card.controller === this.controller
+                onCardOutOfShadows: (event) => event.card === this
             },
-            chooseOpponent: true,
-            cost: ability.costs.kneelSelf(),
+            target: {
+                cardCondition: {
+                    location: 'play area',
+                    type: 'character',
+                    participating: true
+                }
+            },
             message:
-                '{player} kneels {costs.kneel} to gain 3 gold and give control of {source} to {opponent}',
+                '{player} uses {source} to give +3 STR to {target} until the end of the challenge',
             handler: (context) => {
-                this.game.resolveGameAction(
-                    GameActions.simultaneously([
-                        GameActions.gainGold((context) => ({ player: context.player, amount: 3 })),
-                        GameActions.takeControl((context) => ({
-                            card: this,
-                            player: context.opponent
-                        }))
-                    ]),
-                    context
-                );
+                this.untilEndOfChallenge((ability) => ({
+                    match: context.target,
+                    effect: ability.effects.modifyStrength(3)
+                }));
             }
         });
     }
 }
 
 TradingGalley.code = '26594';
-TradingGalley.version = '1.0.0';
+TradingGalley.version = '1.1.0';
 
 export default TradingGalley;
