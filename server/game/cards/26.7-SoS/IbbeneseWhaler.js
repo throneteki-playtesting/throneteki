@@ -9,7 +9,7 @@ class IbbeneseWhaler extends DrawCard {
         this.action({
             title: 'Draw cards',
             phase: 'taxation',
-            condition: (context) => context.player.hand.length === 0,
+            condition: (context) => context.player.getHandCount() === 0,
             cost: [ability.costs.kneelSelf(), ability.costs.putSelfIntoShadows()],
             message: '{player} kneels {costs.kneel} and returns it to shadows to draw 2 cards',
             gameAction: GameActions.drawCards({ amount: 2 })
