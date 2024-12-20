@@ -17,8 +17,9 @@ class TaxationPhase extends Phase {
 
     returnGold() {
         for (let player of this.game.getPlayersInFirstPlayerOrder()) {
+            const amountToReturn = Math.max(0, player.gold - player.amountUnspentGoldToKeep);
             if (!player.doesNotReturnUnspentGold) {
-                this.game.returnGoldToTreasury({ player: player, amount: player.gold });
+                this.game.returnGoldToTreasury({ player: player, amount: amountToReturn });
             }
         }
     }

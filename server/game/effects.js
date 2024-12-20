@@ -397,6 +397,17 @@ const Effects = {
             }
         };
     },
+    raiseAmountUnspentGoldToKeep: function (value) {
+        return {
+            targetType: 'player',
+            apply: function (player) {
+                player.amountUnspentGoldToKeep += value;
+            },
+            unapply: function (player) {
+                player.amountUnspentGoldToKeep -= value;
+            }
+        };
+    },
     modifyKeywordTriggerAmount: function (keyword, value) {
         return {
             apply: function (card) {
@@ -1677,6 +1688,17 @@ const Effects = {
                 delete context.dynamicUsedPlotsWithTrait[player.name];
             },
             isStateDependent: true
+        };
+    },
+    modifyHandCount: function (value) {
+        return {
+            targetType: 'player',
+            apply: function (player) {
+                player.handModifier += value;
+            },
+            unapply: function (player) {
+                player.handModifier -= value;
+            }
         };
     },
     mustChooseAsClaim: function () {

@@ -1,37 +1,23 @@
 import DrawCard from '../../drawcard.js';
-import GameActions from '../../GameActions/index.js';
+import CardEntersPlayTracker from '../../EventTrackers/CardEntersPlayTracker.js';
 
 class GreyGalley extends DrawCard {
     setupCardAbilities(ability) {
-        this.plotModifiers({
-            reserve: 1
+        this.tracker = CardEntersPlayTracker.forPhase(this.game);
+
+        this.persistentEffect({
+            condition: () => this.controller.anyCardsInPlay({ type: 'character', defending: true }),
+            targetController: 'current',
+            effect: ability.effects.contributeStrength(this, this.getAmount())
         });
-        this.action({
-            title: 'Kneel and sacrifice to place in shadows',
-            phase: 'dominance',
-            target: {
-                type: 'select',
-                cardCondition: {
-                    type: 'character',
-                    location: 'play area',
-                    printedStrengthOrLower: 3,
-                    controller: 'current'
-                }
-            },
-            cost: [ability.costs.kneelSelf(), ability.costs.sacrificeSelf()],
-            message:
-                '{player} kneels and sacrifices {costs.sacrifice} to place {target} in shadows',
-            handler: (context) => {
-                this.game.resolveGameAction(
-                    GameActions.putIntoShadows((context) => ({ card: context.target })),
-                    context
-                );
-            }
-        });
+    }
+
+    getAmount() {
+        return this.tracker.hasComeOutOfShadows(this) ? 3 : 1;
     }
 }
 
 GreyGalley.code = '26558';
-GreyGalley.version = '1.0.0';
+GreyGalley.version = '1.1.0';
 
 export default GreyGalley;

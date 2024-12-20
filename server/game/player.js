@@ -55,6 +55,7 @@ class Player extends Spectator {
         this.playableLocations = this.createDefaultPlayableLocations();
         this.usedPlotsModifier = 0;
         this.usedPlotsModifierByTrait = new ReferenceCountedSetProperty();
+        this.handModifier = 0;
         this.attackerLimits = new MinMaxProperty({ defaultMin: 0, defaultMax: 0 });
         this.defenderLimits = new MinMaxProperty({ defaultMin: 0, defaultMax: 0 });
         this.gainedGold = 0;
@@ -64,6 +65,7 @@ class Player extends Spectator {
         this.gainedPower = 0;
         this.maxPowerGain = new MinMaxProperty({ defaultMin: 0, defaultMax: undefined });
         this.doesNotReturnUnspentGold = false;
+        this.amountUnspentGoldToKeep = 0;
         this.cannotGainChallengeBonus = false;
         this.cannotWinGame = false;
         this.triggerRestrictions = [];
@@ -222,6 +224,10 @@ class Player extends Spectator {
 
     getPlots() {
         return this.plotDeck.filter((plot) => !plot.notConsideredToBeInPlotDeck);
+    }
+
+    getHandCount() {
+        return Math.max(0, this.hand.length + this.handModifier);
     }
 
     addGoldSource(source) {

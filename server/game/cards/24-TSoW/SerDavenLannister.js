@@ -11,7 +11,7 @@ class SerDavenLannister extends DrawCard {
                     // SEE ALSO GreatWyk (12017), which have the same triggering restriction (not implemented yet)
                     context.game
                         .getOpponents(context.player)
-                        .every((opponent) => opponent.hand.length > 0)
+                        .every((opponent) => opponent.getHandCount() > 0)
             },
             message:
                 '{player} uses {source} to have each opponent choose and discard 1 card from their hand',
@@ -33,7 +33,9 @@ class SerDavenLannister extends DrawCard {
                 condition: (context) =>
                     context.game
                         .getOpponents(context.player)
-                        .every((opponent) => opponent.hand.length < context.player.hand.length),
+                        .every(
+                            (opponent) => opponent.getHandCount() < context.player.getHandCount()
+                        ),
                 message: 'Then, {player} draws 1 card',
                 gameAction: GameActions.drawCards((context) => ({
                     amount: 1,
