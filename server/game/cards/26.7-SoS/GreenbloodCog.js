@@ -14,6 +14,7 @@ class GreenbloodCog extends DrawCard {
                 cardCondition: {
                     location: 'play area',
                     type: 'character',
+                    printedCostOrLower: 5,
                     condition: (card) => GameActions.loseIcon({ card }).allow()
                 }
             },
