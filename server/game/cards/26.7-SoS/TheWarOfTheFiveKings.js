@@ -15,7 +15,7 @@ class TheWarOfTheFiveKings extends PlotCard {
     }
 }
 
-TheWarOfTheFiveKings.code = '26611';
+TheWarOfTheFiveKings.code = '26613';
 TheWarOfTheFiveKings.version = '1.0.0';
 
 export default TheWarOfTheFiveKings;
