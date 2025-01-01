@@ -29,7 +29,7 @@ class KingsLandingDromon extends DrawCard {
     }
 }
 
-KingsLandingDromon.code = '26535';
+KingsLandingDromon.code = '26534';
 KingsLandingDromon.version = '1.1.0';
 
 export default KingsLandingDromon;
