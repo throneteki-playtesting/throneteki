@@ -8,7 +8,7 @@ class UnseenInfluence extends DrawCard {
 
         this.whileAttached({
             effect: ability.effects.dynamicStrength((card) =>
-                card.controller.getNumberOfCardsInPlay({ printedStrengthOrLower: 3 })
+                card.controller.getNumberOfCardsInPlay({ printedCostOrLower: 3 })
             )
         });
     }
