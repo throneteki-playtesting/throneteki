@@ -5,7 +5,7 @@ class HornHillElite extends DrawCard {
         this.persistentEffect({
             condition: () => this.isAttacking(),
             match: this,
-            effect: ability.effects.dynamicStrength(
+            effect: ability.effects.dynamicStrength(() =>
                 this.controller.getNumberOfCardsInPlay({ type: 'character', kneeled: false })
             )
         });
