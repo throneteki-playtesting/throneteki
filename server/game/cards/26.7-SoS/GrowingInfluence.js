@@ -34,7 +34,7 @@ class GrowingInfluence extends DrawCard {
         this.action({
             title: 'Give opponent gold',
             phase: 'marshal',
-            condition: (context) => context.player.gold > 0,
+            condition: (context) => context.player.gold > 0 && context.player.firstPlayer,
             chooseOpponent: true,
             handler: (context) => {
                 chooseXValue({ min: 1, max: context.player.gold, context }, (xValue) => {
@@ -59,15 +59,30 @@ class GrowingInfluence extends DrawCard {
                                     printedCostOrLower: context.xValue
                                 }
                             },
-                            message: 'Then {player} takes control of {target}',
+                            message: 'Then {player} removes {target} from the game',
                             handler: (context) => {
                                 this.game.resolveGameAction(
-                                    GameActions.takeControl((context) => ({
-                                        player: context.player,
+                                    GameActions.removeFromGame({
                                         card: context.target
-                                    })),
+                                    }),
                                     context
                                 );
+
+                                this.game.once('onPhaseStarted', () => {
+                                    this.game.addMessage(
+                                        '{0} puts {1} into play under their control due to {2}',
+                                        context.player,
+                                        context.target,
+                                        context.source
+                                    );
+
+                                    this.game.resolveGameAction(
+                                        GameActions.putIntoPlay({
+                                            card: context.target,
+                                            player: context.player
+                                        })
+                                    );
+                                });
                             }
                         })),
                         context
@@ -79,6 +94,6 @@ class GrowingInfluence extends DrawCard {
 }
 
 GrowingInfluence.code = '26596';
-GrowingInfluence.version = '1.0.0';
+GrowingInfluence.version = '1.0.1';
 
 export default GrowingInfluence;

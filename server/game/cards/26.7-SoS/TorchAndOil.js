@@ -5,7 +5,9 @@ class TorchAndOil extends DrawCard {
     setupCardAbilities(ability) {
         this.reaction({
             when: {
-                onCardDrawn: (event) => event.player !== this.controller
+                onCardDrawn: (event) => event.player !== this.controller,
+                onCardPutIntoShadows: (event) =>
+                    event.player !== this.controller && event.reason === 'marshal'
             },
             cost: ability.costs.kneelSelf(),
             message: {
@@ -25,6 +27,10 @@ class TorchAndOil extends DrawCard {
                         GameActions.discardCard((context) => ({
                             card: context.event.revealed[0]
                         })),
+                        GameActions.drawCards((context) => ({
+                            player: context.event.player,
+                            amount: 1
+                        })),
                         GameActions.standCard(() => ({
                             card: this.parent
                         }))
@@ -36,6 +42,6 @@ class TorchAndOil extends DrawCard {
 }
 
 TorchAndOil.code = '26556';
-TorchAndOil.version = '1.0.0';
+TorchAndOil.version = '1.0.1';
 
 export default TorchAndOil;
