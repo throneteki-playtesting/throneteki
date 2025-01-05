@@ -14,7 +14,7 @@ class TheWardenOfTheEast extends DrawCard {
                     event.card.controller !== this.controller &&
                     ['hand', 'draw deck', 'shadows'].includes(event.card.location)
             },
-            limit: ability.limit.perPhase(1),
+            limit: ability.limit.perRound(3),
             message: {
                 format: '{player} uses {source} to have {parent} gain 1 power',
                 args: { parent: () => this.parent }
@@ -25,6 +25,6 @@ class TheWardenOfTheEast extends DrawCard {
 }
 
 TheWardenOfTheEast.code = '26604';
-TheWardenOfTheEast.version = '1.0.0';
+TheWardenOfTheEast.version = '1.0.1';
 
 export default TheWardenOfTheEast;

@@ -2,15 +2,12 @@ import DrawCard from '../../drawcard.js';
 
 class HornHillElite extends DrawCard {
     setupCardAbilities(ability) {
-        const numStandingCharacters = () =>
-            this.game.getNumberOfCardsInPlay(
-                (card) => !card.kneeled && card.controller === this.controller
-            );
-
         this.persistentEffect({
             condition: () => this.isAttacking(),
             match: this,
-            effect: ability.effects.dynamicStrength(numStandingCharacters)
+            effect: ability.effects.dynamicStrength(() =>
+                this.controller.getNumberOfCardsInPlay({ type: 'character', kneeled: false })
+            )
         });
     }
 }
