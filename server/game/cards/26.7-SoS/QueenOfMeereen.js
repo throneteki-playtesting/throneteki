@@ -1,37 +1,47 @@
 import DrawCard from '../../drawcard.js';
-import GameActions from '../../GameActions/index.js';
 
 class QueenOfMeereen extends DrawCard {
     setupCardAbilities(ability) {
         this.attachmentRestriction({ trait: ['Lady'] });
         this.whileAttached({
-            effect: [ability.effects.addKeyword('Queen'), ability.effects.addKeyword('Insight')]
+            effect: ability.effects.addKeyword('Queen')
         });
         this.action({
             title: 'Discard to reduce',
-            cost: ability.costs.discardAnyFromHand(),
-            message: {
-                format: '{player} discards {costs.discardFromHand} from their hand to reduce the cost of the next card they marshal or bring out of shadows this phase by {amount}',
-                args: { amount: (context) => this.getAmount(context) }
-            },
-            limit: ability.limit.perRound(1),
-            gameAction: GameActions.genericHandler((context) => {
-                this.untilEndOfPhase((ability) => ({
-                    targetController: 'current',
-                    effect: ability.effects.reduceNextMarshalledOrOutOfShadowsCardCost(
-                        this.getAmount(context)
-                    )
-                }));
-            })
+            cost: ability.costs.kneelSelf(),
+            message: '{player} kneels {source} to discard any number of cards from their hand',
+            handler: (context) => {
+                this.game.promptForSelect(context.player, {
+                    type: 'select',
+                    mode: 'unlimited',
+                    activePromptTitle: 'Select cards',
+                    source: context.source,
+                    context: context,
+                    cardCondition: (card, context) =>
+                        card.isMatch({ location: 'hand' }) && card.controller === context.player,
+                    onSelect: (player, cards) => {
+                        const reduction = cards.length * 2;
+                        this.untilEndOfPhase((ability) => ({
+                            targetController: 'current',
+                            effect: ability.effects.reduceNextMarshalledAmbushedOrOutOfShadowsCardCost(
+                                reduction
+                            )
+                        }));
+                        this.game.addMessage(
+                            '{0} discards {1} to reduce the cost of the next card they marshal, ambush or bring out of shadows this phase by {2}',
+                            context.player,
+                            cards,
+                            reduction
+                        );
+                        return true;
+                    }
+                });
+            }
         });
-    }
-
-    getAmount(context) {
-        return context.costs.discardFromHand.length;
     }
 }
 
 QueenOfMeereen.code = '26579';
-QueenOfMeereen.version = '1.0.0';
+QueenOfMeereen.version = '1.0.1';
 
 export default QueenOfMeereen;
