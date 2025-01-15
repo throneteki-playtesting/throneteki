@@ -21,7 +21,7 @@ class GoodAsGold extends DrawCard {
     }
 
     getAmount(context) {
-        return Math.floor(context.player.shadows.length / 2);
+        return context.player.shadows.length * 2;
     }
 }
 

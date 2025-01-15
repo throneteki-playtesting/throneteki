@@ -7,16 +7,19 @@ class DrawCards extends GameAction {
         super('drawCards');
     }
 
-    message({ player, amount }) {
+    message({ player, amount, context }) {
+        player = player || context.player;
         const actualAmount = player.getNumCardsToDraw(amount);
         return Message.fragment('draws {cards}', { cards: TextHelper.count(actualAmount, 'card') });
     }
 
-    canChangeGameState({ player, amount }) {
+    canChangeGameState({ player, amount, context }) {
+        player = player || context.player;
         return amount > 0 && player.getNumCardsToDraw(amount) > 0;
     }
 
-    createEvent({ player, amount, reason = 'ability', source }) {
+    createEvent({ player, amount, reason = 'ability', source, context }) {
+        player = player || context.player;
         const actualAmount = player.getNumCardsToDraw(amount);
         const eventProps = {
             amount: actualAmount,

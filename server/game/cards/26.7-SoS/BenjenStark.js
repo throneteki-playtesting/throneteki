@@ -39,6 +39,7 @@ class BenjenStark extends DrawCard {
                 (opponent) => opponent === player
             )
         }));
+        return true;
     }
 }
 

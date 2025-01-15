@@ -19,10 +19,10 @@ class AToastToTheKing extends DrawCard {
             chooseOpponent: (opponent) => this.getClaimableChallengeTypes(opponent).length > 0,
             handler: (context) => {
                 this.chosenOpponent = context.opponent;
-                const types = this.getClaimableChallengeTypes(this.chosenOpponent);
                 const buttons = ChallengeTypes.asButtons((type) => ({
                     method: 'satisfyClaim',
-                    disabled: () => !types.contains(type)
+                    disabled: () =>
+                        !this.getClaimableChallengeTypes(this.chosenOpponent).includes(type)
                 }));
                 buttons.push({ text: 'Done', method: 'cancel' });
 
