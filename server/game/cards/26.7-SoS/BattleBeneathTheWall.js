@@ -33,6 +33,7 @@ class BattleBeneathTheWall extends PlotCard {
                 this.game.isDuringChallenge({
                     challengeType: challengeType
                 }),
+            match: (card) => card.location === 'play area' && card.getType() === 'character',
             targetController: 'any',
             effect: [
                 ability.effects.mustBeDeclaredAsAttacker(),

@@ -5,10 +5,10 @@ class Stormlord extends DrawCard {
     setupCardAbilities() {
         this.forcedReaction({
             when: {
-                onPhaseStarted: (event) => event.phase === 'dominance'
+                onPhaseStarted: (event, context) =>
+                    event.phase === 'dominance' &&
+                    !context.player.anyCardsInPlay({ type: 'character', trait: 'king' })
             },
-            condition: (context) =>
-                !context.player.anyCardsInPlay({ type: 'character', trait: 'king' }),
             message: '{player} is forced by {source} to sacrifice a character',
             handler: (context) => {
                 this.game.promptForSelect(context.player, {

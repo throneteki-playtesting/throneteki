@@ -1,4 +1,5 @@
 import DrawCard from '../../drawcard.js';
+import GameActions from '../../GameActions/index.js';
 
 class Lannisport extends DrawCard {
     setupCardAbilities() {
@@ -12,7 +13,7 @@ class Lannisport extends DrawCard {
                     event.challenge.initiatedChallengeType === 'power'
             },
             handler: (context) => {
-                const opponent = context.opponent;
+                const opponent = context.event.challenge.initiatingPlayer;
                 if (opponent.hand.length < 1) {
                     this.cancelChallenge();
                     return;
@@ -20,10 +21,10 @@ class Lannisport extends DrawCard {
 
                 this.game.promptWithMenu(opponent, this, {
                     activePrompt: {
-                        menuTile: 'Discard card from hand?',
+                        menuTitle: 'Discard a card to initiate?',
                         buttons: [
-                            { text: 'Yes (continue challenge)', method: 'promptToDiscard' },
-                            { text: 'No (cancel challenge)', method: 'cancelChallenge' }
+                            { text: 'Yes', method: 'promptToDiscard' },
+                            { text: 'No', method: 'cancelChallenge' }
                         ]
                     },
                     source: this
@@ -36,16 +37,16 @@ class Lannisport extends DrawCard {
         this.game.promptForSelect(opponent, {
             activePrompt: 'Select a card',
             cardCondition: (card) => card.controller === opponent && card.location === 'hand',
-            onSelect: (opponent, cards) => this.discardSelectedCards(opponent, cards),
+            onSelect: (opponent, card) => this.discardSelectedCards(opponent, card),
             onCancel: () => this.cancelChallenge(),
             source: this
         });
         return true;
     }
 
-    discardSelectedCards(opponent, cards) {
-        this.game.addMessage('{0} discards {1} for {2}', opponent, cards, this);
-        opponent.discardCards(cards);
+    discardSelectedCards(opponent, card) {
+        this.game.addMessage('{0} discards {1} for {2}', opponent, card, this);
+        this.game.resolveGameAction(GameActions.discardCard({ card }));
         return true;
     }
 
