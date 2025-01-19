@@ -5,10 +5,16 @@ class ArmedToTheTeeth extends AgendaCard {
     constructor(owner, cardData) {
         super(owner, cardData);
 
-        this.registerEvents(['onPlayerKeepHandOrMulligan']);
+        this.registerEvents(['onDecksPrepared']);
     }
 
     setupCardAbilities(ability) {
+        this.persistentEffect({
+            condition: () =>
+                !this.controller.anyCardsInPlay((card) => card.getType() === 'attachment'),
+            effect: ability.effects.modifyDrawPhaseCards(-1)
+        });
+
         this.action({
             title: 'Put attachment into play',
             cost: [
@@ -41,7 +47,7 @@ class ArmedToTheTeeth extends AgendaCard {
         });
     }
 
-    onPlayerKeepHandOrMulligan(event) {
+    onDecksPrepared(event) {
         if (event.player !== this.controller) {
             return;
         }
@@ -80,6 +86,6 @@ class ArmedToTheTeeth extends AgendaCard {
 }
 
 ArmedToTheTeeth.code = '26618';
-ArmedToTheTeeth.version = '1.0.0';
+ArmedToTheTeeth.version = '1.0.1';
 
 export default ArmedToTheTeeth;
