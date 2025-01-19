@@ -47,10 +47,7 @@ class ArmedToTheTeeth extends AgendaCard {
         });
     }
 
-    onDecksPrepared(event) {
-        if (event.player !== this.controller) {
-            return;
-        }
+    onDecksPrepared() {
         const context = {
             player: this.controller,
             game: this.game,
