@@ -3,38 +3,25 @@ import GameActions from '../../GameActions/index.js';
 
 class AgentOfTheCitadel extends DrawCard {
     setupCardAbilities(ability) {
-        const revealedCost = (context) => context.event.cards[0].getPrintedCost();
-
         this.reaction({
             when: {
                 afterChallenge: (event) =>
                     event.challenge.winner === this.controller && this.isParticipating()
             },
-            cost: ability.costs.sacrificeSelf(),
-            message: '{player} uses {source} to reveal the top card of their deck',
-            gameAction: GameActions.revealCards((context) => ({
-                player: context.player,
-                cards: [context.source.controller.drawDeck[0]]
-            })).then({
-                context: (context) => revealedCost(context) > 0,
-                message: {
-                    format: '{player} reduces the cost of their next shadow card by {revealedCost}',
-                    args: { revealedCost }
-                },
-                gameAction: GameActions.genericHandler((context) => {
-                    this.untilEndOfPhase((ability) => ({
-                        targetController: 'current',
-                        effect: ability.effects.reduceNextOutOfShadowsCardCost(
-                            revealedCost(context)
-                        )
-                    }));
-                })
+            cost: ability.costs.revealSpecific((context) => context.player.drawDeck[0]),
+            message:
+                '{player} uses {source} and reveals the top card of their deck to reduce the cost of the next card they bring out of shadows this phase by 2',
+            gameAction: GameActions.genericHandler(() => {
+                this.untilEndOfPhase((ability) => ({
+                    targetController: 'current',
+                    effect: ability.effects.reduceNextOutOfShadowsCardCost(2)
+                }));
             })
         });
     }
 }
 
 AgentOfTheCitadel.code = '26590';
-AgentOfTheCitadel.version = '1.0.0';
+AgentOfTheCitadel.version = '1.0.1';
 
 export default AgentOfTheCitadel;

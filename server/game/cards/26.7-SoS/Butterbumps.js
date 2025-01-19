@@ -3,33 +3,34 @@ import GameActions from '../../GameActions/index.js';
 
 class Butterbumps extends DrawCard {
     setupCardAbilities(ability) {
-        const participatingNonUniqueCharacters = (context) =>
-            context.game.currentChallenge
-                .getParticipants()
-                .filter((card) => card.isMatch({ type: 'character', unique: false }));
-
-        this.reaction({
-            when: {
-                onCardOutOfShadows: (event) =>
-                    event.card === this &&
-                    this.game.isDuringChallenge({ challengeType: 'intrigue' })
+        this.action({
+            title: 'Stand and remove from challenge',
+            target: {
+                cardCondition: {
+                    location: 'play area',
+                    type: 'character',
+                    participating: true,
+                    condition: (card) => card.getStrength() > this.getStrength()
+                }
             },
-            message: {
-                format: '{player} uses {source} to stand and remove {cards} from challenge',
-                args: { cards: participatingNonUniqueCharacters }
-            },
-            gameAction: GameActions.simultaneously((context) =>
-                participatingNonUniqueCharacters(context).flatMap((card) => [
-                    GameActions.standCard({ card }),
-                    GameActions.removeFromChallenge({ card })
-                ])
-            ),
-            limit: ability.limit.perRound(1)
+            cost: ability.costs.putSelfIntoShadows(),
+            phase: 'challenge',
+            message:
+                '{player} returns {source} to shadows to stand and remove {target} from challenge',
+            handler: (context) => {
+                this.game.resolveGameAction(
+                    GameActions.simultaneously((context) => [
+                        GameActions.standCard({ card: context.target }),
+                        GameActions.removeFromChallenge({ card: context.target })
+                    ]),
+                    context
+                );
+            }
         });
     }
 }
 
 Butterbumps.code = '26587';
-Butterbumps.version = '1.0.0';
+Butterbumps.version = '1.1.0';
 
 export default Butterbumps;
