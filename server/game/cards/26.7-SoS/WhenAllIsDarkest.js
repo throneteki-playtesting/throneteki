@@ -10,9 +10,7 @@ class WhenAllIsDarkest extends DrawCard {
                     GameActions.takeControl({
                         player: this.controller,
                         card: event.card
-                    }).allow() &&
-                    // This should REALLY be a check for "takeControl", as you can't take control of something you already control
-                    event.card.controller !== this.controller
+                    }).allow()
             },
             cost: ability.costs.kneelFactionCard(),
             message: {
