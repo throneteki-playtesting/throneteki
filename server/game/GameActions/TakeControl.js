@@ -11,7 +11,7 @@ class TakeControl extends GameAction {
     }
 
     canChangeGameState({ player, card }) {
-        return player.canControl(card);
+        return card.controller !== player && player.canControl(card);
     }
 
     createEvent({ player, card, context }) {

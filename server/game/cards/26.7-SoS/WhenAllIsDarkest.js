@@ -5,15 +5,12 @@ class WhenAllIsDarkest extends DrawCard {
     setupCardAbilities(ability) {
         this.reaction({
             when: {
-                onCardEntersPlay: (event) =>
-                    this.game.isDuringChallenge() &&
+                onCardOutOfShadows: (event) =>
                     event.card.getType() === 'character' &&
                     GameActions.takeControl({
                         player: this.controller,
                         card: event.card
-                    }).allow() &&
-                    // This should REALLY be a check for "takeControl", as you can't take control of something you already control
-                    event.card.controller !== this.controller
+                    }).allow()
             },
             cost: ability.costs.kneelFactionCard(),
             message: {
@@ -29,6 +26,6 @@ class WhenAllIsDarkest extends DrawCard {
 }
 
 WhenAllIsDarkest.code = '26560';
-WhenAllIsDarkest.version = '1.0.0';
+WhenAllIsDarkest.version = '1.0.1';
 
 export default WhenAllIsDarkest;

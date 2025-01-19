@@ -14,7 +14,7 @@ class HighgardenDestrier extends DrawCard {
 
         this.whileAttached({
             effect: ability.effects.dynamicStrength(() =>
-                this.controller.getNumberOfCardsInPlay({ printedCostOrLower: 3 })
+                this.controller.getNumberOfCardsInPlay({ type: 'character', printedCostOrLower: 3 })
             )
         });
     }

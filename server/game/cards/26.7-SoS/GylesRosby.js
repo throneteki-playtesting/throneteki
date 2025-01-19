@@ -43,6 +43,6 @@ class GylesRosby extends DrawCard {
 }
 
 GylesRosby.code = '26527';
-GylesRosby.version = '1.0.0';
+GylesRosby.version = '1.0.1';
 
 export default GylesRosby;
