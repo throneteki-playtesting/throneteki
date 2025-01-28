@@ -2,6 +2,12 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class GylesRosby extends DrawCard {
+    setupCardAbilities() {
+        this.plotModifiers({
+            gold: 2
+        })
+    }
+    
     constructor(owner, cardData) {
         super(owner, cardData);
 
