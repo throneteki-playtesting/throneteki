@@ -5,6 +5,7 @@ class SteelshanksWalton extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Take control',
+            phase: 'dominance',
             target: {
                 cardCondition: {
                     loyal: false,
