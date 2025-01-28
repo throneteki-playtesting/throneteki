@@ -14,21 +14,17 @@ class AshemarkCouncilor extends DrawCard {
                 onCardEntersPlay: (event) => event.card === this
             },
             target: {
-                mode: 'upTo',
-                numCards: 3,
                 activePromptTitle: 'Select up to 3 cards',
                 cardCondition: (card) =>
-                    card.location === 'play area' && card.tokens[Tokens.gold] === 0
+                card.location === 'play area' && card.tokens[Tokens.gold] === 0,
+                multiSelect = true,
+                numCards: '3',
+                
             },
             message: '{player} uses {source} to have {target} each gain 1 gold',
             handler: (context) => {
-                this.game.resolveGameAction(
-                    GameActions.simultaneously(
-                        context.target.map((card) =>
-                            GameActions.placeToken({ card, token: Tokens.gold, amount: 1 })
-                        )
-                    )
-                );
+                for (let card of context.target) {
+                    card.modifyToken(Tokens.gold, 1);
             }
         });
     }
