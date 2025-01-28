@@ -33,7 +33,7 @@ class ShadowAssassin extends DrawCard {
     }
 
     onCardEntersPlay(event) {
-        if (event.card === this) {
+        if (event.card === this && event.phase !== 'challenges') {
             this.checkSacrifice();
         }
     }
