@@ -11,17 +11,18 @@ class SouthboundGalley extends DrawCard {
                 onCardOutOfShadows: (event) => event.card === this
             },
             target: {
-                cardCondition: {
-                    location: 'play area',
-                    type: 'character',
-                    defending: true,
-                    printedStrengthOrLower: 3,
-                    condition: (card) => GameActions.kneelCard({ card }).allow()
-                }
+                cardCondition: (card) =>
+                    card.getType() === 'character' && card.isDefending() && card.getPrintedStrength() <= 4
             },
-            message:
-                "{player} uses {source} to have {target} not contribute it's STR to this challenge",
+
             handler: (context) => {
+                this.game.addMessage(
+                    '{0} uses {1} to have {2} not contribute their STR to the challenge',
+                    this.controller,
+                    this,
+                    context.target
+                )
+                
                 this.untilEndOfChallenge((ability) => ({
                     match: context.target,
                     effect: ability.effects.doesNotContributeStrength()
