@@ -18,9 +18,10 @@ class AshemarkCouncilor extends DrawCard {
                 numCards: 3,
                 activePromptTitle: 'Select up to 3 cards',
                 cardCondition: (card) =>
-                    card.location === 'play area' && card.tokens[Tokens.gold] === 0
+                    card.location === 'play area' &&
+                    (!card.tokens[Tokens.gold] || card.tokens[Tokens.gold] === 0)
             },
-            message: '{player} uses {source} to have {target} each gain 1 gold',
+            message: '{player} uses {source} to have {target} gain 1 gold',
             handler: (context) => {
                 this.game.resolveGameAction(
                     GameActions.simultaneously(

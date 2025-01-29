@@ -13,6 +13,11 @@ class GylesRosby extends DrawCard {
             'onCardAbilityInitiated'
         ]);
     }
+    setupCardAbilities() {
+        this.plotModifiers({
+            gold: 2
+        });
+    }
 
     onPhaseStarted() {
         this.checkKill();
