@@ -15,6 +15,7 @@ class OrkmontElite extends DrawCard {
                 args: { attachment: (context) => context.event.card }
             },
             gameAction: GameActions.putIntoPlay((context) => ({
+                player: context.player,
                 card: context.event.card
             }))
         });

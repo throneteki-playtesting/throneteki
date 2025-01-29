@@ -614,6 +614,9 @@ const Effects = {
     killByStrength: function (value) {
         return [Effects.burn, Effects.modifyStrength(value)];
     },
+    killByDynamicStrength: function (calculate) {
+        return [Effects.burn, Effects.dynamicDecreaseStrength(calculate)];
+    },
     killIf: function (condition) {
         return {
             apply: function (card, context) {

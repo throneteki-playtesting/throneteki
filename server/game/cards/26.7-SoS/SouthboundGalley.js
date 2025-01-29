@@ -1,5 +1,4 @@
 import DrawCard from '../../drawcard.js';
-import GameActions from '../../GameActions/index.js';
 
 class SouthboundGalley extends DrawCard {
     setupCardAbilities() {
@@ -15,8 +14,7 @@ class SouthboundGalley extends DrawCard {
                     location: 'play area',
                     type: 'character',
                     defending: true,
-                    printedStrengthOrLower: 3,
-                    condition: (card) => GameActions.kneelCard({ card }).allow()
+                    printedStrengthOrLower: 4
                 }
             },
             message:

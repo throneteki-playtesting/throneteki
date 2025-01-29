@@ -6,6 +6,7 @@ class WhiteHarborDromon extends DrawCard {
         this.persistentEffect({
             condition: () => this.game.isDuringChallenge(),
             match: (card) => card.isParticipating(),
+            targetController: 'any',
             effect: ability.effects.modifyStrength(1)
         });
         this.reaction({

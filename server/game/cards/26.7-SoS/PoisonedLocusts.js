@@ -5,7 +5,7 @@ class PoisonedLocusts extends DrawCard {
         this.attachmentRestriction({ controller: 'opponent' });
         this.whileAttached({
             condition: () => this.parent.isParticipating(),
-            effect: ability.effects.killByStrength(() => this.parent.attachments.length)
+            effect: ability.effects.killByDynamicStrength(() => this.parent.attachments.length)
         });
     }
 }
