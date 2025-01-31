@@ -12,8 +12,9 @@ import {
 import Panel from '../../Components/Site/Panel';
 import AlertPanel from '../../Components/Site/AlertPanel';
 import { navigate } from '../../redux/reducers/navigation';
-import { Button, Input, Select, SelectItem, Switch, Textarea } from '@nextui-org/react';
+import { Button, Input, Select, SelectItem, Switch, Textarea } from '@heroui/react';
 import { toast } from 'react-toastify';
+import LoadingSpinner from '../../Components/Site/LoadingSpinner';
 
 const formatListTextForCards = (cards, cardCodes) => {
     if (!cardCodes || !cards) {
@@ -92,7 +93,7 @@ const EventEditor = ({ eventId }) => {
     const [useChessClocks, setUseChessClocks] = useState();
     const [gameTimeLimit, setGameTimeLimit] = useState();
     const [chessClockTimeLimit, setChessClockTimeLimit] = useState();
-    const [delayToStartClock, setDelayToStartClock] = useState();
+    const [chessClockDelay, setChessClockDelay] = useState();
     const [password, setPassword] = useState();
     const [restrictTableCreators, setRestrictTableCreators] = useState(
         !!event?.restrictTableCreators
@@ -200,7 +201,7 @@ const EventEditor = ({ eventId }) => {
                 gameTimeLimit,
                 useChessClocks,
                 chessClockTimeLimit,
-                delayToStartClock,
+                chessClockDelay,
                 password
             },
             restricted: restricted,
@@ -215,7 +216,7 @@ const EventEditor = ({ eventId }) => {
     }, [
         banned,
         chessClockTimeLimit,
-        delayToStartClock,
+        chessClockDelay,
         draftCubeId,
         eventId,
         format,
@@ -240,20 +241,15 @@ const EventEditor = ({ eventId }) => {
         valyrianRL?.name
     ]);
 
-    const handleSaveClick = useCallback(
-        async (event) => {
-            event.preventDefault();
+    const handleSaveClick = useCallback(async () => {
+        try {
+            await saveEvent(getEventFromState()).unwrap();
 
-            try {
-                await saveEvent(getEventFromState()).unwrap();
-
-                toast.success('Event saved successfully');
-            } catch (err) {
-                toast.error('Error saving event');
-            }
-        },
-        [getEventFromState, saveEvent]
-    );
+            toast.success('Event saved successfully');
+        } catch (err) {
+            toast.error('Error saving event');
+        }
+    }, [getEventFromState, saveEvent]);
 
     const compareCardByReleaseDate = useCallback(
         (a, b) => {
@@ -341,7 +337,7 @@ const EventEditor = ({ eventId }) => {
             setShowHand(event.eventGameOptions.showHand);
             setUseChessClocks(event.eventGameOptions.useChessClocks);
             setChessClockTimeLimit(event.eventGameOptions.chessClockTimeLimit);
-            setDelayToStartClock(event.eventGameOptions.delayToStartClock);
+            setChessClockDelay(event.eventGameOptions.chessClockDelay);
             setPassword(event.eventGameOptions.password);
         }
         setRestrictSpectators(event.restrictSpectators);
@@ -361,7 +357,7 @@ const EventEditor = ({ eventId }) => {
         isPacksLoading ||
         isDraftCubesLoading
     ) {
-        return <div>Loading...</div>;
+        return <LoadingSpinner />;
     }
 
     if (error) {
@@ -489,14 +485,14 @@ const EventEditor = ({ eventId }) => {
                                             value={chessClockTimeLimit}
                                         />
                                         <Input
-                                            name='delayToStartClock'
+                                            name='chessClockDelay'
                                             label='Delay to start the clock in seconds'
                                             placeholder='Delay to start the clock in seconds'
                                             type='number'
                                             onChange={(event) =>
-                                                setDelayToStartClock(event.target.value)
+                                                setChessClockDelay(event.target.value)
                                             }
-                                            value={delayToStartClock}
+                                            value={chessClockDelay}
                                         />
                                     </>
                                 )}
@@ -682,14 +678,14 @@ const EventEditor = ({ eventId }) => {
                             isLoading={isSaveLoading}
                             color='primary'
                             type='submit'
-                            onClick={handleSaveClick}
+                            onPress={handleSaveClick}
                         >
                             Save
                         </Button>
                         <Button
                             type='button'
                             color='primary'
-                            onClick={() => dispatch(navigate('/events'))}
+                            onPress={() => dispatch(navigate('/events'))}
                         >
                             Cancel
                         </Button>

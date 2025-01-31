@@ -1,11 +1,10 @@
 import React, { useState, useCallback } from 'react';
-import ReCAPTCHA from 'react-google-recaptcha';
-
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 import AlertPanel from '../Components/Site/AlertPanel';
 import Panel from '../Components/Site/Panel';
 
 import { useForgotPasswordMutation } from '../redux/middleware/api';
-import { Button, Input } from '@nextui-org/react';
+import { Button, Input } from '@heroui/react';
 import { toast } from 'react-toastify';
 
 const ForgotPassword = () => {
@@ -45,14 +44,13 @@ const ForgotPassword = () => {
                             onValueChange={setUsername}
                         />
                         <div className='mt-2 ml-1'>
-                            <ReCAPTCHA
-                                sitekey='6Ld1cT0jAAAAABL_PgcgK7BPBRCoVDOw_WeT2uGo'
-                                theme='dark'
-                                onChange={onCaptchaChange}
+                            <HCaptcha
+                                sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY}
+                                onVerify={onCaptchaChange}
                             />
                         </div>
                         <div className='mt-2'>
-                            <Button color='primary' onClick={onSubmit} loading={isLoading}>
+                            <Button color='primary' onPress={onSubmit} loading={isLoading}>
                                 Submit
                             </Button>
                         </div>

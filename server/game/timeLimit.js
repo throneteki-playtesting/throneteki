@@ -1,28 +1,33 @@
 import moment from 'moment';
 
 class TimeLimit {
-    constructor(game) {
+    constructor(game, timeLimitInMinutes, startEvent = 'onSetupFinished') {
         this.game = game;
-        this.timeLimitStartType = null;
-        this.timeLimitStarted = false;
-        this.timeLimitStartedAt = null;
-        this.timeLimitInSeconds = null;
-        this.isTimeLimitReached = false;
+        this.active = false;
+        this.timeLeft = timeLimitInMinutes * 60;
+        this.timerStart = null;
+        this.paused = false;
+
+        this.game.on(startEvent, () => this.start());
     }
 
-    initialiseTimeLimit(timeLimitStartType, timeLimitInMinutes) {
-        this.timeLimitStartType = timeLimitStartType;
-        this.timeLimitInSeconds = timeLimitInMinutes * 60;
-        if (timeLimitStartType === 'whenSetupFinished') {
-            this.game.on('onSetupFinished', () => this.startTimer());
+    get isTimeLimitReached() {
+        return this.timeLeft <= 0;
+    }
+
+    togglePause() {
+        this.paused = !this.paused;
+        if (this.paused) {
+            this.stop();
+        } else {
+            this.start();
         }
-        //todo: implement more kinds of triggers to star the time limit
     }
 
-    startTimer() {
-        if (!this.timeLimitStarted) {
-            this.timeLimitStarted = true;
-            this.timeLimitStartedAt = new Date();
+    start() {
+        if (!this.active) {
+            this.active = true;
+            this.timerStart = new Date();
 
             this.timer = setInterval(() => {
                 this.checkForTimeLimitReached();
@@ -30,44 +35,49 @@ class TimeLimit {
         }
     }
 
-    togglePause() {
-        //pause
-        if (this.timeLimitStarted) {
-            this.timeLimitStarted = false;
+    stop() {
+        if (this.active) {
+            this.active = false;
             clearInterval(this.timer);
-            this.timer = undefined;
-            let differenceBetweenStartOfTimerAndNow = moment.duration(
-                moment().diff(this.timeLimitStartedAt)
-            );
-            this.timeLimitInSeconds -= Math.floor(differenceBetweenStartOfTimerAndNow.asSeconds());
-        } else {
-            //unpause
-            this.startTimer();
+            delete this.timer;
+            this.timeLeft = this.calculateTimeLeft();
         }
     }
 
     checkForTimeLimitReached() {
-        //only check for the end of the game if the timelimit has not been reached yet
-        //and the timer is currently active (not paused)
-        if (!this.isTimeLimitReached && this.timeLimitStarted) {
-            let differenceBetweenStartOfTimerAndNow = moment.duration(
-                moment().diff(this.timeLimitStartedAt)
-            );
-            if (differenceBetweenStartOfTimerAndNow.asSeconds() >= this.timeLimitInSeconds) {
+        if (this.active && this.timer && this.timeLeft > 0) {
+            const timeLeft = this.calculateTimeLeft();
+            if (timeLeft === 0) {
+                this.stop();
                 this.game.addAlert(
                     'warning',
-                    'Time up.  The game will end after the current round has finished'
+                    'Time up. The game will end after the current round has finished'
                 );
-                this.isTimeLimitReached = true;
-                this.timeLimitStarted = false;
+                // Re-sends the game state to clients due to time expiring
                 this.game.timeExpired();
+
+                clearInterval(this.timer);
+                delete this.timer;
             }
         }
-        //clear the timer if the time is up
-        if (this.isTimeLimitReached && this.timer) {
-            clearInterval(this.timer);
-            this.timer = undefined;
-        }
+    }
+
+    calculateTimeLeft() {
+        // Calculate how much time is remaining
+        const timeEndTime = moment(this.timerStart).add(this.timeLeft, 'seconds');
+        const timeDifference = moment.duration(timeEndTime.diff(moment())).asSeconds();
+        const timeRemaining = Math.max(0, Math.round(timeDifference));
+
+        return timeRemaining;
+    }
+
+    getState() {
+        return {
+            active: this.active,
+            paused: this.paused,
+            timerStart: this.timerStart,
+            timeLeft: this.timeLeft
+        };
     }
 }
 

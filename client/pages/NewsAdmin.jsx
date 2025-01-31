@@ -9,7 +9,7 @@ import {
     useAddNewsMutation
 } from '../redux/middleware/api';
 import AlertPanel from '../Components/Site/AlertPanel';
-import { Button, Textarea } from '@nextui-org/react';
+import { Button, Textarea } from '@heroui/react';
 import ReactTable from '../Components/Table/ReactTable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
@@ -137,14 +137,14 @@ const NewsAdmin = () => {
                                     className='mr-2 mt-2'
                                     color='primary'
                                     isLoading={isSaveLoading}
-                                    onClick={onSaveClick}
+                                    onPress={onSaveClick}
                                 >
                                     Save
                                 </Button>
                                 <Button
                                     className='mt-2'
                                     color='default'
-                                    onClick={() => {
+                                    onPress={() => {
                                         setSelectedItem(null);
                                         setNewsText('');
                                     }}
@@ -157,7 +157,7 @@ const NewsAdmin = () => {
                                 className='mt-2'
                                 color='primary'
                                 isLoading={isAddLoading}
-                                onClick={() => onAddNewsClick(newsText)}
+                                onPress={() => onAddNewsClick(newsText)}
                             >
                                 Add
                             </Button>

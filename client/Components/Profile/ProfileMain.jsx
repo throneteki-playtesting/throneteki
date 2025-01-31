@@ -4,7 +4,7 @@ import { useUnlinkPatreonMutation, useUpdateAvatarMutation } from '../../redux/m
 
 import PatreonImage from '../../assets/img/Patreon_Mark_Coral.jpg';
 
-import { Avatar, Button, Input, Link, Switch } from '@nextui-org/react';
+import { Avatar, Button, Input, Link, Switch } from '@heroui/react';
 import { toast } from 'react-toastify';
 
 const ProfileMain = ({ user, formProps }) => {
@@ -22,21 +22,16 @@ const ProfileMain = ({ user, formProps }) => {
         }
     }, [unlinkPatreon]);
 
-    const onUpdateAvatarClick = useCallback(
-        async (event) => {
-            event.preventDefault();
-
-            try {
-                await updateAvatar(user.username).unwrap();
-                toast.success('Avatar updated successfully');
-            } catch (err) {
-                toast.error(
-                    err.message || 'An error occured updating your avatar Please try again later.'
-                );
-            }
-        },
-        [updateAvatar, user?.username]
-    );
+    const onUpdateAvatarClick = useCallback(async () => {
+        try {
+            await updateAvatar(user.username).unwrap();
+            toast.success('Avatar updated successfully');
+        } catch (err) {
+            toast.error(
+                err.message || 'An error occured updating your avatar Please try again later.'
+            );
+        }
+    }, [updateAvatar, user?.username]);
 
     const callbackUrl =
         import.meta.env.MODE === 'production'
@@ -84,7 +79,7 @@ const ProfileMain = ({ user, formProps }) => {
                                 type='button'
                                 className='ml-2'
                                 color='secondary'
-                                onClick={onUpdateAvatarClick}
+                                onPress={onUpdateAvatarClick}
                             >
                                 Update avatar
                             </Button>
@@ -116,7 +111,7 @@ const ProfileMain = ({ user, formProps }) => {
                                 <Button
                                     isLoading={unlinkLoading}
                                     color='secondary'
-                                    onClick={onUnlinkClick}
+                                    onPress={onUnlinkClick}
                                 >
                                     Unlink Patreon account
                                 </Button>

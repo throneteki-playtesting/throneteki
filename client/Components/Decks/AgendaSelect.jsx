@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import CardImage from '../Images/CardImage';
 import AlertPanel from '../Site/AlertPanel';
-import { Button } from '@nextui-org/react';
+import { Button } from '@heroui/react';
 import { useGetCardsQuery } from '../../redux/middleware/api';
 import LoadingSpinner from '../Site/LoadingSpinner';
 
@@ -49,10 +49,10 @@ const AgendaSelect = ({ onBackClick, onNextClick }) => {
     return (
         <>
             <div className='mb-2'>
-                <Button color='default' className='mr-2' onClick={() => onBackClick()}>
+                <Button color='default' className='mr-2' onPress={() => onBackClick()}>
                     Back
                 </Button>
-                <Button color='primary' onClick={() => onNextClick(selectedAgendas)}>
+                <Button color='primary' onPress={() => onNextClick(selectedAgendas)}>
                     Next
                 </Button>
             </div>

@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { Autocomplete, AutocompleteItem, Button } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button } from '@heroui/react';
 
 const TypeaheadLookup = ({ onValueSelected, values }) => {
     const [selectedValue, setSelectedValue] = useState('');
@@ -29,7 +29,7 @@ const TypeaheadLookup = ({ onValueSelected, values }) => {
                 {(item) => <AutocompleteItem key={item.value}>{item.label}</AutocompleteItem>}
             </Autocomplete>
             <div className='mt-2 mx-2 flex flex-col mb-2'>
-                <Button onClick={handleDoneClick} color='primary'>
+                <Button onPress={handleDoneClick} color='primary'>
                     Done
                 </Button>
             </div>

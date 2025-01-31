@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@nextui-org/react';
+import { Button } from '@heroui/react';
 import { useSelector } from 'react-redux';
 
 const GameButtons = ({ onNewGame, onQuickJoin }) => {
@@ -14,7 +14,7 @@ const GameButtons = ({ onNewGame, onQuickJoin }) => {
                 className='mt-2'
                 disabled={!user}
                 color='primary'
-                onClick={() => {
+                onPress={() => {
                     onQuickJoin && onQuickJoin();
                 }}
             >

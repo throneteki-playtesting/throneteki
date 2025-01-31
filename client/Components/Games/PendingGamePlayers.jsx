@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Button } from '@nextui-org/react';
+import { Avatar, Button } from '@heroui/react';
 import Panel from '../Site/Panel';
 import DeckStatus from '../Decks/DeckStatus';
 import { Constants } from '../../constants';
@@ -19,14 +19,14 @@ const PendingGamePlayers = ({ currentGame, user, onSelectDeck }) => {
 
                     if (player && player.deck?.selected) {
                         if (playerIsMe) {
-                            deck = <Button onClick={onSelectDeck}>{player.deck.name}</Button>;
+                            deck = <Button onPress={onSelectDeck}>{player.deck.name}</Button>;
                         } else {
                             deck = <Button isDisabled>Deck Selected</Button>;
                         }
 
                         status = <DeckStatus status={player.deck.status} />;
                     } else if (player && playerIsMe) {
-                        selectLink = <Button onClick={onSelectDeck}>Select Deck</Button>;
+                        selectLink = <Button onPress={onSelectDeck}>Select Deck</Button>;
                     }
                     const userClass =
                         'username' +

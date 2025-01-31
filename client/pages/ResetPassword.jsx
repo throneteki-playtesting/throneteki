@@ -5,7 +5,7 @@ import AlertPanel from '../Components/Site/AlertPanel';
 import Panel from '../Components/Site/Panel';
 import { navigate } from '../redux/reducers/navigation';
 import { useResetPasswordMutation } from '../redux/middleware/api';
-import { Button, Input } from '@nextui-org/react';
+import { Button, Input } from '@heroui/react';
 import { toast } from 'react-toastify';
 
 const ResetPassword = ({ id, token }) => {
@@ -51,7 +51,7 @@ const ResetPassword = ({ id, token }) => {
                         type='password'
                         onChange={setPassword}
                     />
-                    <Button onClick={onSubmit} loading={isLoading}>
+                    <Button onPress={onSubmit} loading={isLoading}>
                         Submit
                     </Button>
                 </Panel>

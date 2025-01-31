@@ -16,7 +16,7 @@ import {
     TableColumn,
     TableHeader,
     TableRow
-} from '@nextui-org/react';
+} from '@heroui/react';
 import LoadingSpinner from '../Components/Site/LoadingSpinner';
 import { toast } from 'react-toastify';
 
@@ -68,7 +68,7 @@ const BanlistAdmin = () => {
                             <Button
                                 isLoading={isRemoveLoading}
                                 color='danger'
-                                onClick={() => onDeleteBanlistClick(ban._id)}
+                                onPress={() => onDeleteBanlistClick(ban._id)}
                             >
                                 Delete
                             </Button>
@@ -108,7 +108,7 @@ const BanlistAdmin = () => {
                             <Button
                                 isLoading={isAddLoading}
                                 color='primary'
-                                onClick={onAddBanlistClick}
+                                onPress={onAddBanlistClick}
                             >
                                 Add
                             </Button>

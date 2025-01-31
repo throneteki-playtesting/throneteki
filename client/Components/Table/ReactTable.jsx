@@ -32,7 +32,7 @@ import {
     TableColumn,
     TableHeader,
     TableRow
-} from '@nextui-org/react';
+} from '@heroui/react';
 import AlertPanel, { AlertType } from '../Site/AlertPanel';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -152,7 +152,7 @@ function ReactTable({
                             key={b.label}
                             color={b.color}
                             endContent={b.icon}
-                            onClick={b.onClick}
+                            onPress={b.onClick}
                             isDisabled={b.disabled}
                             isLoading={b.isLoading}
                         >
@@ -188,7 +188,7 @@ function ReactTable({
     }, [rowSelection]);
 
     if (isLoading) {
-        return <LoadingSpinner label={'Loading...'} />;
+        return <LoadingSpinner />;
     } else if (isError) {
         return <AlertPanel variant='danger'>{'An error occurred loading data.'}</AlertPanel>;
     }

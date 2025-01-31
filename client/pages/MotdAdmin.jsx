@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import Panel from '../Components/Site/Panel';
 import { sendMotdMessage } from '../redux/reducers/lobby';
-import { Button, Radio, RadioGroup, Textarea } from '@nextui-org/react';
+import { Button, Radio, RadioGroup, Textarea } from '@heroui/react';
 
 const MotdAdmin = () => {
     const motd = useSelector((state) => state.lobby.motd);
@@ -32,19 +32,14 @@ const MotdAdmin = () => {
         setSelectedMotdType(value);
     }, []);
 
-    const onSaveClick = useCallback(
-        (event) => {
-            event.preventDefault();
-
-            dispatch(
-                sendMotdMessage({
-                    message: motdText,
-                    motdType: selectedMotdType
-                })
-            );
-        },
-        [dispatch, motdText, selectedMotdType]
-    );
+    const onSaveClick = useCallback(() => {
+        dispatch(
+            sendMotdMessage({
+                message: motdText,
+                motdType: selectedMotdType
+            })
+        );
+    }, [dispatch, motdText, selectedMotdType]);
 
     return (
         <div className='w-2/3 mx-auto'>
@@ -71,7 +66,7 @@ const MotdAdmin = () => {
                 </div>
 
                 <div className='mt-2'>
-                    <Button color='primary' type='button' onClick={onSaveClick}>
+                    <Button color='primary' type='button' onPress={onSaveClick}>
                         Save
                     </Button>
                 </div>
