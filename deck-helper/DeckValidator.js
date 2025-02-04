@@ -79,8 +79,7 @@ class DeckValidator {
             restrictedList.validate(deck)
         );
         const officialRestrictedResult = restrictedListResults[0] || {
-            noBannedCards: true,
-            restrictedRules: true,
+            valid: true,
             version: ''
         };
         const restrictedListErrors = restrictedListResults.reduce(
@@ -90,9 +89,8 @@ class DeckValidator {
 
         return {
             basicRules: errors.length === 0,
-            faqJoustRules: officialRestrictedResult.restrictedRules,
+            valid: officialRestrictedResult.valid,
             faqVersion: officialRestrictedResult.version,
-            noBannedCards: officialRestrictedResult.noBannedCards,
             restrictedLists: restrictedListResults,
             noUnreleasedCards: unreleasedCards.length === 0,
             extendedStatus: errors.concat(info).concat(restrictedListErrors)
