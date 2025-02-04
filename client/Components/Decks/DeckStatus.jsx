@@ -24,8 +24,8 @@ const DeckStatus = ({ className, compact = false, status }) => {
             case 'Not Legal':
                 icon = <FontAwesomeIcon icon={faXmarkCircle} />;
                 break;
-            case 'Casual':
-            case 'Legal':
+            case 'Playtest Legal':
+            case 'Regular Legal':
                 icon = <FontAwesomeIcon icon={faCircleCheck} />;
                 break;
         }
@@ -33,9 +33,9 @@ const DeckStatus = ({ className, compact = false, status }) => {
         let color = 'default';
         if (label === 'Invalid' || label === 'Not Legal') {
             color = 'danger';
-        } else if (label === 'Casual') {
+        } else if (label === 'Regular Legal') {
             color = 'warning';
-        } else if (label === 'Legal') {
+        } else if (label === 'Playtest Legal') {
             color = 'success';
         }
 
