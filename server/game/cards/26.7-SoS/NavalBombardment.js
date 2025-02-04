@@ -23,6 +23,6 @@ class NavalBombardment extends DrawCard {
 }
 
 NavalBombardment.code = '26523';
-NavalBombardment.version = '1.0.0';
+NavalBombardment.version = '1.0.1';
 
 export default NavalBombardment;
