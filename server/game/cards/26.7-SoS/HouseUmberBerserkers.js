@@ -14,6 +14,6 @@ class HouseUmberBerserkers extends DrawCard {
 }
 
 HouseUmberBerserkers.code = '26564';
-HouseUmberBerserkers.version = '1.0.0';
+HouseUmberBerserkers.version = '1.0.1';
 
 export default HouseUmberBerserkers;

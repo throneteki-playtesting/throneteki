@@ -3,38 +3,28 @@ import GameActions from '../../GameActions/index.js';
 
 class TheWhisperingSound extends DrawCard {
     setupCardAbilities(ability) {
-        this.action({
-            title: 'Kneel to reveal hand',
-            phase: 'taxation',
+        this.reaction({
+            when: {
+                onCardEntersPlay: (event) =>
+                    this.game.currentPhase === 'challenge' && event.card.getType() === 'location'
+            },
             cost: ability.costs.kneelSelf(),
-            message: '{player} kneels {costs.kneel} to reveal their hand',
-            gameAction: GameActions.revealCards((context) => ({
+            gameAction: GameActions.drawCards((context) => ({
                 player: context.player,
-                cards: context.player.hand
+                amount: 2
             })).then({
                 target: {
-                    activePromptTitle: 'Select a location (optional)',
-                    optional: true,
-                    cardCondition: (card, context) =>
-                        context.event.revealed.includes(card) &&
-                        card.getType() === 'location' &&
-                        card.hasTrait('Warship')
+                    activePromptTitle: 'Select a card',
+                    cardCondition: { location: 'hand', controller: 'current' }
                 },
+                message: 'Then {player} places a card on top of their deck',
                 handler: (context) => {
-                    if (context.target) {
-                        this.game.addMessage(
-                            'Then, {0} chooses to put {1} into play from their hand, knelt',
-                            context.player,
-                            context.target
-                        );
-                        this.game.resolveGameAction(
-                            GameActions.putIntoPlay((context) => ({
-                                card: context.target,
-                                kneeled: true
-                            })),
-                            context
-                        );
-                    }
+                    this.game.resolveGameAction(
+                        GameActions.returnCardToDeck((context) => ({
+                            card: context.target
+                        })),
+                        context
+                    );
                 }
             })
         });
@@ -42,6 +32,6 @@ class TheWhisperingSound extends DrawCard {
 }
 
 TheWhisperingSound.code = '26593';
-TheWhisperingSound.version = '1.0.0';
+TheWhisperingSound.version = '1.1.0';
 
 export default TheWhisperingSound;
