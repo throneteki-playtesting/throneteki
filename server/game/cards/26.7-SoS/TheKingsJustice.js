@@ -3,21 +3,19 @@ import GameActions from '../../GameActions/index.js';
 
 class TheKingsJustice extends DrawCard {
     setupCardAbilities(ability) {
+        this.attachmentRestriction({ unique: true });
         this.reaction({
             when: {
                 afterChallenge: (event) =>
                     event.challenge.winner === this.controller &&
-                    event.challenge.strengthDifference >= 5
+                    event.challenge.challengeType === 'power'
             },
             cost: ability.costs.kneelParent(),
             target: {
                 cardCondition: {
                     location: 'play area',
                     kneeled: true,
-                    condition: (card, context) =>
-                        card.controller === context.event.challenge.loser &&
-                        card.hasPrintedCost() &&
-                        card.getPrintedCost() <= this.parent.getPrintedCost()
+                    condition: (card, context) => card.controller === context.event.challenge.loser
                 }
             },
             message: '{player} uses {source} and kneels {costs.kneel} to kill {target}',
@@ -32,6 +30,6 @@ class TheKingsJustice extends DrawCard {
 }
 
 TheKingsJustice.code = '26507';
-TheKingsJustice.version = '1.0.0';
+TheKingsJustice.version = '1.0.1';
 
 export default TheKingsJustice;

@@ -2,11 +2,8 @@ import GameActions from '../../GameActions/index.js';
 import PlotCard from '../../plotcard.js';
 
 class TheAgeOfHeroes extends PlotCard {
-    setupCardAbilities(ability) {
-        this.action({
-            title: 'Search your deck',
-            phase: 'dominance',
-            limit: ability.limit.perRound(1),
+    setupCardAbilities() {
+        this.whenRevealed({
             message: '{player} uses {source} to search their deck for an attachment',
             gameAction: GameActions.search({
                 title: 'Select an attachment',
@@ -41,6 +38,6 @@ class TheAgeOfHeroes extends PlotCard {
 }
 
 TheAgeOfHeroes.code = '26615';
-TheAgeOfHeroes.version = '1.0.0';
+TheAgeOfHeroes.version = '1.0.1';
 
 export default TheAgeOfHeroes;

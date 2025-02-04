@@ -1639,7 +1639,12 @@ const Effects = {
         });
     },
     increaseCost: function (properties) {
-        properties.amount = -properties.amount;
+        if (typeof properties.amount === 'function') {
+            const amountFunc = properties.amount;
+            properties.amount = (card) => amountFunc(card) * -1;
+        } else {
+            properties.amount = -properties.amount;
+        }
         return this.reduceCost(properties);
     },
     dynamicUsedPlots: function (calculate) {
