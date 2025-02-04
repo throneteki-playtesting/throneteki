@@ -3,9 +3,9 @@ import DrawCard from '../../drawcard.js';
 class NorthernPyre extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
-            title: 'Sacrifice to set STR to 3',
+            title: 'Kneel to set STR to 3',
             condition: () => this.game.anyPlotHasTrait('Winter'),
-            cost: [ability.costs.kneelSelf(), ability.costs.sacrificeSelf()],
+            cost: ability.costs.kneelSelf(),
             target: {
                 cardCondition: {
                     location: 'play area',
@@ -14,7 +14,7 @@ class NorthernPyre extends DrawCard {
                 }
             },
             message:
-                "{player} kneels and sacrifices {costs.kneel} to set {target}'s STR to 3 until the end of the challenge",
+                "{player} kneels {costs.kneel} to set {target}'s STR to 3 until the end of the challenge",
             handler: (context) => {
                 this.untilEndOfChallenge((ability) => ({
                     match: context.target,
@@ -26,6 +26,6 @@ class NorthernPyre extends DrawCard {
 }
 
 NorthernPyre.code = '26510';
-NorthernPyre.version = '1.0.0';
+NorthernPyre.version = '1.0.1';
 
 export default NorthernPyre;

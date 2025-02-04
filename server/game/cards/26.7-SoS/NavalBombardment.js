@@ -3,7 +3,6 @@ import DrawCard from '../../drawcard.js';
 class NavalBombardment extends DrawCard {
     setupCardAbilities() {
         this.action({
-            condition: () => this.game.anyPlotHasTrait('War'),
             phase: 'challenge',
             chooseOpponent: (player) =>
                 player.getNumberOfCardsInPlay({ type: 'location' }) <

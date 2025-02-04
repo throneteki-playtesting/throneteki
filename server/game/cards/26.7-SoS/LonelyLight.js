@@ -2,12 +2,12 @@ import DrawCard from '../../drawcard.js';
 
 class LonelyLight extends DrawCard {
     setupCardAbilities(ability) {
-        this.persistentEffect({
-            match: this,
-            effect: ability.effects.immuneTo((card) => card.getType() === 'event')
+        this.plotModifiers({
+            reserve: 1
         });
         this.persistentEffect({
             targetController: 'any',
+            condition: () => !this.kneeled,
             effect: ability.effects.increaseCost({
                 playingTypes: ['outOfShadows'],
                 amount: 1
@@ -17,6 +17,6 @@ class LonelyLight extends DrawCard {
 }
 
 LonelyLight.code = '26521';
-LonelyLight.version = '1.0.0';
+LonelyLight.version = '1.0.1';
 
 export default LonelyLight;

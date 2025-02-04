@@ -31,6 +31,6 @@ class NarrowSeaGalley extends DrawCard {
 }
 
 NarrowSeaGalley.code = '26509';
-NarrowSeaGalley.version = '1.1.0';
+NarrowSeaGalley.version = '1.1.1';
 
 export default NarrowSeaGalley;
