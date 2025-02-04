@@ -12,7 +12,7 @@ const DeckStatusSummary = ({ status }) => {
     const items = [
         { title: 'Basic deckbuilding rules', value: basicRules },
         ...restrictedListItems,
-        { title: 'Only released cards', value: noUnreleasedCards }
+        { title: 'Includes playtesting cards', value: !noUnreleasedCards }
     ];
 
     return (
