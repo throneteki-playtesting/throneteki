@@ -27,16 +27,14 @@ class DoomOfValyria extends PlotCard {
                             card.isMatch({ location: 'hand' }) && card.controller === player,
                         onSelect: (player, discarded) => {
                             const xValue = discarded.length;
-                            // Select X characters (can be 0)
+                            // Select X cards (can be 0)
                             if (xValue > 0) {
                                 this.game.promptForSelect(player, {
                                     mode: 'exactly',
                                     numCards: xValue,
                                     activePromptTitle: `Select ${TextHelper.count(xValue, 'card')}`,
                                     source: context.source,
-                                    cardCondition: (card) =>
-                                        card.location === 'play area' &&
-                                        card.getType() === 'character',
+                                    cardCondition: (card) => card.location === 'play area',
                                     onSelect: (player, chosen) => {
                                         this.game.addMessage(
                                             `{0} discards {1} to choose {2} for {3}`,
@@ -45,7 +43,7 @@ class DoomOfValyria extends PlotCard {
                                             chosen,
                                             this
                                         );
-                                        this.chooseCards(lastPlayer, player, chosen);
+                                        this.chooseCards(lastPlayer, discarded, chosen);
 
                                         return true;
                                     }
@@ -60,7 +58,7 @@ class DoomOfValyria extends PlotCard {
                                 player,
                                 this
                             );
-                            this.chooseCards(lastPlayer, player, []);
+                            this.chooseCards(lastPlayer);
                             return true;
                         }
                     });
@@ -73,10 +71,12 @@ class DoomOfValyria extends PlotCard {
         return Math.max(0, 3 - player.getHandCount());
     }
 
-    chooseCards(lastPlayer, player, chosen) {
-        if (!lastPlayer) {
-            this.chosenCards.push(...chosen);
-        } else {
+    chooseCards(lastPlayer, discarded = [], chosen = []) {
+        this.game.resolveGameAction(
+            GameActions.simultaneously(discarded.map((card) => GameActions.discardCard({ card })))
+        );
+        this.chosenCards.push(...chosen);
+        if (lastPlayer) {
             const discarding = this.game.filterCardsInPlay(
                 (card) => !this.chosenCards.includes(card)
             );
