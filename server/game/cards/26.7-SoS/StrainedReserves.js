@@ -31,6 +31,6 @@ class StrainedReserves extends PlotCard {
 }
 
 StrainedReserves.code = '26617';
-StrainedReserves.version = '1.0.0';
+StrainedReserves.version = '1.0.1';
 
 export default StrainedReserves;

@@ -46,6 +46,6 @@ class BattleBeneathTheWall extends PlotCard {
 }
 
 BattleBeneathTheWall.code = '26610';
-BattleBeneathTheWall.version = '1.0.0';
+BattleBeneathTheWall.version = '1.0.1';
 
 export default BattleBeneathTheWall;
