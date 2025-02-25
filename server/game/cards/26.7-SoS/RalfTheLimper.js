@@ -5,16 +5,15 @@ class RalfTheLimper extends DrawCard {
     setupCardAbilities(ability) {
         this.reaction({
             when: {
-                onCardPlaced: (event) =>
-                    event.card.getType() === 'location' &&
+                onCardDiscarded: (event) =>
                     event.card.controller !== this.controller &&
-                    event.location === 'discard pile'
+                    event.originalLocation === 'draw deck'
             },
             target: {
                 cardCondition: { location: 'play area', controller: 'current', shadow: true }
             },
             message: '{player} uses {source} to return {target} to shadows',
-            limit: ability.limit.perPhase(2),
+            limit: ability.limit.perRound(2),
             handler: (context) => {
                 this.game.resolveGameAction(
                     GameActions.putIntoShadows((context) => ({ card: context.target })),
@@ -26,6 +25,6 @@ class RalfTheLimper extends DrawCard {
 }
 
 RalfTheLimper.code = '26513';
-RalfTheLimper.version = '1.0.1';
+RalfTheLimper.version = '1.0.2';
 
 export default RalfTheLimper;

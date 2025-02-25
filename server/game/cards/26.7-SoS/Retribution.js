@@ -2,21 +2,33 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class Retribution extends DrawCard {
-    setupCardAbilities(ability) {
-        this.interrupt({
+    setupCardAbilities() {
+        this.reaction({
             when: {
                 onCharacterKilled: (event) =>
                     event.card.controller === this.controller &&
-                    event.card.isFaction('martell') &&
                     this.isApplyingClaim('military') &&
                     this.controlsFewerCharacters()
             },
-            max: ability.limit.perPhase(1),
-            message: {
-                format: '{player} plays {source} to gain {amount} power for their faction',
-                args: { amount: (context) => this.getAmount(context) }
+            target: {
+                choosingPlayer: (player, context) =>
+                    player === context.event.challenge.attackingPlayer,
+                cardCondition: (card) =>
+                    card.location === 'play area' &&
+                    card.getType() === 'character' &&
+                    card.isAttacking() &&
+                    GameActions.kill({ card }).allow()
             },
-            gameAction: GameActions.gainPower((context) => ({ amount: this.getAmount(context) }))
+            message: {
+                format: '{player} plays {source} to have {attackingPlayer} choose and kill {target}',
+                args: { attackingPlayer: (context) => context.event.challenge.attackingPlayer }
+            },
+            handler: (context) => {
+                this.game.resolveGameAction(
+                    GameActions.kill((context) => ({ card: context.target })),
+                    context
+                );
+            }
         });
     }
 
@@ -37,6 +49,6 @@ class Retribution extends DrawCard {
 }
 
 Retribution.code = '26548';
-Retribution.version = '1.0.0';
+Retribution.version = '1.0.1';
 
 export default Retribution;

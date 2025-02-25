@@ -10,7 +10,7 @@ class TheWardenOfTheNorth extends DrawCard {
 
         this.whileAttached({
             condition: () => this.parent.isParticipating(),
-            match: (player) => player !== this.controller,
+            targetController: 'opponent',
             effect: [
                 ability.effects.cannotPutIntoPlay((card) => card.location === 'shadows'),
                 ability.effects.cannotPlay((card) => card.getPrintedType() === 'event')
