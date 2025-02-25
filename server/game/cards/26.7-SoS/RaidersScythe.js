@@ -1,12 +1,15 @@
 import DrawCard from '../../drawcard.js';
+import { ChallengeTracker } from '../../EventTrackers/ChallengeTracker.js';
 
 class RaidersScythe extends DrawCard {
     setupCardAbilities(ability) {
-        this.attachmentRestriction({ trait: 'Raider' });
+        this.tracker = ChallengeTracker.forPhase(this.game);
+        this.attachmentRestriction({ unique: false, faction: 'greyjoy' });
         this.whileAttached({
             condition: () =>
                 !!this.game.currentChallenge &&
-                this.hasMoreAttachmentsThanDefender(this.game.currentChallenge.defendingPlayer),
+                this.hasMoreAttachmentsThanDefender(this.game.currentChallenge.defendingPlayer) &&
+                !this.tracker.some({ attackingPlayer: this.controller }),
             match: this.parent,
             effect: ability.effects.doesNotKneelAsAttacker()
         });
@@ -21,6 +24,6 @@ class RaidersScythe extends DrawCard {
 }
 
 RaidersScythe.code = '26520';
-RaidersScythe.version = '1.0.0';
+RaidersScythe.version = '1.0.1';
 
 export default RaidersScythe;

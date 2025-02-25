@@ -9,14 +9,10 @@ class ArmedToTheTeeth extends AgendaCard {
     }
 
     setupCardAbilities(ability) {
-        this.persistentEffect({
-            condition: () =>
-                !this.controller.anyCardsInPlay((card) => card.getType() === 'attachment'),
-            effect: ability.effects.modifyDrawPhaseCards(-1)
-        });
-
-        this.action({
-            title: 'Put attachment into play',
+        this.reaction({
+            when: {
+                afterChallenge: (event) => event.challenge.winner === this.controller
+            },
             cost: [
                 ability.costs.kneelFactionCard(),
                 ability.costs.payXGold(
@@ -55,8 +51,13 @@ class ArmedToTheTeeth extends AgendaCard {
         };
         this.game.resolveGameAction(
             GameActions.search({
-                title: 'Select 7 attachments',
-                match: { type: 'attachment', trait: 'Weapon' },
+                title: 'Select up to 7 attachments',
+                match: {
+                    type: 'attachment',
+                    trait: 'Weapon',
+                    condition: (card, context) =>
+                        !context.selectedCards.some((sc) => sc.name === card.name)
+                },
                 reveal: true,
                 numToSelect: 7,
                 message: '{player} places {searchTarget} facedown under {source}',
@@ -83,6 +84,6 @@ class ArmedToTheTeeth extends AgendaCard {
 }
 
 ArmedToTheTeeth.code = '26618';
-ArmedToTheTeeth.version = '1.0.1';
+ArmedToTheTeeth.version = '1.0.2';
 
 export default ArmedToTheTeeth;

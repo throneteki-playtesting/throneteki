@@ -13,7 +13,7 @@ class Moqorro extends DrawCard {
                 '{player} uses {source} to to give {target} an intrigue icon and stealth until the end of the phase',
             handler: (context) => {
                 this.untilEndOfPhase((ability) => ({
-                    match: () => context.target,
+                    match: context.target,
                     effect: [
                         ability.effects.addIcon('intrigue'),
                         ability.effects.addKeyword('stealth')

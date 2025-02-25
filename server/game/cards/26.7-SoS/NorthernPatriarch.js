@@ -3,36 +3,59 @@ import GameActions from '../../GameActions/index.js';
 
 class NorthernPatriarch extends DrawCard {
     setupCardAbilities(ability) {
+        this.persistentEffect({
+            match: this,
+            effect: ability.effects.immuneTo(
+                (card) =>
+                    card.controller !== this.controller &&
+                    card.getType() === 'plot' &&
+                    card.hasTrait('Omen')
+            )
+        });
         this.interrupt({
             canCancel: true,
             when: {
                 onCardAbilityInitiated: (event) =>
-                    event.source.controller !== this.controller &&
-                    (event.source.getType() == 'event' ||
-                        (event.source.getType() === 'plot' && event.source.hasTrait('Omen')))
+                    event.source.controller !== this.controller && event.source.getType() == 'event'
             },
             message: {
-                format: '{player} uses {source} to cancel {initiatingCard}',
+                format: '{player} uses {source} to attempt to cancel {initiatingCard}',
                 args: { initiatingCard: (context) => context.event.source }
             },
-            gameAction: GameActions.choose({
-                player: (context) => context.event.source.controller,
-                choices: {
-                    [`Move power to ${this.name}`]: {
-                        message: {
-                            format: '{initiatingPlayer} moves 1 power from their faction to {source}',
-                            args: { initiatingPlayer: (context) => context.event.source.controller }
+            gameAction: GameActions.ifCondition({
+                condition: (context) =>
+                    context.event.source.controller.some((card) => card.power > 0),
+                thenAction: GameActions.genericHandler((context) => {
+                    this.game.promptForSelect(context.event.souce.controller, {
+                        source: this,
+                        activePromptTitle: 'Select a card to move power from',
+                        numCards: 1,
+                        cardCondition: (card) =>
+                            card.controller === context.event.source.controller && card.power > 0,
+                        onSelect: (player, card) => {
+                            this.game.addMessage(
+                                '{0} moves 1 power from {1} to {2} for {2}',
+                                player,
+                                card,
+                                this
+                            );
+                            return true;
                         },
-                        gameAction: GameActions.movePower((context) => ({
-                            from: context.event.source.controller.faction,
-                            to: this,
-                            amount: 1
-                        }))
-                    },
-                    'Allow cancel': GameActions.genericHandler((context) => {
-                        context.event.cancel();
-                    })
-                }
+                        onCancel: (player) => {
+                            this.game.addMessage(
+                                '{0} has chosen to allow {1} to cancel {2}',
+                                player,
+                                this,
+                                context.event.source
+                            );
+                            context.event.cancel();
+                            return true;
+                        }
+                    });
+                }),
+                elseAction: GameActions.genericHandler((context) => {
+                    context.event.cancel();
+                })
             }),
             limit: ability.limit.perRound(1)
         });
@@ -40,6 +63,6 @@ class NorthernPatriarch extends DrawCard {
 }
 
 NorthernPatriarch.code = '26565';
-NorthernPatriarch.version = '1.0.0';
+NorthernPatriarch.version = '1.0.1';
 
 export default NorthernPatriarch;
