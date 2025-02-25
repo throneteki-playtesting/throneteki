@@ -4,11 +4,9 @@ class HouseUmberBerserkers extends DrawCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
             targetController: 'current',
-            effect: ability.effects.increaseCost({
-                playingTypes: ['outOfShadows'],
-                amount: () => Math.max(this.controller.getNumberOfUsedPlots(), 1),
-                match: this
-            })
+            effect: ability.effects.addKeyword(
+                `Shadow (${Math.max(this.controller.getNumberOfUsedPlots(), 1)})`
+            )
         });
     }
 }
