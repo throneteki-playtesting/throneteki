@@ -20,7 +20,7 @@ class TheSmallCouncil extends AgendaCard {
                 }
             },
             message: {
-                format: '{player} uses {source} and kneels their faction card to have {target} gain {amount} power',
+                format: '{player} uses {source} and kneels their faction card to have {target} gain 1 power',
                 args: { amount: (context) => this.getAmount(context) }
             },
             handler: (context) => {
@@ -28,21 +28,23 @@ class TheSmallCouncil extends AgendaCard {
                     GameActions.gainPower((context) => ({
                         card: context.target,
                         amount: this.getAmount(context)
-                    })),
+                    })).then({
+                        condition: (context) =>
+                            context.player.anyCardsInPlay({
+                                type: 'character',
+                                trait: ['King', 'Queen']
+                            }),
+                        message: 'Then, {player} draws 1 card',
+                        gameAction: GameActions.drawCards({ amount: 1 })
+                    }),
                     context
                 );
             }
         });
     }
-
-    getAmount(context) {
-        return context.player.anyCardsInPlay({ type: 'character', trait: ['King', 'Queen'] })
-            ? 2
-            : 1;
-    }
 }
 
 TheSmallCouncil.code = '26619';
-TheSmallCouncil.version = '1.0.0';
+TheSmallCouncil.version = '1.0.1';
 
 export default TheSmallCouncil;
