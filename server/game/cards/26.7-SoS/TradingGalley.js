@@ -12,16 +12,14 @@ class TradingGalley extends DrawCard {
             target: {
                 cardCondition: {
                     location: 'play area',
-                    type: 'character',
-                    participating: true
+                    type: 'character'
                 }
             },
-            message:
-                '{player} uses {source} to give +3 STR to {target} until the end of the challenge',
+            message: '{player} uses {source} to give +2 STR to {target} until the end of the phase',
             handler: (context) => {
-                this.untilEndOfChallenge((ability) => ({
+                this.untilEndOfPhase((ability) => ({
                     match: context.target,
-                    effect: ability.effects.modifyStrength(3)
+                    effect: ability.effects.modifyStrength(2)
                 }));
             }
         });
@@ -29,6 +27,6 @@ class TradingGalley extends DrawCard {
 }
 
 TradingGalley.code = '26594';
-TradingGalley.version = '1.1.0';
+TradingGalley.version = '1.1.1';
 
 export default TradingGalley;
