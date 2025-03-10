@@ -5,17 +5,23 @@ class ConvertBeyondTheWall extends DrawCard {
     constructor(owner, cardData) {
         super(owner, cardData);
 
-        this.registerEvents(['onCardEntersPlay', 'onCardLeftPlay']);
+        this.registerEvents(['onSetupFinished', 'onCardEntersPlay', 'onCardLeftPlay']);
+    }
+
+    onSetupFinished() {
+        if (this.location === 'play area') {
+            this.checkSacrifice();
+        }
     }
 
     onCardEntersPlay(event) {
-        if (event.card === this) {
+        if (this.game.currentPhase !== 'setup' && event.card === this) {
             this.checkSacrifice();
         }
     }
 
     onCardLeftPlay(event) {
-        if (event.card.controller === this.controller) {
+        if (this.game.currentPhase !== 'setup' && event.card.controller === this.controller) {
             this.checkSacrifice();
         }
     }
