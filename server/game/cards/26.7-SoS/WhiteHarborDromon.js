@@ -19,13 +19,11 @@ class WhiteHarborDromon extends DrawCard {
                 (card) => card.getType() === 'character' && card.canParticipateInChallenge()
             ),
             message:
-                '{player} uses {source} and kneel {costs.kneel} to have it participate in the challenge on their side',
+                '{player} uses {source} and kneels {costs.kneel} to have it participate in the challenge on their side',
             handler: (context) => {
                 this.game.resolveGameAction(
-                    GameActions.addToChallenge(
-                        (context) => ({ card: context.costs.kneel }),
-                        context
-                    )
+                    GameActions.addToChallenge((context) => ({ card: context.costs.kneel })),
+                    context
                 );
             }
         });

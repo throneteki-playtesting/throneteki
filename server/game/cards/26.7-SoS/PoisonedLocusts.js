@@ -11,6 +11,6 @@ class PoisonedLocusts extends DrawCard {
 }
 
 PoisonedLocusts.code = '26580';
-PoisonedLocusts.version = '1.0.1';
+PoisonedLocusts.version = '1.0.2';
 
 export default PoisonedLocusts;

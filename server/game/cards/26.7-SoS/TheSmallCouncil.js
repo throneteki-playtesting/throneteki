@@ -15,19 +15,16 @@ class TheSmallCouncil extends AgendaCard {
                     trait: 'Small Council',
                     kneeled: false,
                     controller: 'current',
-                    condition: (card, context) =>
-                        GameActions.gainPower({ card, amount: this.getAmount(context) }).allow()
+                    condition: (card) => GameActions.gainPower({ card, amount: 1 }).allow()
                 }
             },
-            message: {
-                format: '{player} uses {source} and kneels their faction card to have {target} gain 1 power',
-                args: { amount: (context) => this.getAmount(context) }
-            },
+            message:
+                '{player} uses {source} and kneels their faction card to have {target} gain 1 power',
             handler: (context) => {
                 this.game.resolveGameAction(
                     GameActions.gainPower((context) => ({
                         card: context.target,
-                        amount: this.getAmount(context)
+                        amount: 1
                     })).then({
                         condition: (context) =>
                             context.player.anyCardsInPlay({
