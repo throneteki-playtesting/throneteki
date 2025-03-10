@@ -7,7 +7,8 @@ class RalfTheLimper extends DrawCard {
             when: {
                 onCardDiscarded: (event) =>
                     event.card.controller !== this.controller &&
-                    event.originalLocation === 'draw deck'
+                    event.originalLocation === 'draw deck' &&
+                    event.card.getType() === 'location'
             },
             target: {
                 cardCondition: { location: 'play area', controller: 'current', shadow: true }

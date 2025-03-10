@@ -5,8 +5,7 @@ class ConvertBeyondTheWall extends DrawCard {
     constructor(owner, cardData) {
         super(owner, cardData);
 
-        this.registerEvents(['onCardEntersPlay']);
-        this.registerEvents(['onCardLeftPlay']);
+        this.registerEvents(['onCardEntersPlay', 'onCardLeftPlay']);
     }
 
     onCardEntersPlay(event) {
@@ -23,13 +22,15 @@ class ConvertBeyondTheWall extends DrawCard {
 
     checkSacrifice() {
         if (
-            !this.controller.anyCardsInPlay({
-                type: 'character',
-                or: [{ trait: 'Wildling' }, { name: 'Jon Snow' }]
-            })
+            !this.controller.anyCardsInPlay(
+                (card) =>
+                    card.getType() === 'character' &&
+                    card !== this &&
+                    (card.hasTrait('Wildling') || card.name === 'Jon Snow')
+            )
         ) {
             this.game.addMessage(
-                '{0} is forced to sacrifice {1} as they control no Wildlings or Jon Snow',
+                '{0} is forced to sacrifice {1} as they control no other Wildlings or Jon Snow',
                 this.controller,
                 this
             );

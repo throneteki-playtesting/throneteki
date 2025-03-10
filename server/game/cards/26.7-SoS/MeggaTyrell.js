@@ -5,7 +5,12 @@ class MeggaTyrell extends DrawCard {
     setupCardAbilities(ability) {
         this.reaction({
             when: {
-                onRemovedFromChallenge: (event) => event.card.isMatch({ type: 'character' })
+                onRemovedFromChallenge: {
+                    aggregateBy: (event) => ({
+                        cardType: event.card.getType()
+                    }),
+                    condition: (aggregate) => aggregate.cardType === 'character'
+                }
             },
             message: '{player} uses {source} to gain 1 power for their faction',
             gameAction: GameActions.gainPower((context) => ({
@@ -18,6 +23,6 @@ class MeggaTyrell extends DrawCard {
 }
 
 MeggaTyrell.code = '26586';
-MeggaTyrell.version = '1.0.1';
+MeggaTyrell.version = '1.0.2';
 
 export default MeggaTyrell;
