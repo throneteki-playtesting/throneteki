@@ -1,7 +1,7 @@
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
-class QartheenGalley extends DrawCard {
+class QartheenGalleas extends DrawCard {
     setupCardAbilities(ability) {
         // TODO: If this ability is released, probably worth a proper check of all abilities it affects & maybe a proper implement.
         // Notably, it should affect anything which counts/compares hand size, but nothing which interacts with cards in hand
@@ -32,7 +32,7 @@ class QartheenGalley extends DrawCard {
     }
 }
 
-QartheenGalley.code = '26582';
-QartheenGalley.version = '1.1.0';
+QartheenGalleas.code = '26582';
+QartheenGalleas.version = '1.1.1';
 
-export default QartheenGalley;
+export default QartheenGalleas;

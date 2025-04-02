@@ -1,99 +1,65 @@
 import GameActions from '../../GameActions/index.js';
 import PlotCard from '../../plotcard.js';
-import TextHelper from '../../TextHelper.js';
 
 class DoomOfValyria extends PlotCard {
     setupCardAbilities() {
-        this.chosenCards = [];
         this.whenRevealed({
+            message: '{player} uses {source} to discard all non-limited cards from play',
             handler: (context) => {
-                // Draw up to 3, if able
-                this.game.getPlayersInFirstPlayerOrder().forEach((player) => {
-                    const amount = this.getAmountToDraw(player);
-                    if (amount > 0) {
-                        this.game.resolveGameAction(GameActions.drawCards({ player, amount }));
-                        this.game.addMessage('{0} draws {1} cards for {2}', player, amount, this);
-                    }
-                });
-                // Select X cards to discard
-                this.game.getPlayersInFirstPlayerOrder().forEach((player, index, arr) => {
-                    const lastPlayer = arr.length - 1 === index;
-                    this.game.promptForSelect(player, {
-                        type: 'select',
-                        mode: 'unlimited',
-                        activePromptTitle: 'Select cards to discard',
-                        source: context.source,
-                        cardCondition: (card) =>
-                            card.isMatch({ location: 'hand' }) && card.controller === player,
-                        onSelect: (player, discarded) => {
-                            const xValue = discarded.length;
-                            // Select X cards (can be 0)
-                            if (xValue > 0) {
-                                this.game.promptForSelect(player, {
-                                    mode: 'exactly',
-                                    numCards: xValue,
-                                    activePromptTitle: `Select ${TextHelper.count(xValue, 'card')}`,
-                                    source: context.source,
-                                    cardCondition: (card) => card.location === 'play area',
-                                    onSelect: (player, chosen) => {
-                                        this.game.addMessage(
-                                            `{0} discards {1} to choose {2} for {3}`,
-                                            player,
-                                            discarded,
-                                            chosen,
-                                            this
-                                        );
-                                        this.chooseCards(lastPlayer, discarded, chosen);
-
-                                        return true;
-                                    }
-                                });
-                            }
-
-                            return true;
-                        },
-                        onCancel: (player) => {
-                            this.game.addMessage(
-                                `{0} does not discard any cards for {1}`,
-                                player,
-                                this
-                            );
-                            this.chooseCards(lastPlayer);
-                            return true;
-                        }
-                    });
-                });
+                const opponents = this.game.getOpponentsInFirstPlayerOrder(context.player);
+                this.remainingOpponents = opponents.filter((opponent) => opponent.hand.length >= 3);
+                this.context = context;
+                this.promptForCancel(context);
             }
         });
     }
+    promptForCancel() {
+        if (this.remainingOpponents.length === 0) {
+            this.resolveDiscardFromPlay();
+            return true;
+        }
 
-    getAmountToDraw(player) {
-        return Math.max(0, 3 - player.getHandCount());
+        const nextOpponent = this.remainingOpponents.shift();
+        this.game.promptWithMenu(nextOpponent, this, {
+            activePrompt: {
+                menuTitle: 'Discard hand to cancel?',
+                buttons: [
+                    { text: 'Yes', method: 'cancelResolution' },
+                    { text: 'No', method: 'promptForCancel' }
+                ]
+            },
+            source: this
+        });
+
+        return true;
     }
 
-    chooseCards(lastPlayer, discarded = [], chosen = []) {
-        this.game.resolveGameAction(
-            GameActions.simultaneously(discarded.map((card) => GameActions.discardCard({ card })))
+    cancelResolution(opponent) {
+        this.game.addMessage(
+            '{0} discards their hand to cancel the effects of {1}',
+            opponent,
+            this
         );
-        this.chosenCards.push(...chosen);
-        if (lastPlayer) {
-            const discarding = this.game.filterCardsInPlay(
-                (card) => !this.chosenCards.includes(card)
-            );
-            if (discarding.length > 0) {
-                // Discard all not chosen
-                this.game.addMessage('{0} are discarded from play for {1}', discarding, this);
-                this.game.resolveGameAction(
-                    GameActions.simultaneously(() =>
-                        discarding.map((card) => GameActions.discardCard({ card }))
-                    )
-                );
-            }
-        }
+        this.game.resolveGameAction(
+            GameActions.simultaneously(() =>
+                opponent.hand.map((card) => GameActions.discardCard({ card, source: this }))
+            )
+        );
+        return true;
+    }
+
+    resolveDiscardFromPlay() {
+        this.game.resolveGameAction(
+            GameActions.simultaneously(() =>
+                this.game
+                    .filterCardsInPlay((card) => !card.isLimited())
+                    .map((card) => GameActions.discardCard({ card, source: this }))
+            )
+        );
     }
 }
 
 DoomOfValyria.code = '26612';
-DoomOfValyria.version = '1.1.0';
+DoomOfValyria.version = '1.2.0';
 
 export default DoomOfValyria;

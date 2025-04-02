@@ -1,7 +1,7 @@
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
-class WhiteHarborDromon extends DrawCard {
+class WhiteHarborGalley extends DrawCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
             condition: () => this.game.isDuringChallenge(),
@@ -30,7 +30,7 @@ class WhiteHarborDromon extends DrawCard {
     }
 }
 
-WhiteHarborDromon.code = '26570';
-WhiteHarborDromon.version = '1.1.0';
+WhiteHarborGalley.code = '26570';
+WhiteHarborGalley.version = '1.1.1';
 
-export default WhiteHarborDromon;
+export default WhiteHarborGalley;

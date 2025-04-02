@@ -1,10 +1,11 @@
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
-class KingsLandingDromon extends DrawCard {
+class NarrowSeaDromond extends DrawCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
-            effect: ability.effects.raiseAmountUnspentGoldToKeep(1)
+            match: this,
+            effect: ability.effects.modifyDominanceStrength(2)
         });
         this.reaction({
             when: {
@@ -14,14 +15,14 @@ class KingsLandingDromon extends DrawCard {
                 cardCondition: {
                     location: 'play area',
                     type: 'character',
-                    printedCostOrLower: 2,
-                    condition: (card) => GameActions.returnCardToHand({ card }).allow()
+                    printedCostOrLower: 4,
+                    condition: (card) => GameActions.kneelCard({ card }).allow()
                 }
             },
-            message: "{player} uses {source} to return {target} to its owner's hand",
+            message: '{player} uses {source} to kneel {target}',
             handler: (context) => {
                 this.game.resolveGameAction(
-                    GameActions.returnCardToHand((context) => ({ card: context.target })),
+                    GameActions.kneelCard((context) => ({ card: context.target })),
                     context
                 );
             }
@@ -29,7 +30,7 @@ class KingsLandingDromon extends DrawCard {
     }
 }
 
-KingsLandingDromon.code = '26534';
-KingsLandingDromon.version = '1.1.0';
+NarrowSeaDromond.code = '26509';
+NarrowSeaDromond.version = '1.1.2';
 
-export default KingsLandingDromon;
+export default NarrowSeaDromond;
