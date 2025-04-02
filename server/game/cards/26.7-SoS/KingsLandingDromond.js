@@ -1,11 +1,10 @@
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
-class NarrowSeaGalley extends DrawCard {
+class KingsLandingDromond extends DrawCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
-            match: this,
-            effect: ability.effects.modifyDominanceStrength(2)
+            effect: ability.effects.raiseAmountUnspentGoldToKeep(1)
         });
         this.reaction({
             when: {
@@ -15,14 +14,14 @@ class NarrowSeaGalley extends DrawCard {
                 cardCondition: {
                     location: 'play area',
                     type: 'character',
-                    printedCostOrLower: 4,
-                    condition: (card) => GameActions.kneelCard({ card }).allow()
+                    printedCostOrLower: 2,
+                    condition: (card) => GameActions.returnCardToHand({ card }).allow()
                 }
             },
-            message: '{player} uses {source} to kneel {target}',
+            message: "{player} uses {source} to return {target} to its owner's hand",
             handler: (context) => {
                 this.game.resolveGameAction(
-                    GameActions.kneelCard((context) => ({ card: context.target })),
+                    GameActions.returnCardToHand((context) => ({ card: context.target })),
                     context
                 );
             }
@@ -30,7 +29,7 @@ class NarrowSeaGalley extends DrawCard {
     }
 }
 
-NarrowSeaGalley.code = '26509';
-NarrowSeaGalley.version = '1.1.1';
+KingsLandingDromond.code = '26534';
+KingsLandingDromond.version = '1.1.1';
 
-export default NarrowSeaGalley;
+export default KingsLandingDromond;

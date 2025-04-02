@@ -404,6 +404,22 @@ const Costs = {
             }
         };
     },
+    giveGold: function (amount, opponentFunc) {
+        return {
+            canPay: function (context) {
+                return context.player.gold >= amount;
+            },
+            pay: function (context) {
+                let opponentObj = opponentFunc && opponentFunc(context);
+                context.game.transferGold({
+                    from: context.player,
+                    to: opponentObj,
+                    amount,
+                    activePlayer: context.player
+                });
+            }
+        };
+    },
     /**
      * Reducable cost where the player gets prompted to pay from a passed minimum up to the lesser of two values:
      * the passed maximum and either the player's or his opponent's gold.

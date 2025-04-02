@@ -12,8 +12,8 @@ class EnameledGreenArmor extends DrawCard {
             cost: ability.costs.kneelSelf(),
             target: {
                 cardCondition: {
-                    participating: true,
-                    condition: (card) => card.getStrength() < this.parent.getStrength()
+                    type: 'character',
+                    participating: true
                 }
             },
             message: '{player} kneels {source} to have {target} contribute STR to their side',
@@ -28,6 +28,6 @@ class EnameledGreenArmor extends DrawCard {
 }
 
 EnameledGreenArmor.code = '26591';
-EnameledGreenArmor.version = '1.0.0';
+EnameledGreenArmor.version = '1.0.1';
 
 export default EnameledGreenArmor;

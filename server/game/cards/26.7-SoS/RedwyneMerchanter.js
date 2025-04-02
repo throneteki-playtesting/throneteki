@@ -1,6 +1,6 @@
 import DrawCard from '../../drawcard.js';
 
-class TradingGalley extends DrawCard {
+class RedwyneMerchanter extends DrawCard {
     setupCardAbilities() {
         this.plotModifiers({
             gold: 1
@@ -26,7 +26,7 @@ class TradingGalley extends DrawCard {
     }
 }
 
-TradingGalley.code = '26594';
-TradingGalley.version = '1.1.1';
+RedwyneMerchanter.code = '26594';
+RedwyneMerchanter.version = '1.1.2';
 
-export default TradingGalley;
+export default RedwyneMerchanter;

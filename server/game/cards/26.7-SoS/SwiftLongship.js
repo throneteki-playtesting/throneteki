@@ -1,6 +1,6 @@
 import DrawCard from '../../drawcard.js';
 
-class SouthboundGalley extends DrawCard {
+class SwiftLongship extends DrawCard {
     setupCardAbilities() {
         this.plotModifiers({
             initiative: 1
@@ -29,7 +29,7 @@ class SouthboundGalley extends DrawCard {
     }
 }
 
-SouthboundGalley.code = '26522';
-SouthboundGalley.version = '1.1.0';
+SwiftLongship.code = '26522';
+SwiftLongship.version = '1.1.1';
 
-export default SouthboundGalley;
+export default SwiftLongship;

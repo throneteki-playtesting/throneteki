@@ -1,7 +1,7 @@
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
-class GreenbloodCog extends DrawCard {
+class DornishSeaVessel extends DrawCard {
     setupCardAbilities() {
         this.plotModifiers({
             reserve: 1
@@ -38,7 +38,7 @@ class GreenbloodCog extends DrawCard {
     }
 }
 
-GreenbloodCog.code = '26546';
-GreenbloodCog.version = '1.1.0';
+DornishSeaVessel.code = '26546';
+DornishSeaVessel.version = '1.1.1';
 
-export default GreenbloodCog;
+export default DornishSeaVessel;
