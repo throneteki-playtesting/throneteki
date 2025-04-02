@@ -5,20 +5,43 @@ class TradingWithBraavos extends AgendaCard {
     setupCardAbilities(ability) {
         this.reaction({
             when: {
-                onCardEntersPlay: (event) =>
-                    event.card.controller === this.controller &&
-                    event.card.getType() === 'location' &&
-                    (event.card.isFaction('neutral') ||
-                        !event.card.isFaction(this.controller.faction.getPrintedFaction()))
+                onClaimApplied: (event) => event.challenge && event.player === this.controller
             },
-            limit: ability.limit.perPhase(1),
-            message: '{player} uses {source} to draw 1 card',
-            gameAction: GameActions.drawCards((context) => ({ player: context.player, amount: 1 }))
+            cost: ability.costs.kneelFactionCard(),
+            message:
+                '{player} uses {source} to search the top 10 cards of their deck for a non-limited location',
+            gameAction: GameActions.search({
+                topCards: 10,
+                title: 'Select a location',
+                match: { type: 'location', limited: false },
+                gameAction: GameActions.ifCondition({
+                    condition: (context) => !context.searchTarget.hasTrait('Warship'),
+                    thenAction: {
+                        message: '{player} {gameAction}',
+                        gameAction: GameActions.addToHand((context) => ({
+                            card: context.searchTarget
+                        }))
+                    },
+                    elseAction: GameActions.choose({
+                        title: 'Put card in shadows?',
+                        message: '{player} {gameAction}',
+                        choices: {
+                            'Add to hand': GameActions.addToHand((context) => ({
+                                card: context.searchTarget
+                            })),
+                            'Put in shadows': GameActions.placeCard((context) => ({
+                                card: context.searchTarget,
+                                location: 'shadows'
+                            }))
+                        }
+                    })
+                })
+            })
         });
     }
 }
 
 TradingWithBraavos.code = '26620';
-TradingWithBraavos.version = '1.0.0';
+TradingWithBraavos.version = '1.0.1';
 
 export default TradingWithBraavos;

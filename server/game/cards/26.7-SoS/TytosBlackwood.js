@@ -5,7 +5,7 @@ class TytosBlackwood extends DrawCard {
         this.persistentEffect({
             targetController: 'any',
             condition: () => this.isParticipating(),
-            match: (card) => card !== this && card.power === 0,
+            match: (card) => card.getType() === 'character' && card !== this && card.power === 0,
             effect: ability.effects.blankExcludingTraits
         });
     }

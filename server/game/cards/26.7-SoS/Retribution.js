@@ -11,8 +11,7 @@ class Retribution extends DrawCard {
                     this.controlsFewerCharacters()
             },
             target: {
-                choosingPlayer: (player, context) =>
-                    player === context.event.challenge.attackingPlayer,
+                choosingPlayer: (player) => player === this.game.currentChallenge.attackingPlayer,
                 cardCondition: (card) =>
                     card.location === 'play area' &&
                     card.getType() === 'character' &&
@@ -20,8 +19,8 @@ class Retribution extends DrawCard {
                     GameActions.kill({ card }).allow()
             },
             message: {
-                format: '{player} plays {source} to have {attackingPlayer} choose and kill {target}',
-                args: { attackingPlayer: (context) => context.event.challenge.attackingPlayer }
+                format: '{player} plays {source} to have {controller} choose and kill {target}',
+                args: { controller: (context) => context.target.controller }
             },
             handler: (context) => {
                 this.game.resolveGameAction(
@@ -41,10 +40,12 @@ class Retribution extends DrawCard {
     }
 
     controlsFewerCharacters() {
-        this.controller.getNumberOfCardsInPlay({ type: 'character' }) <
+        return (
+            this.controller.getNumberOfCardsInPlay({ type: 'character' }) <
             this.game.currentChallenge.attackingPlayer.getNumberOfCardsInPlay({
                 type: 'character'
-            });
+            })
+        );
     }
 }
 
