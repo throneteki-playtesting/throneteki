@@ -346,17 +346,15 @@ const agendaRules = {
     },
     // Trading with Braavos
     26620: {
-        requiredDraw: 75,
         mayInclude: (card) => card.type === 'location' && hasTrait(card, 'Warship') && !card.loyal,
         rules: [
             {
-                message: 'Cannot include more than 1 copy of each Warship location',
+                message: 'Cannot include more than 1 copy of each non-limited location',
                 condition: (deck) => {
-                    const allCards = deck.drawCards.concat(deck.plotCards);
-                    const locations = allCards.filter(
+                    const locations = deck.drawCards.filter(
                         (cardQuantity) =>
                             cardQuantity.card.type === 'location' &&
-                            hasTrait(cardQuantity.card, 'Warship')
+                            !hasKeyword(cardQuantity.card, /Limited/)
                     );
                     return locations.every((location) => location.count <= 1);
                 }
