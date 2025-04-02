@@ -2,7 +2,10 @@ import GameActions from '../../GameActions/index.js';
 import PlotCard from '../../plotcard.js';
 
 class DoomOfValyria extends PlotCard {
-    setupCardAbilities() {
+    setupCardAbilities(ability) {
+        this.persistentEffect({
+            effect: ability.effects.skipPhase('draw')
+        });
         this.whenRevealed({
             message: '{player} uses {source} to discard all non-limited cards from play',
             handler: (context) => {
