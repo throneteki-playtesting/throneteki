@@ -10,7 +10,7 @@ class TheWardenOfTheNorth extends DrawCard {
 
         this.whileAttached({
             condition: () => this.parent.isParticipating(),
-            targetController: 'opponent',
+            targetController: 'any',
             effect: [
                 ability.effects.cannotPutIntoPlay((card) => card.location === 'shadows'),
                 ability.effects.cannotPlay((card) => card.getPrintedType() === 'event')
@@ -20,6 +20,6 @@ class TheWardenOfTheNorth extends DrawCard {
 }
 
 TheWardenOfTheNorth.code = '26567';
-TheWardenOfTheNorth.version = '1.0.0';
+TheWardenOfTheNorth.version = '1.0.1';
 
 export default TheWardenOfTheNorth;
