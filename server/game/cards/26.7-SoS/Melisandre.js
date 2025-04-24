@@ -1,47 +1,28 @@
 import DrawCard from '../../drawcard.js';
+import GenericTracker from '../../EventTrackers/GenericTracker.js';
 import GameActions from '../../GameActions/index.js';
 
 class Melisandre extends DrawCard {
-    setupCardAbilities() {
+    setupCardAbilities(ability) {
+        this.tracker = GenericTracker.forRound(this.game, 'onCardOutOfShadows');
+
         this.reaction({
             when: {
                 afterChallenge: (event) =>
-                    event.challenge.winner === this.controller && this.isAttacking()
+                    event.challenge.winner === this.controller && this.isParticipating()
             },
             target: {
-                type: 'select',
-                activePromptTitle: 'Select a card',
-                cardCondition: {
-                    location: 'shadows',
-                    condition: (card, context) => card.controller === context.event.challenge.loser
-                }
+                cardCondition: (card) =>
+                    card.location === 'play area' &&
+                    card.getType() === 'character' &&
+                    this.tracker.some((event) => event.card === card) &&
+                    GameActions.putIntoShadows({ card }).allow()
             },
-            message: '{player} uses {source} to reveal a shadow card',
+            limit: ability.limit.perPhase(1),
+            message: '{player} uses {source} to return {target} to shadows',
             handler: (context) => {
                 this.game.resolveGameAction(
-                    GameActions.revealCards((context) => ({
-                        player: context.player,
-                        cards: [context.target]
-                    })).then((context) => ({
-                        condition: () => context.target.getType() === 'character',
-                        gameAction: GameActions.may({
-                            player: context.player,
-                            title: `Put ${context.target.name} into play?`,
-                            message: {
-                                format: '{player} kneels their faction card to put {shadowCard} into play',
-                                args: { shadowCard: () => context.target }
-                            },
-                            // TODO: This should really be a cost
-                            gameAction: GameActions.kneelCard({
-                                card: context.player.faction
-                            }).then({
-                                gameAction: GameActions.putIntoPlay({
-                                    player: context.player,
-                                    card: context.target
-                                })
-                            })
-                        })
-                    })),
+                    GameActions.putIntoShadows((context) => ({ card: context.target })),
                     context
                 );
             }
@@ -50,6 +31,6 @@ class Melisandre extends DrawCard {
 }
 
 Melisandre.code = '26501';
-Melisandre.version = '1.0.0';
+Melisandre.version = '1.1.0';
 
 export default Melisandre;

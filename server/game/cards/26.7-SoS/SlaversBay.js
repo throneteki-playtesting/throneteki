@@ -8,7 +8,7 @@ class SlaversBay extends DrawCard {
                     this.game.isDuringChallenge({ challengeType }) &&
                     this.controller.anyCardsInPlay({ name: location }),
                 match: (card) => card.isParticipating(),
-                effect: ability.effects.killIf((card) => card.getStrength() <= 1),
+                effect: ability.effects.killIf((card) => card.getStrength() === 0),
                 targetController: 'any'
             });
         };
@@ -20,6 +20,6 @@ class SlaversBay extends DrawCard {
 }
 
 SlaversBay.code = '26581';
-SlaversBay.version = '1.0.0';
+SlaversBay.version = '1.0.1';
 
 export default SlaversBay;

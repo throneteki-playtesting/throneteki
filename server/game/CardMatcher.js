@@ -93,6 +93,12 @@ class CardMatcher {
                     (controller) =>
                         card.controller === controller ||
                         CardMatcher.attachmentControllerMatches(controller, card, context)
+                ) &&
+                Matcher.anyValue(
+                    properties.owner,
+                    (owner) =>
+                        card.owner === owner ||
+                        CardMatcher.attachmentOwnerMatches(owner, card, context)
                 )
             );
         };
@@ -108,6 +114,21 @@ class CardMatcher {
                 return card.controller !== context.player;
             case 'choosingPlayer':
                 return card.controller === context.choosingPlayer;
+        }
+
+        return false;
+    }
+
+    static attachmentOwnerMatches(ownerProp, card, context) {
+        switch (ownerProp) {
+            case 'any':
+                return true;
+            case 'current':
+                return card.owner === context.player;
+            case 'opponent':
+                return card.owner !== context.player;
+            case 'choosingPlayer':
+                return card.owner === context.choosingPlayer;
         }
 
         return false;
