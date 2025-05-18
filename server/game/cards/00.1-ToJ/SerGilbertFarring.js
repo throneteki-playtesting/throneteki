@@ -11,6 +11,6 @@ class SerGilbertFarring extends DrawCard {
     }
 }
 
-SerGilbertFarring.code = '00111';
+SerGilbertFarring.code = '00110';
 
 export default SerGilbertFarring;
