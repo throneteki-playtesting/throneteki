@@ -19,6 +19,6 @@ class Summons extends PlotCard {
     }
 }
 
-Summons.code = '01022';
+Summons.code = '00370';
 
 export default Summons;

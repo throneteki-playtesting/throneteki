@@ -8,6 +8,6 @@ class TheRoseroad extends DrawCard {
     }
 }
 
-TheRoseroad.code = '01040';
+TheRoseroad.code = '00365';
 
 export default TheRoseroad;

@@ -21,6 +21,7 @@ class StonyShoreThrall extends DrawCard {
                     effect: ability.effects.modifyReserve(-1)
                 }));
                 this.game.resolveGameAction(
+                    // TODO BD change this to check reserve only for the chosen opponent
                     GameActions.may({
                         title: 'Have each player check reserve?',
                         message: {

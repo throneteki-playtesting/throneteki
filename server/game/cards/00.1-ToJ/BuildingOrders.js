@@ -19,6 +19,6 @@ class BuildingOrders extends PlotCard {
     }
 }
 
-BuildingOrders.code = '01006';
+BuildingOrders.code = '00369';
 
 export default BuildingOrders;

@@ -28,6 +28,6 @@ class ManningTheCityWalls extends PlotCard {
     }
 }
 
-ManningTheCityWalls.code = '13060';
+ManningTheCityWalls.code = '00374';
 
 export default ManningTheCityWalls;

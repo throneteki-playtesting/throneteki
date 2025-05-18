@@ -37,6 +37,6 @@ class TheHandsJudgment extends DrawCard {
     }
 }
 
-TheHandsJudgment.code = '01045';
+TheHandsJudgment.code = '00366';
 
 export default TheHandsJudgment;

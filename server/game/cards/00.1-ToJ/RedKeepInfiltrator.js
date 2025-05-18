@@ -25,7 +25,7 @@ class RedKeepInfiltrator extends DrawCard {
                 }));
 
                 this.game.addMessage(
-                    "{0} discards 1 gold from {1} to put {2} into play from their hand",
+                    '{0} discards 1 gold from {1} to put {2} into play from their hand',
                     context.player,
                     this,
                     context.target

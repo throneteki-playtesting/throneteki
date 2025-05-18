@@ -24,7 +24,7 @@ class RobbStark extends DrawCard {
 
     getSTRIncrease(context) {
         let str = context.costs.kneel.getPrintedCost();
-        return this.controller.anyCardsInPlay((card) => card.name === 'Robb Stark') ? str + 1 : str;
+        return this.controller.anyCardsInPlay((card) => card.name === 'Grey Wind') ? str + 1 : str;
     }
 }
 

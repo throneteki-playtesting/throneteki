@@ -26,6 +26,6 @@ class CrossroadsInnkeeper extends DrawCard {
     }
 }
 
-CrossroadsInnkeeper.code = '00361';
+CrossroadsInnkeeper.code = '00363';
 
 export default CrossroadsInnkeeper;

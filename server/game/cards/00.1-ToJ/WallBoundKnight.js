@@ -1,5 +1,5 @@
 import DrawCard from '../../drawcard.js';
-import Tokens from '../../Constants/Tokens.js';
+import { Tokens } from '../../Constants/Tokens.js';
 
 class WallBoundKnight extends DrawCard {
     setupCardAbilities() {

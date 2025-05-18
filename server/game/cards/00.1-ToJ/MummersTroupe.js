@@ -1,5 +1,5 @@
 import DrawCard from '../../drawcard.js';
-import Tokens from '../../Constants/index.js';
+import { Tokens } from '../../Constants/Tokens.js';
 
 class MummersTroupe extends DrawCard {
     setupCardAbilities(ability) {

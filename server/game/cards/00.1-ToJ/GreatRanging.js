@@ -18,7 +18,7 @@ class GreatRanging extends DrawCard {
                     type: 'location',
                     limited: false
                 },
-                location: ['draw deck', 'hand', 'discard pile'],
+                location: ['draw deck', 'discard pile'],
                 message: '{player} {gameAction}',
                 gameAction: GameActions.addToHand((context) => ({
                     card: context.searchTarget

@@ -1,11 +1,11 @@
 import DrawCard from '../../drawcard.js';
+import GameActions from '../../GameActions/index.js';
 
 class FightingPit extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
             title: 'Put character into play',
             phase: 'challenge',
-            // TODO BD do the rules support putting the same card into play that was discarded for cost?
             target: {
                 cardCondition: (card, context) =>
                     card.location === 'discard pile' &&
@@ -14,16 +14,47 @@ class FightingPit extends DrawCard {
                     card.getPrintedCost() <= 3 &&
                     context.player.canPutIntoPlay(card)
             },
-            cost: [ability.costs.discardFromHand(), ability.costs.sacrificeSelf()],
-            message: '{player} sacrifices {source} and discards a card to put {target} into play',
+            cost: ability.costs.sacrificeSelf(),
+            message: '{player} sacrifices {source} to discard a card',
             handler: (context) => {
-                context.target.controller.putIntoPlay(context.target);
-                this.atEndOfPhase((ability) => ({
-                    match: context.target,
-                    condition: () => ['play area', 'duplicate'].includes(context.target.location),
-                    targetLocation: 'any',
-                    effect: ability.effects.returnToHandIfStillInPlay(true)
-                }));
+                this.game
+                    .resolveGameAction(
+                        GameActions.genericHandler((context) => {
+                            this.game.promptForSelect(context.player, {
+                                activePromptTitle: 'Select a card',
+                                source: this,
+                                cardCondition: (card) =>
+                                    card.location === 'hand' && card.controller === context.player,
+                                onSelect: (player, card) => this.cardSelected(player, card)
+                            });
+                        })
+                    )
+                    .then({
+                        // TODO BD search is probably the wrong action here?
+                        gameAction: GameActions.search({
+                            title: 'Select a character',
+                            location: 'discard pile',
+                            match: {
+                                type: 'character',
+                                printedCostOrLower: 3,
+                                condition: (card) => this.controller.canPutIntoPlay(card)
+                            },
+                            reveal: false,
+                            message: '{player} {gameAction}',
+                            gameAction: GameActions.putIntoPlay((context) => ({
+                                player: context.player,
+                                card: context.searchTarget
+                            })).thenExecute((event) => {
+                                this.atEndOfPhase((ability) => ({
+                                    match: event.card,
+                                    condition: () =>
+                                        ['play area', 'duplicate'].includes(event.card.location),
+                                    targetLocation: 'any',
+                                    effect: ability.effects.returnToHandIfStillInPlay(true)
+                                }));
+                            })
+                        })
+                    });
             }
         });
     }

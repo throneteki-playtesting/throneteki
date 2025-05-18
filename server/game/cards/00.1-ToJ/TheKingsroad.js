@@ -35,6 +35,6 @@ class TheKingsroad extends DrawCard {
     }
 }
 
-TheKingsroad.code = '01039';
+TheKingsroad.code = '00364';
 
 export default TheKingsroad;

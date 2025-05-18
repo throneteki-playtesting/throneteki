@@ -51,6 +51,6 @@ class ThePaleMare extends PlotCard {
     }
 }
 
-ThePaleMare.code = '00008';
+ThePaleMare.code = '00368';
 
 export default ThePaleMare;

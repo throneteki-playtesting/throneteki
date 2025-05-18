@@ -49,6 +49,6 @@ class CityOfSecrets extends PlotCard {
     }
 }
 
-CityOfSecrets.code = '13019';
+CityOfSecrets.code = '00373';
 
 export default CityOfSecrets;

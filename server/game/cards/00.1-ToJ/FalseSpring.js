@@ -73,6 +73,6 @@ class FalseSpring extends PlotCard {
     }
 }
 
-FalseSpring.code = '10052';
+FalseSpring.code = '00372';
 
 export default FalseSpring;

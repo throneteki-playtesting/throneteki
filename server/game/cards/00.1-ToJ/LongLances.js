@@ -9,7 +9,7 @@ class LongLances extends DrawCard {
             },
             handler: () => {
                 if (!this.hasToken(Tokens.gold)) {
-                    this.sacrifice();
+                    this.returnToHand();
                     return;
                 }
 
@@ -18,7 +18,7 @@ class LongLances extends DrawCard {
                         menuTitle: 'Discard 1 gold from ' + this.name + '?',
                         buttons: [
                             { text: 'Yes', method: 'discardGold' },
-                            { text: 'No', method: 'sacrifice' }
+                            { text: 'No', method: 'returnToHand' }
                         ]
                     },
                     source: this
@@ -34,10 +34,10 @@ class LongLances extends DrawCard {
         return true;
     }
 
-    sacrifice() {
+    returnToHand() {
         this.owner.returnCardToHand(this, true);
         this.game.addMessage(
-            "{0} is forced by {1} to return it to {2}'s hand",
+            "{0} is forced to return {1} to {2}'s hand",
             this.controller,
             this,
             this.owner

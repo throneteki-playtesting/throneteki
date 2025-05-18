@@ -1,5 +1,4 @@
 import DrawCard from '../../drawcard.js';
-import Tokens from '../../Constants/index.js';
 
 class DebtCollector extends DrawCard {
     setupCardAbilities(ability) {
@@ -15,7 +14,7 @@ class DebtCollector extends DrawCard {
                 this.game.addMessage(
                     '{0} moves 1 gold from {1} to their gold pool to give {2} insight',
                     this.controller,
-                    context.target,
+                    context.costs.discardToken,
                     this
                 );
                 this.untilEndOfPhase((ability) => ({
