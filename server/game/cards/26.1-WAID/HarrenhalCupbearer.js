@@ -13,7 +13,7 @@ class HarrenhalCupbearer extends DrawCard {
                 cardCondition: (card, context) =>
                     card.controller === context.event.challenge.loser &&
                     card.getType() === 'character' &&
-                    !card.hasTrait('Spy') &&
+                    card.getPrintedCost() <= 5 &&
                     GameActions.kneelCard({ card }).allow()
             },
             message: '{player} returns {costs.putIntoShadows} to shadows to kneel {target}',
@@ -27,7 +27,6 @@ class HarrenhalCupbearer extends DrawCard {
     }
 }
 
-HarrenhalCupbearer.code = '26602';
-HarrenhalCupbearer.version = '1.0.0';
+HarrenhalCupbearer.code = '26017';
 
 export default HarrenhalCupbearer;

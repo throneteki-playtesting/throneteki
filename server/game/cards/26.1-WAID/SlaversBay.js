@@ -19,7 +19,6 @@ class SlaversBay extends DrawCard {
     }
 }
 
-SlaversBay.code = '26581';
-SlaversBay.version = '1.0.1';
+SlaversBay.code = '26014';
 
 export default SlaversBay;

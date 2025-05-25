@@ -1,13 +1,12 @@
 import GameActions from '../../GameActions/index.js';
 import PlotCard from '../../plotcard.js';
 
-class DoomOfValyria extends PlotCard {
-    setupCardAbilities(ability) {
-        this.persistentEffect({
-            effect: ability.effects.skipPhase('draw')
-        });
+class TheDoomOfValyria extends PlotCard {
+    setupCardAbilities() {
         this.whenRevealed({
-            message: '{player} uses {source} to discard all non-limited cards from play',
+            condition: (context) => context.player.getNumberOfUsedPlots() >= 3,
+            message:
+                '{player} uses {source} to discard all non-limited cards from play, and all cards from shadows',
             handler: (context) => {
                 const opponents = this.game.getOpponentsInFirstPlayerOrder(context.player);
                 this.remainingOpponents = opponents.filter((opponent) => opponent.hand.length >= 3);
@@ -55,14 +54,18 @@ class DoomOfValyria extends PlotCard {
         this.game.resolveGameAction(
             GameActions.simultaneously(() =>
                 this.game
-                    .filterCardsInPlay((card) => !card.isLimited())
+                    .allCards(
+                        (card) =>
+                            (card.location === 'play area' && !card.isLimited()) ||
+                            card.location === 'shadows'
+                    )
                     .map((card) => GameActions.discardCard({ card, source: this }))
             )
         );
     }
 }
 
-DoomOfValyria.code = '26612';
-DoomOfValyria.version = '1.2.0';
+TheDoomOfValyria.code = '26612';
+TheDoomOfValyria.version = '1.2.1';
 
-export default DoomOfValyria;
+export default TheDoomOfValyria;

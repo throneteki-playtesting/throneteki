@@ -20,7 +20,6 @@ class HighgardenDestrier extends DrawCard {
     }
 }
 
-HighgardenDestrier.code = '26592';
-HighgardenDestrier.version = '2.0.0';
+HighgardenDestrier.code = '26016';
 
 export default HighgardenDestrier;

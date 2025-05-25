@@ -10,7 +10,7 @@ class GrowingInfluence extends DrawCard {
                     ['character', 'location'].includes(event.source.getType()) &&
                     event.ability.isTriggeredAbility()
             },
-            cost: ability.costs.giveGold(2, (context) => context.event.source.controller),
+            cost: ability.costs.giveGold(1, (context) => context.event.source.controller),
             message: {
                 format: '{player} plays {source} and gives {opponent} 2 gold to cancel {card}',
                 args: {
@@ -26,6 +26,6 @@ class GrowingInfluence extends DrawCard {
 }
 
 GrowingInfluence.code = '26596';
-GrowingInfluence.version = '1.1.0';
+GrowingInfluence.version = '1.1.1';
 
 export default GrowingInfluence;

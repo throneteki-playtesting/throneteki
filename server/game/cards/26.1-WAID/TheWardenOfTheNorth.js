@@ -19,7 +19,6 @@ class TheWardenOfTheNorth extends DrawCard {
     }
 }
 
-TheWardenOfTheNorth.code = '26567';
-TheWardenOfTheNorth.version = '1.0.1';
+TheWardenOfTheNorth.code = '26012';
 
 export default TheWardenOfTheNorth;

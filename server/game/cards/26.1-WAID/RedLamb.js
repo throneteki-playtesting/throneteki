@@ -10,7 +10,6 @@ class RedLamb extends DrawCard {
     }
 }
 
-RedLamb.code = '26575';
-RedLamb.version = '1.0.1';
+RedLamb.code = '26013';
 
 export default RedLamb;

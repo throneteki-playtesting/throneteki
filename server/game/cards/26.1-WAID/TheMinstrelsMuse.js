@@ -23,7 +23,6 @@ class TheMinstrelsMuse extends PlotCard {
     }
 }
 
-TheMinstrelsMuse.code = '26614';
-TheMinstrelsMuse.version = '1.0.0';
+TheMinstrelsMuse.code = '26020';
 
 export default TheMinstrelsMuse;

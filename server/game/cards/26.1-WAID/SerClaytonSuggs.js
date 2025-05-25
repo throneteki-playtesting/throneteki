@@ -1,12 +1,13 @@
 import DrawCard from '../../drawcard.js';
 
 class SerClaytonSuggs extends DrawCard {
-    setupCardAbilities() {
+    setupCardAbilities(ability) {
         this.reaction({
             when: {
                 onCardPowerGained: (event) => event.card.getType() === 'character',
                 onCardPowerMoved: (event) => event.target.getType() === 'character'
             },
+            limit: ability.limit.perPhase(3),
             choices: {
                 'Give +1 STR': (context) => {
                     this.untilEndOfPhase((ability) => ({
@@ -39,7 +40,6 @@ class SerClaytonSuggs extends DrawCard {
     }
 }
 
-SerClaytonSuggs.code = '26503';
-SerClaytonSuggs.version = '1.0.0';
+SerClaytonSuggs.code = '26001';
 
 export default SerClaytonSuggs;

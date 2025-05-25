@@ -21,7 +21,6 @@ class AgentOfTheCitadel extends DrawCard {
     }
 }
 
-AgentOfTheCitadel.code = '26590';
-AgentOfTheCitadel.version = '1.0.2';
+AgentOfTheCitadel.code = '26015';
 
 export default AgentOfTheCitadel;

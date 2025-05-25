@@ -16,7 +16,6 @@ class MaesterOfTheTor extends DrawCard {
     }
 }
 
-MaesterOfTheTor.code = '26541';
-MaesterOfTheTor.version = '2.0.0';
+MaesterOfTheTor.code = '26007';
 
 export default MaesterOfTheTor;

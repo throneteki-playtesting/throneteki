@@ -5,11 +5,9 @@ class Yronwood extends DrawCard {
         this.interrupt({
             canCancel: true,
             when: {
-                // TODO: This needs to be implemented properly (eg. not just "hasText")
                 onCardAbilityInitiated: (event) =>
-                    event.ability.isTriggeredAbility() &&
-                    event.source.hasText('you win') &&
-                    event.source.hasText('challenge') &&
+                    event.ability.eventType === 'reaction' &&
+                    event.ability.triggersFor('afterChallenge') &&
                     event.player !== this.controller
             },
             cost: ability.costs.kneelSelf(),
@@ -24,7 +22,6 @@ class Yronwood extends DrawCard {
     }
 }
 
-Yronwood.code = '26545';
-Yronwood.version = '1.0.0';
+Yronwood.code = '26008';
 
 export default Yronwood;

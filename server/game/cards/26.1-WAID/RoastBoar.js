@@ -19,7 +19,6 @@ class RoastBoar extends DrawCard {
     }
 }
 
-RoastBoar.code = '26508';
-RoastBoar.version = '2.1.0';
+RoastBoar.code = '26002';
 
 export default RoastBoar;

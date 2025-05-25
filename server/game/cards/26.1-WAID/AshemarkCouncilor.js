@@ -39,7 +39,6 @@ class AshemarkCouncilor extends DrawCard {
     }
 }
 
-AshemarkCouncilor.code = '26528';
-AshemarkCouncilor.version = '1.0.1';
+AshemarkCouncilor.code = '26005';
 
 export default AshemarkCouncilor;
