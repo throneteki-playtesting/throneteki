@@ -8,7 +8,7 @@ class RalfTheLimper extends DrawCard {
                 onCardDiscarded: (event) =>
                     event.card.controller !== this.controller &&
                     event.originalLocation === 'draw deck' &&
-                    event.card.getType() === 'location'
+                    event.card.getType() !== 'character'
             },
             target: {
                 cardCondition: { location: 'play area', controller: 'current', shadow: true }
@@ -26,6 +26,6 @@ class RalfTheLimper extends DrawCard {
 }
 
 RalfTheLimper.code = '26513';
-RalfTheLimper.version = '1.0.2';
+RalfTheLimper.version = '1.0.3';
 
 export default RalfTheLimper;

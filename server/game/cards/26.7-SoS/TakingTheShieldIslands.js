@@ -12,47 +12,50 @@ class TakingTheShieldIslands extends DrawCard {
                     }) && event.challenge.getWinnerCards().some((card) => card.hasTrait('Raider'))
             },
             message: {
-                format: "{player} plays {source} to look at the top 3 cards of {loser}'s deck",
+                format: "{player} plays {source} to look {loser}'s hand",
                 args: { loser: (context) => context.event.challenge.loser }
             },
             handler: (context) => {
-                const top3 = context.event.challenge.loser.searchDrawDeck(3);
+                const numCards = context.cardStateWhenInitiated.location === 'shadows' ? 2 : 1;
                 this.game.promptForSelect(context.player, {
-                    activePromptTitle: 'Select card to discard',
-                    cardCondition: (card) => top3.includes(card),
-                    onSelect: (player, card) => {
-                        this.game.addMessage(
-                            "{0} chooses to discard {1} from {2}'s deck, and places the other cards on top of that deck in any order",
-                            context.player,
-                            card,
-                            context.event.challenge.loser
-                        );
-                        const remaining = top3.filter((c) => c !== card);
-                        this.game.resolveGameAction(
-                            GameActions.simultaneously([
-                                GameActions.discardCard({ card }),
-                                ...remaining.map((card) =>
-                                    GameActions.placeCard({
-                                        card,
-                                        player: context.player,
-                                        location: 'draw deck'
-                                    })
-                                )
-                            ]),
-                            context
-                        );
-                        return true;
-                    },
-                    onCancel: () => {
-                        return true;
-                    }
+                    activePromptTitle: numCards === 1 ? 'Select a card' : 'Select up to 2 cards',
+                    source: this,
+                    numCards,
+                    revealTargets: true,
+                    cardCondition: (card) =>
+                        card.location === 'hand' &&
+                        card.controller === context.event.challenge.loser,
+                    onSelect: (player, cards) => this.onCardsSelected(player, cards)
                 });
             }
         });
     }
+
+    onCardsSelected(player, cards) {
+        this.game.resolveGameAction(
+            GameActions.simultaneously(
+                cards.map((card) =>
+                    GameActions.placeCard({
+                        card,
+                        player,
+                        location: 'draw deck'
+                    })
+                )
+            )
+        );
+        this.game.addMessage(
+            "{0} then uses {1} to place {2} on top of {3}'s deck",
+            player,
+            this,
+            cards,
+            cards[0].controller
+        );
+
+        return true;
+    }
 }
 
 TakingTheShieldIslands.code = '26524';
-TakingTheShieldIslands.version = '1.0.0';
+TakingTheShieldIslands.version = '1.1.0';
 
 export default TakingTheShieldIslands;
