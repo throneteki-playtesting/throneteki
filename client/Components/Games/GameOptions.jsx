@@ -1,7 +1,7 @@
 import React from 'react';
 import { Input, Switch } from '@heroui/react';
 
-const GameOptions = ({ formProps }) => {
+const GameOptions = ({ formProps, isDisabled }) => {
     const options = [
         { name: 'allowSpectators', label: 'Allow spectators' },
         { name: 'showHand', label: 'Show hands to spectators' },
@@ -28,6 +28,7 @@ const GameOptions = ({ formProps }) => {
                                 onChange={formProps.handleChange}
                                 value='true'
                                 isSelected={formProps.values[option.name]}
+                                isDisabled={isDisabled}
                             >
                                 {option.label}
                             </Switch>
@@ -35,14 +36,14 @@ const GameOptions = ({ formProps }) => {
                     ))}
                 </div>
             </div>
-            <div className='flex gap-2'>
+            <div className='flex flex-row gap-2 flex-wrap'>
                 {formProps.values.useGameTimeLimit && (
                     <div>
                         <span className='relative text-foreground-500'>Time Limit</span>
                         <div className='flex gap-2'>
                             <Input
                                 label={'Limit (minutes)'}
-                                className='lg:max-w-28'
+                                className='max-w-32'
                                 type='number'
                                 {...formProps.getFieldProps('gameTimeLimit')}
                                 isInvalid={
@@ -50,6 +51,7 @@ const GameOptions = ({ formProps }) => {
                                     formProps.touched.gameTimeLimit
                                 }
                                 errorMessage={formProps.errors.gameTimeLimit}
+                                isDisabled={isDisabled}
                             />
                         </div>
                     </div>
@@ -60,7 +62,7 @@ const GameOptions = ({ formProps }) => {
                         <div className='flex gap-2'>
                             <Input
                                 label={'Limit (minutes)'}
-                                className='lg:max-w-32'
+                                className='max-w-32'
                                 type='number'
                                 {...formProps.getFieldProps('chessClockTimeLimit')}
                                 isInvalid={
@@ -68,10 +70,11 @@ const GameOptions = ({ formProps }) => {
                                     formProps.touched.chessClockTimeLimit
                                 }
                                 errorMessage={formProps.errors.chessClockTimeLimit}
+                                isDisabled={isDisabled}
                             />
                             <Input
                                 label={'Delay (seconds)'}
-                                className='lg:max-w-32'
+                                className='max-w-32'
                                 type='number'
                                 {...formProps.getFieldProps('chessClockDelay')}
                                 isInvalid={
@@ -79,6 +82,7 @@ const GameOptions = ({ formProps }) => {
                                     formProps.touched.chessClockDelay
                                 }
                                 errorMessage={formProps.errors.chessClockDelay}
+                                isDisabled={isDisabled}
                             />
                         </div>
                     </div>
