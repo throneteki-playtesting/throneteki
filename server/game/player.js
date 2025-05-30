@@ -23,11 +23,12 @@ import ChessClock from './ChessClock.js';
 import { DrawPhaseCards, MarshalIntoShadowsCost, SetupGold } from './Constants/index.js';
 
 class Player extends Spectator {
-    constructor(id, user, owner, game) {
+    constructor(id, user, owner, game, seatNo) {
         super(id, user);
 
         // Ensure game is set before any cards have been created.
         this.game = game;
+        this.seatNo = seatNo;
 
         this.beingPlayed = [];
         this.drawDeck = [];
@@ -73,7 +74,7 @@ class Player extends Spectator {
         this.putIntoShadowsRestrictions = [];
         this.abilityMaxByTitle = {};
         this.standPhaseRestrictions = [];
-        this.multipleOpponentClaim = [];
+        this.anyOpponentsClaim = [];
         this.mustChooseAsClaim = [];
         this.plotRevealRestrictions = [];
         this.mustRevealPlot = undefined;
@@ -91,11 +92,8 @@ class Player extends Spectator {
         this.flags = new ReferenceCountedSetProperty();
         if (game.useChessClocks) {
             this.chessClock = new ChessClock(this, game.chessClockTimeLimit, game.chessClockDelay);
-        } else {
-            this.chessClock = undefined;
         }
 
-        this.promptState = new PlayerPromptState();
         this.mustShowPlotSelection = [];
     }
 
@@ -1287,7 +1285,7 @@ class Player extends Spectator {
     }
 
     isSupporter(opponent) {
-        if (!this.title || !opponent.title) {
+        if (!this.title || !opponent?.title) {
             return false;
         }
 
@@ -1310,8 +1308,8 @@ class Player extends Spectator {
         this.bonusesFromRivals.add(opponent);
     }
 
-    allowMultipleOpponentClaim(claimType) {
-        return this.multipleOpponentClaim.includes(claimType);
+    allowAnyOpponentsClaim(claimType) {
+        return this.anyOpponentsClaim.includes(claimType);
     }
 
     getSelectedCards() {
@@ -1348,16 +1346,19 @@ class Player extends Spectator {
         return this.promptState.getCardSelectionState(card);
     }
 
-    currentPrompt() {
-        return this.promptState.getState();
-    }
-
-    setPrompt(prompt) {
-        this.promptState.setPrompt(prompt);
-    }
-
     cancelPrompt() {
         this.promptState.cancelPrompt();
+    }
+
+    setIsActivePrompt(isActivePrompt) {
+        this.promptState.setIsActive(isActivePrompt);
+        if (this.chessClock) {
+            if (this.promptState.isActivePrompt) {
+                this.chessClock.start();
+            } else {
+                this.chessClock.stop();
+            }
+        }
     }
 
     getGameElementType() {
@@ -1383,18 +1384,6 @@ class Player extends Spectator {
         return !this.noTimer && this.user.settings.windowTimer !== 0;
     }
 
-    startClock() {
-        if (this.chessClock) {
-            this.chessClock.start();
-        }
-    }
-
-    stopClock() {
-        if (this.chessClock) {
-            this.chessClock.stop();
-        }
-    }
-
     addSecondsToClock(seconds) {
         if (this.chessClock && seconds) {
             this.chessClock.modify(seconds);
@@ -1408,9 +1397,12 @@ class Player extends Spectator {
     }
 
     getState(activePlayer) {
-        let isActivePlayer = activePlayer === this;
-        let promptState = isActivePlayer ? this.promptState.getState() : {};
-        let fullDiscardPile = this.discardPile.concat(this.beingPlayed);
+        const isActivePlayer = activePlayer === this;
+        const promptState = isActivePlayer
+            ? this.promptState.getState()
+            : { isActivePrompt: this.promptState.getState().isActivePrompt };
+        const isActivePrompt = this.promptState.isActivePrompt;
+        const fullDiscardPile = this.discardPile.concat(this.beingPlayed);
 
         let plots = [];
 
@@ -1430,13 +1422,12 @@ class Player extends Spectator {
             plots = this.getSummaryForCardList(this.plotDeck, activePlayer);
         }
 
-        let chessClockState = undefined;
-
-        if (this.chessClock) {
-            chessClockState = this.chessClock.getState();
-        }
-
-        let state = {
+        return {
+            id: this.id,
+            name: this.name,
+            cardSize: this.cardSize,
+            ...promptState,
+            seatNo: this.seatNo,
             activePlot: this.activePlot ? this.activePlot.getSummary(activePlayer) : undefined,
             agendas: this.agendas
                 ? this.agendas.map((agenda) => agenda.getSummary(activePlayer))
@@ -1455,14 +1446,13 @@ class Player extends Spectator {
                 plotDiscard: this.getSummaryForCardList(this.plotDiscard, activePlayer),
                 shadows: this.getSummaryForCardList(this.shadows, activePlayer)
             },
+            isActivePrompt,
             disconnected: !!this.disconnectedAt,
             faction: this.faction.getSummary(activePlayer),
             firstPlayer: this.firstPlayer,
-            id: this.id,
             keywordSettings: this.keywordSettings,
             left: this.left,
             numDrawCards: this.drawDeck.length,
-            name: this.name,
             numPlotCards: this.plotDeck.length,
             phase: this.game.currentPhase,
             selectedPlot: this.selectedPlot
@@ -1479,10 +1469,8 @@ class Player extends Spectator {
             user: {
                 username: this.user.username
             },
-            chessClock: chessClockState
+            ...(this.game.useChessClocks && { chessClock: this.chessClock.getState() })
         };
-
-        return Object.assign(state, promptState);
     }
 }
 

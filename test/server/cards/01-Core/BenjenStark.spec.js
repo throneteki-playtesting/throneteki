@@ -1,4 +1,4 @@
-describe('Benjen Stark', function () {
+describe('Benjen Stark (Core)', function () {
     integration(function () {
         beforeEach(function () {
             const deck1 = this.buildDeck('thenightswatch', [
