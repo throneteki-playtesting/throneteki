@@ -10,6 +10,6 @@ class IronEmmett extends DrawCard {
     }
 }
 
-IronEmmett.code = '00202';
+IronEmmett.code = '00201';
 
 export default IronEmmett;

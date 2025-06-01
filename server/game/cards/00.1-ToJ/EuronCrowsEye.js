@@ -1,35 +1,25 @@
 import DrawCard from '../../drawcard.js';
-import { Tokens } from '../../Constants/Tokens.js';
 
 class EuronCrowsEye extends DrawCard {
     setupCardAbilities(ability) {
-        this.persistentEffect({
-            match: (card) =>
-                card.location === 'play area' &&
-                card.getType() === 'character' &&
-                card.hasTrait('Raider') &&
-                card.controller === this.controller &&
-                card.hasToken(Tokens.gold),
-            targetController: 'current',
-            effect: ability.effects.modifyStrength(1)
-        });
-
         this.reaction({
             when: {
                 onCardDiscarded: (event, context) =>
                     event.isPillage &&
                     event.source.controller === context.player &&
-                    event.source.hasTrait('Raider')
+                    event.card.getType() !== 'character' &&
+                    event.source.allowGameAction('gainPower')
             },
-            limit: ability.limit.perRound(3),
+            limit: ability.limit.perRound(2),
             handler: (context) => {
+                let character = context.event.card;
                 this.game.addMessage(
-                    '{0} uses {1} to have {2} gain 1 gold',
+                    '{0} uses {1} to have {2} gain 1 power',
                     this.controller,
                     this,
-                    context.target
+                    character
                 );
-                context.target.modifyToken(Tokens.gold, 1);
+                character.modifyPower(1);
             }
         });
     }

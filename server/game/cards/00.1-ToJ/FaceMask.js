@@ -3,9 +3,6 @@ import DrawCard from '../../drawcard.js';
 class FaceMask extends DrawCard {
     setupCardAbilities(ability) {
         this.attachmentRestriction({ controller: 'current' });
-        this.whileAttached({
-            effect: ability.effects.modifyStrength(1)
-        });
         this.reaction({
             when: {
                 onCardEntersPlay: (event) => event.card === this

@@ -13,7 +13,10 @@ class Lannisport extends DrawCard {
                     event.challenge.initiatedChallengeType === 'power'
             },
             cost: ability.costs.kneelSelf(),
-            message: '{player} kneels {source} to end the challenge with no winner or loser',
+            message: {
+                format: '{player} kneels {source} to end the challenge with no winner or loser unless {attackingPlayer} discards 1 card from their hand',
+                args: { attackingPlayer: (context) => context.event.challenge.attackingPlayer }
+            },
             handler: (context) => {
                 const opponent = context.event.challenge.initiatingPlayer;
                 if (opponent.hand.length < 1) {
@@ -23,7 +26,7 @@ class Lannisport extends DrawCard {
 
                 this.game.promptWithMenu(opponent, this, {
                     activePrompt: {
-                        menuTitle: 'Discard a card to initiate?',
+                        menuTitle: `Discard a card for ${context.source.name}?`,
                         buttons: [
                             { text: 'Yes', method: 'promptToDiscard' },
                             { text: 'No', method: 'cancelChallenge' }
@@ -47,12 +50,7 @@ class Lannisport extends DrawCard {
     }
 
     discardSelectedCards(opponent, card) {
-        this.game.addMessage(
-            '{0} discards {1} to prevent {2} from ending the challenge',
-            opponent,
-            card,
-            this
-        );
+        this.game.addMessage('{0} discards {1} from their hand', opponent, card);
         this.game.resolveGameAction(GameActions.discardCard({ card }));
         return true;
     }
@@ -60,15 +58,13 @@ class Lannisport extends DrawCard {
     cancelChallenge() {
         this.game.currentChallenge.cancelChallenge();
         this.game.addMessage(
-            '{0} does not discard a card for {1}',
-            this.game.currentChallenge.initiatingPlayer,
-            this
+            '{0} does not discard a card from their hand, cancelling the challenge',
+            this.game.currentChallenge.initiatingPlayer
         );
         return true;
     }
 }
 
 Lannisport.code = '00153';
-Lannisport.version = '1.1.1';
 
 export default Lannisport;

@@ -5,7 +5,8 @@ class MyrishPirates extends DrawCard {
     setupCardAbilities() {
         this.reaction({
             when: {
-                onCardEntersPlay: (event) => event.card === this
+                onCardEntersPlay: (event) =>
+                    event.card === this && this.game.currentPhase === 'challenge'
             },
             handler: (context) => {
                 this.context = context;

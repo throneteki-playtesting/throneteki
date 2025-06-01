@@ -11,7 +11,7 @@ class SealingThePact extends AgendaCard {
         this.reaction({
             when: {
                 afterChallenge: (event) =>
-                    event.challenge.winner === this.controller && this.hasAttackingInFaction()
+                    event.challenge.winner === this.controller && this.hasParticipatingInFaction()
             },
             cost: ability.costs.kneelFactionCard(),
             target: {
@@ -34,10 +34,10 @@ class SealingThePact extends AgendaCard {
         });
     }
 
-    hasAttackingInFaction() {
+    hasParticipatingInFaction() {
         return this.controller.anyCardsInPlay(
             (card) =>
-                card.isAttacking() &&
+                card.isParticipating() &&
                 card.isFaction(this.controller.getFaction()) &&
                 card.getType() === 'character'
         );

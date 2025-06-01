@@ -25,6 +25,5 @@ class Moqorro extends DrawCard {
 }
 
 Moqorro.code = '00135';
-Moqorro.version = '1.0.0';
 
 export default Moqorro;

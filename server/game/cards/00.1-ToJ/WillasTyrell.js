@@ -14,6 +14,6 @@ class WillasTyrell extends DrawCard {
     }
 }
 
-WillasTyrell.code = '00271';
+WillasTyrell.code = '00265';
 
 export default WillasTyrell;

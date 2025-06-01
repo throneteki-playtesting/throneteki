@@ -5,7 +5,7 @@ class Melisandre extends DrawCard {
         this.reaction({
             when: {
                 afterChallenge: (event) =>
-                    event.challenge.winner === this.controller && this.isParticipating()
+                    event.challenge.winner === this.controller && this.isAttacking()
             },
             cost: ability.costs.sacrifice(
                 (card) => card.getType() === 'character' && card !== this
@@ -19,6 +19,7 @@ class Melisandre extends DrawCard {
                     card.getPrintedCost() < context.costs.sacrifice.getPrintedCost() &&
                     !card.isLoyal()
             },
+            limit: ability.limit.perRound(1),
             message: {
                 format: '{player} uses {source} and sacrifices {sacrificedCard} to take control of {target}',
                 args: { sacrificedCard: (context) => context.costs.sacrifice }

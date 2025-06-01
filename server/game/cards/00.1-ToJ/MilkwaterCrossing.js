@@ -1,7 +1,7 @@
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
-class TheMilkwater extends DrawCard {
+class MilkwaterCrossing extends DrawCard {
     setupCardAbilities(ability) {
         this.plotModifiers({
             initiative: 1
@@ -27,7 +27,6 @@ class TheMilkwater extends DrawCard {
     }
 }
 
-TheMilkwater.code = '00304';
-TheMilkwater.version = '1.0.0';
+MilkwaterCrossing.code = '00304';
 
-export default TheMilkwater;
+export default MilkwaterCrossing;

@@ -47,6 +47,6 @@ class VictarionGreyjoy extends DrawCard {
     }
 }
 
-VictarionGreyjoy.code = '00132';
+VictarionGreyjoy.code = '00126';
 
 export default VictarionGreyjoy;

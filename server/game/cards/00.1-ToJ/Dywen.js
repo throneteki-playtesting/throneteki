@@ -19,6 +19,6 @@ class Dywen extends DrawCard {
     }
 }
 
-Dywen.code = '00195';
+Dywen.code = '00196';
 
 export default Dywen;

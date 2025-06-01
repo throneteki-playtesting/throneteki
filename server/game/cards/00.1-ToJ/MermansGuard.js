@@ -13,7 +13,8 @@ class MermansGuard extends DrawCard {
                 cardCondition: (card) =>
                     card.isUnique() &&
                     card.getType() === 'character' &&
-                    card.location === 'play area'
+                    card.location === 'play area' &&
+                    card.allowGameAction('stand')
             },
             handler: (context) => {
                 this.game.resolveGameAction(

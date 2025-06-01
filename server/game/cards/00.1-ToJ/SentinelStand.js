@@ -10,6 +10,6 @@ class SentinelStand extends DrawCard {
     }
 }
 
-SentinelStand.code = '00198';
+SentinelStand.code = '00199';
 
 export default SentinelStand;

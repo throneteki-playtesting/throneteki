@@ -77,6 +77,6 @@ class SamwellTarly extends DrawCard {
     }
 }
 
-SamwellTarly.code = '00201';
+SamwellTarly.code = '00200';
 
 export default SamwellTarly;

@@ -26,18 +26,19 @@ class TheIronBankOfBraavos extends AgendaCard {
                         cardCondition: (card) =>
                             card.location === 'play area' &&
                             card.controller === this.controller &&
-                            card.hasToken(Tokens.gold)
+                            this.controller.gold >= 1 &&
+                            !card.hasToken(Tokens.gold)
                     },
                     gameAction: GameActions.genericHandler((context) => {
                         this.game.addMessage(
-                            '{0} uses {1} to kneel their faction card and move 1 gold from {2} to their gold pool',
+                            '{0} uses {1} to kneel their faction card and move 1 gold from their gold pool to {2}',
                             this.controller,
                             this,
                             context.target
                         );
                         this.game.transferGold({
-                            from: context.target,
-                            to: this.context.player,
+                            from: this.context.player,
+                            to: context.target,
                             amount: 1
                         });
                     })

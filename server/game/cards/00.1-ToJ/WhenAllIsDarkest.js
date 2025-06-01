@@ -26,6 +26,5 @@ class WhenAllIsDarkest extends DrawCard {
 }
 
 WhenAllIsDarkest.code = '00207';
-WhenAllIsDarkest.version = '1.0.1';
 
 export default WhenAllIsDarkest;

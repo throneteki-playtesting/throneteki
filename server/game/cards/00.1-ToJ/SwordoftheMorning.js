@@ -2,7 +2,7 @@ import DrawCard from '../../drawcard.js';
 
 class SwordoftheMorning extends DrawCard {
     setupCardAbilities(ability) {
-        this.attachmentRestriction({ faction: 'martell', unique: true }, { trait: 'House Dayne' });
+        this.attachmentRestriction({ unique: true }, { trait: 'House Dayne' });
         this.whileAttached({
             condition: () => this.parent.isAttacking(),
             effect: ability.effects.dynamicStrength(() => this.getDefendingCharacters())

@@ -57,6 +57,5 @@ class CityOfShadows extends PlotCard {
 }
 
 CityOfShadows.code = '00341';
-CityOfShadows.version = '1.0.0';
 
 export default CityOfShadows;
