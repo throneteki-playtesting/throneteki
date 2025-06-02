@@ -2,30 +2,39 @@ import DrawCard from '../../drawcard.js';
 
 class CruelBrigand extends DrawCard {
     setupCardAbilities(ability) {
-        this.reaction({
-            when: {
-                onCardEntersPlay: (event) =>
-                    event.card === this && this.game.currentPhase === 'challenge'
+        this.action({
+            title: 'Put character into play',
+            limit: ability.limit.perPhase(1),
+            cost: ability.costs.discardGold(),
+            target: {
+                cardCondition: (card, context) =>
+                    card.controller === context.player &&
+                    card.location === 'hand' &&
+                    card.getType() === 'character' &&
+                    card.getPrintedCost() <= 4 &&
+                    context.player.canPutIntoPlay(card)
             },
-            cost: ability.costs.payGold(1),
-            cardCondition: (card) =>
-                card.location === 'play area' &&
-                card.getType() === 'character' &&
-                card.getPrintedCost() <= 2,
             handler: (context) => {
-                context.target.controller.returnCardToHand(context.target);
+                context.player.putIntoPlay(context.target);
+
+                this.atEndOfPhase((ability) => ({
+                    match: context.target,
+                    condition: () => ['play area', 'duplicate'].includes(context.target.location),
+                    targetLocation: 'any',
+                    effect: ability.effects.discardIfStillInPlay(true)
+                }));
+
                 this.game.addMessage(
-                    "{0} uses {1} and pays 1 gold to return {2} to {3}'s hand",
+                    '{0} discards 1 gold from {1} to put {2} into play from their hand',
                     context.player,
                     this,
-                    context.target,
-                    context.target.owner
+                    context.target
                 );
             }
         });
     }
 }
 
-CruelBrigand.code = '00166';
+CruelBrigand.code = '00165';
 
 export default CruelBrigand;

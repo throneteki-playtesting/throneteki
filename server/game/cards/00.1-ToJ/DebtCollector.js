@@ -26,6 +26,6 @@ class DebtCollector extends DrawCard {
     }
 }
 
-DebtCollector.code = '00167';
+DebtCollector.code = '00166';
 
 export default DebtCollector;
