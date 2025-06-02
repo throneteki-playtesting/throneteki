@@ -4,8 +4,7 @@ import SatisfyClaim from '../../gamesteps/challenge/SatisfyClaim.js';
 class CrownlandsVillage extends DrawCard {
     setupCardAbilities(ability) {
         this.plotModifiers({
-            gold: 1,
-            initiative: 1
+            gold: 1
         });
 
         this.interrupt({
