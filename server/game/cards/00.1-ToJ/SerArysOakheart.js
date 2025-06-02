@@ -10,6 +10,6 @@ class SerArysOakheart extends DrawCard {
     }
 }
 
-SerArysOakheart.code = '00173';
+SerArysOakheart.code = '00172';
 
 export default SerArysOakheart;

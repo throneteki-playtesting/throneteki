@@ -1,10 +1,10 @@
 import DrawCard from '../../drawcard.js';
+import GameActions from '../../GameActions/index.js';
 
 class ArianneMartell extends DrawCard {
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.action({
             title: 'Remove and gain icon',
-            cost: ability.costs.returnSelfToHand(),
             target: {
                 cardCondition: (card) =>
                     card.location === 'play area' && card.getType() === 'character'
@@ -25,12 +25,25 @@ class ArianneMartell extends DrawCard {
                     }));
 
                     this.game.addMessage(
-                        '{0} returns {1} to their hand to remove {2} {3} icon from {4} and have each non-Martell character they control gain it',
+                        '{0} uses {1} to remove {2} {3} icon from {4} and have each non-Martell character they control gain it',
                         this.controller,
                         this,
                         icon === 'intrigue' ? 'an' : 'a',
                         icon,
                         context.target
+                    );
+
+                    this.game.resolveGameAction(
+                        GameActions.putIntoPlay((context) => ({
+                            card: context.target
+                        })).then({
+                            message: 'Then {player} returns {source} to hand',
+                            gameAction: GameActions.returnCardToHand((context) => ({
+                                card: context.source,
+                                allowSave: false
+                            }))
+                        }),
+                        context
                     );
                 });
             }
@@ -38,6 +51,6 @@ class ArianneMartell extends DrawCard {
     }
 }
 
-ArianneMartell.code = '00172';
+ArianneMartell.code = '00173';
 
 export default ArianneMartell;
