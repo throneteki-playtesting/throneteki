@@ -1,6 +1,6 @@
 import DrawCard from '../../drawcard.js';
 
-class JoustingPavilion extends DrawCard {
+class TheTowerOfJoy extends DrawCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
             condition: () =>
@@ -8,12 +8,30 @@ class JoustingPavilion extends DrawCard {
                     match: (challenge) => challenge.hasSingleParticipant(this.controller)
                 }),
             match: (card) =>
-                card.hasTrait('Knight') && card.getType() === 'character' && card.isParticipating(),
-            effect: ability.effects.modifyStrength(1)
+                card.isUnique() && card.getType() === 'character' && card.isParticipating(),
+            effect: ability.effects.modifyStrength(2)
+        });
+
+        this.reaction({
+            when: {
+                onCardLeftPlay: (event) =>
+                    event.card.getType() === 'character' &&
+                    event.card.isUnique() &&
+                    this.allowGameAction('gainPower')
+            },
+            limit: ability.limit.perPhase(1),
+            handler: () => {
+                this.game.addMessage(
+                    '{0} gains 1 power from a unique character leaving play',
+                    this.controller
+                );
+
+                this.modifyPower(1);
+            }
         });
     }
 }
 
-JoustingPavilion.code = '00292';
+TheTowerOfJoy.code = '00292';
 
-export default JoustingPavilion;
+export default TheTowerOfJoy;
