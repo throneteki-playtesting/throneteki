@@ -32,20 +32,18 @@ class DesertFreerider extends DrawCard {
     }
 
     handleIcon(context, isGain) {
-        this.game.promptForIcon(context.player, this, (icon) => {
-            this.untilEndOfPhase((ability) => ({
-                match: context.target,
-                effect: isGain ? ability.effects.addIcon(icon) : ability.effects.removeIcon(icon)
-            }));
+        this.untilEndOfPhase((ability) => ({
+            match: context.target,
+            effect: isGain ? ability.effects.addIcon('intrigue') : ability.effects.removeIcon('intrigue')
+        }));
 
-            this.game.addMessage(
-                '{0} uses {1} to have {2} {3} an intrigue icon until the end of the phase',
-                context.player,
-                this,
-                context.target,
-                isGain ? 'gain' : 'lose'
-            );
-        });
+        this.game.addMessage(
+            '{0} uses {1} to have {2} {3} an intrigue icon until the end of the phase',
+            context.player,
+            this,
+            context.target,
+            isGain ? 'gain' : 'lose'
+        );
         return true;
     }
 }

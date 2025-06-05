@@ -83,6 +83,6 @@ class ThreeHeadsOfTheDragon extends AgendaCard {
     }
 }
 
-ThreeHeadsOfTheDragon.code = '00003';
+ThreeHeadsOfTheDragon.code = '00358';
 
 export default ThreeHeadsOfTheDragon;

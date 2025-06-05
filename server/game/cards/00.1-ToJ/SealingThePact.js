@@ -19,7 +19,8 @@ class SealingThePact extends AgendaCard {
                     card.controller === this.controller &&
                     card.location === 'play area' &&
                     card.getType() === 'character' &&
-                    !card.isFaction(this.controller.getFaction()),
+                    !card.isFaction(this.controller.getFaction()) &&
+                    !card.isFaction('neutral'),
                 gameAction: 'gainPower'
             },
             handler: (context) => {

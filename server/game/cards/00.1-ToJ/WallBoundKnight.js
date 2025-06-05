@@ -57,6 +57,6 @@ class WallBoundKnight extends DrawCard {
     }
 }
 
-WallBoundKnight.code = '01189';
+WallBoundKnight.code = '00212';
 
 export default WallBoundKnight;

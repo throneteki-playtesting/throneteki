@@ -6,6 +6,7 @@ class PoisonedArrowhead extends DrawCard {
             effect: ability.effects.modifyStrength(1)
         });
         this.action({
+            title: 'Blank a character',
             cost: [ability.costs.kneelSelf(), ability.costs.sacrificeSelf()],
             target: {
                 cardCondition: (card) =>
