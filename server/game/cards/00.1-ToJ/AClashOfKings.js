@@ -24,6 +24,6 @@ class AClashOfKings extends PlotCard {
     }
 }
 
-AClashOfKings.code = '00375';
+AClashOfKings.code = '00374';
 
 export default AClashOfKings;

@@ -26,6 +26,6 @@ class Confiscation extends PlotCard {
     }
 }
 
-Confiscation.code = '00369';
+Confiscation.code = '00368';
 
 export default Confiscation;

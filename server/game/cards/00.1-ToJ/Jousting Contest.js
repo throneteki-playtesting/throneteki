@@ -9,6 +9,6 @@ class JoustingContest extends PlotCard {
     }
 }
 
-JoustingContest.code = '00370';
+JoustingContest.code = '00369';
 
 export default JoustingContest;

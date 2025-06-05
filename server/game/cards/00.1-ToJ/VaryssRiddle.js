@@ -69,6 +69,6 @@ class VaryssRiddle extends PlotCard {
     }
 }
 
-VaryssRiddle.code = '00376';
+VaryssRiddle.code = '00375';
 
 export default VaryssRiddle;

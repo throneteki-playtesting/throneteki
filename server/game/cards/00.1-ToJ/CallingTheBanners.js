@@ -19,6 +19,6 @@ class CallingTheBanners extends PlotCard {
     }
 }
 
-CallingTheBanners.code = '00371';
+CallingTheBanners.code = '00370';
 
 export default CallingTheBanners;
