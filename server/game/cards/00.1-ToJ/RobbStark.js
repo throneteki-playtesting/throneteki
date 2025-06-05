@@ -14,7 +14,13 @@ class RobbStark extends DrawCard {
             cost: ability.costs.kneel((card) => !card.isLimited() && card.getType() === 'location'),
             handler: (context) => {
                 let str = this.getSTRIncrease(context);
-                this.untilEndOfPhase(() => ({
+                this.game.addMessage('{0} uses {1} and kneels {2} to give {3} +{4} STR until the end of the challenge',
+                    this.controller,
+                    this,
+                    context.costs.kneel,
+                    context.target,
+                    str);
+                this.untilEndOfChallenge(() => ({
                     match: context.target,
                     effect: ability.effects.modifyStrength(str)
                 }));

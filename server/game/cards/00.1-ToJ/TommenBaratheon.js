@@ -26,7 +26,7 @@ class TommenBaratheon extends DrawCard {
 
     getNumberOfCats() {
         return this.controller.getNumberOfCardsInPlay(
-            (card) => card.getType() === 'character' && card.hasTrait('Cat')
+            (card) => card.hasTrait('Cat')
         );
     }
 }

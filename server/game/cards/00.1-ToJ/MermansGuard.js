@@ -18,16 +18,12 @@ class MermansGuard extends DrawCard {
             },
             handler: (context) => {
                 this.game.resolveGameAction(
-                    GameActions.simultaneously([
-                        GameActions.standCard((context) => ({ card: context.target })),
-                        GameActions.genericHandler((context) => {
-                            this.untilEndOfPhase((ability) => ({
-                                match: context.target,
-                                effect: ability.effects.addKeyword('renown')
-                            }));
-                        })
-                    ])
+                    GameActions.standCard((context) => ({ card: context.target }))
                 );
+                this.untilEndOfPhase((ability) => ({
+                    match: context.target,
+                    effect: ability.effects.addKeyword('renown')
+                }));
                 this.game.addMessage(
                     '{0} uses {1} to stand {2} and have it gain renown',
                     this.controller,

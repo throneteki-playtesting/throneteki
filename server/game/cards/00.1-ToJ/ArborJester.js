@@ -12,7 +12,10 @@ class ArborJester extends DrawCard {
             },
             handler: (context) => {
                 let strBoost = context.player.shadows.length;
-                context.target.modifyStrength(strBoost);
+                this.untilEndOfPhase((ability) => ({
+                    match: context.target,
+                    effect: ability.effects.modifyStrength(strBoost)
+                }));
                 this.untilEndOfPhase((ability) => ({
                     match: context.target,
                     effect: ability.effects.addKeyword('insight')

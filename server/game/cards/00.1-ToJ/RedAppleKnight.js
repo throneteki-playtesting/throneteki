@@ -22,6 +22,6 @@ class RedAppleKnight extends DrawCard {
     }
 }
 
-RedAppleKnight.code = '25015';
+RedAppleKnight.code = '00278';
 
 export default RedAppleKnight;

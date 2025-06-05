@@ -3,6 +3,7 @@ import DrawCard from '../../drawcard.js';
 class QuentynMartell extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
+            title: 'Put a character into play',
             cost: ability.costs.putSelfIntoShadows(),
             target: {
                 cardCondition: (card, context) =>
@@ -10,8 +11,8 @@ class QuentynMartell extends DrawCard {
                     card.controller === context.player &&
                     card.getType() === 'character' &&
                     context.player.canPutIntoPlay(card) &&
-                    (!context.costs.returnToHand ||
-                        card.getPrintedStrength() < context.costs.returnToHand.getStrength())
+                    (!context.costs.putIntoShadows ||
+                        card.getPrintedStrength() < context.costs.putIntoShadows.getStrength())
             },
             handler: (context) => {
                 let origin = context.target.location;

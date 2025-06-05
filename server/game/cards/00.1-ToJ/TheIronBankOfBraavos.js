@@ -17,7 +17,7 @@ class TheIronBankOfBraavos extends AgendaCard {
                     this.untilEndOfPhase((ability) => ({
                         targetController: 'current',
                         effect: ability.effects.reduceNextMarshalledOrPlayedCardCost(1, (card) =>
-                            card.hasKeyword('bestow')
+                            card.hasPrintedKeyword('bestow')
                         )
                     }));
                 },

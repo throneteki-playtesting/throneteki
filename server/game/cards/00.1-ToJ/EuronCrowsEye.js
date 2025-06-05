@@ -12,7 +12,7 @@ class EuronCrowsEye extends DrawCard {
             },
             limit: ability.limit.perRound(2),
             handler: (context) => {
-                let character = context.event.card;
+                let character = context.event.source;
                 this.game.addMessage(
                     '{0} uses {1} to have {2} gain 1 power',
                     this.controller,

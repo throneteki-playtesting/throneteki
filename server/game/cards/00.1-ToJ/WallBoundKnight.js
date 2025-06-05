@@ -13,6 +13,7 @@ class WallBoundKnight extends DrawCard {
                 // with cards that can put gold on the faction card
                 activePromptTitle: 'Select a card (faction card = gold pool)',
                 cardCondition: (card) =>
+                    ['active plot', 'faction', 'play area'].includes(card.location) &&
                     card.controller !== this.controller &&
                     (card.hasToken(Tokens.gold) ||
                         (card.type === 'faction' && card.controller.gold >= 1)),
