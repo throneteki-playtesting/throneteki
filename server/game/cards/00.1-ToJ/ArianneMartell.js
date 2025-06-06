@@ -34,17 +34,13 @@ class ArianneMartell extends DrawCard {
                     );
 
                     this.game.resolveGameAction(
-                        GameActions.putIntoPlay((context) => ({
-                            card: context.target
-                        })).then({
-                            message: 'Then {player} returns {source} to hand',
-                            gameAction: GameActions.returnCardToHand((context) => ({
-                                card: context.source,
-                                allowSave: false
-                            }))
-                        }),
+                        GameActions.returnCardToHand(() => ({
+                            card: this,
+                            allowSave: false
+                        })),
                         context
                     );
+                    this.game.addMessage('{0} then returns {1} to hand', this.controller, this);
                 });
             }
         });

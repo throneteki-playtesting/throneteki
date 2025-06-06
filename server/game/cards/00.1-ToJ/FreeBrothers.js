@@ -11,7 +11,7 @@ class FreeBrothers extends DrawCard {
                 '{player} uses {source} to search their deck for a character with printed cost 3 or lower',
             gameAction: GameActions.search({
                 title: 'Select a character',
-                match: { printedCostOrLower: 3 },
+                match: { type: 'character', printedCostOrLower: 3 },
                 reveal: false,
                 message: '{player} places {searchTarget} in their discard pile',
                 gameAction: GameActions.placeCard((context) => ({

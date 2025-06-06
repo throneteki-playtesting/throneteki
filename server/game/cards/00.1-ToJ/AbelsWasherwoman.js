@@ -5,6 +5,7 @@ class AbelsWasherwoman extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
             title: 'Give character keyword',
+            limit: ability.limit.perRound(1),
             target: {
                 cardCondition: {
                     type: 'character',
@@ -36,6 +37,14 @@ class AbelsWasherwoman extends DrawCard {
                 );
             }
         });
+    }
+
+    gainKeyword(context, keyword) {
+        this.untilEndOfPhase((ability) => ({
+            match: context.target,
+            effect: ability.effects.addKeyword(keyword)
+        }));
+        return true;
     }
 }
 

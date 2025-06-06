@@ -16,22 +16,17 @@ class RaidersAxe extends DrawCard {
                     this.parent.allowGameAction('stand')
             },
             cost: ability.costs.choose({
+                // TODO BD do not prompt for choosing a character to discard gold from
                 'Discard 1 gold from attached character': ability.costs.discardGoldFromCard(
                     1,
-                    (card) => card === parent
+                    (card) => card === this.parent
                 ),
                 'Pay 2 gold': ability.costs.payGold(2)
             }),
-            message: {
-                format: '{player} kneels {source} and pays 2 gold to stand {parent}',
-                args: {
-                    parent: (context) => context.source.parent
-                }
-            },
             handler: (context) => {
                 this.game.resolveGameAction(GameActions.standCard({ card: this.parent }), context);
 
-                if (context.costs.discardGoldFromCard) {
+                if (context.costs.discardToken) {
                     this.game.addMessage(
                         '{0} uses {1} and discards 1 gold from {2} to stand it',
                         this.controller,

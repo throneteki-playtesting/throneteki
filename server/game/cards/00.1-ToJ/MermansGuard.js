@@ -18,7 +18,8 @@ class MermansGuard extends DrawCard {
             },
             handler: (context) => {
                 this.game.resolveGameAction(
-                    GameActions.standCard((context) => ({ card: context.target }))
+                    GameActions.standCard((context) => ({ card: context.target })),
+                    context
                 );
                 this.untilEndOfPhase((ability) => ({
                     match: context.target,
