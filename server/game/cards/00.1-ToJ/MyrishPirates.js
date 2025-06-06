@@ -72,13 +72,15 @@ class MyrishPirates extends DrawCard {
             onSelect: (player, card) => this.targetsSelected(from, card, moveGold),
             onCancel: (player) => this.cancelSelection(player)
         });
+
+        return true;
     }
 
     targetsSelected(from, to, moveGold) {
         if (moveGold) {
             this.game.transferGold({ from: from, to: to, amount: 1 });
         } else {
-            this.game.movePower({ from: from, to: to, amount: 1 });
+            this.game.movePower( from, to, 1 );
         }
         let token = moveGold ? 'gold' : 'power';
         this.game.addMessage(
@@ -89,6 +91,14 @@ class MyrishPirates extends DrawCard {
             from,
             to
         );
+
+        return true;
+    }
+
+    cancelSelection(player) {
+        this.game.addAlert('danger', '{0} cancels the resolution of {1}', player, this);
+
+        return true;
     }
 }
 
