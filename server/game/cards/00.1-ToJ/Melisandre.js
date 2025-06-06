@@ -1,4 +1,5 @@
 import DrawCard from '../../drawcard.js';
+import GameActions from '../../GameActions/index.js';
 
 class Melisandre extends DrawCard {
     setupCardAbilities(ability) {
@@ -16,8 +17,9 @@ class Melisandre extends DrawCard {
                     card.location === 'play area' &&
                     card.getType() === 'character' &&
                     card.controller !== this.controller &&
-                    card.getPrintedCost() < context.costs.sacrifice.getPrintedCost() &&
-                    !card.isLoyal()
+                    !card.isLoyal() &&
+                    (!context.costs.sacrifice ||
+                        card.getPrintedCost() < context.costs.sacrifice.getPrintedCost())
             },
             limit: ability.limit.perRound(1),
             message: {
@@ -25,7 +27,7 @@ class Melisandre extends DrawCard {
                 args: { sacrificedCard: (context) => context.costs.sacrifice }
             },
             handler: (context) => {
-                this.game.takeControl(context.opponent, context.target);
+                this.game.takeControl(context.player, context.target);
             }
         });
     }
