@@ -1,6 +1,6 @@
 import DrawCard from '../../drawcard.js';
 
-class CrossroadsInnkeeper extends DrawCard {
+class PentoshiTrader extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
             title: 'Reduce character cost',
@@ -26,6 +26,6 @@ class CrossroadsInnkeeper extends DrawCard {
     }
 }
 
-CrossroadsInnkeeper.code = '00363';
+PentoshiTrader.code = '00363';
 
-export default CrossroadsInnkeeper;
+export default PentoshiTrader;

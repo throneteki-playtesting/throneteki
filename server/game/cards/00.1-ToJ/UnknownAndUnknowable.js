@@ -1,6 +1,6 @@
 import AgendaCard from '../../agendacard.js';
 
-class ThreeHeadsOfTheDragon extends AgendaCard {
+class UnknownAndUnknowable extends AgendaCard {
     constructor(owner, cardData) {
         super(owner, cardData);
 
@@ -91,6 +91,6 @@ class ThreeHeadsOfTheDragon extends AgendaCard {
     }
 }
 
-ThreeHeadsOfTheDragon.code = '00358';
+UnknownAndUnknowable.code = '00358';
 
-export default ThreeHeadsOfTheDragon;
+export default UnknownAndUnknowable;

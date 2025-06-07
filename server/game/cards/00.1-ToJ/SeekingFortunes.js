@@ -1,8 +1,7 @@
 import AgendaCard from '../../agendacard.js';
-import GameActions from '../../GameActions/index.js';
 import { Tokens } from '../../Constants/Tokens.js';
 
-class TheIronBankOfBraavos extends AgendaCard {
+class SeekingFortunes extends AgendaCard {
     setupCardAbilities(ability) {
         this.action({
             title: 'Reduce cost or move gold',
@@ -74,6 +73,6 @@ class TheIronBankOfBraavos extends AgendaCard {
     }
 }
 
-TheIronBankOfBraavos.code = '00360';
+SeekingFortunes.code = '00360';
 
-export default TheIronBankOfBraavos;
+export default SeekingFortunes;
