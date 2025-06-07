@@ -60,6 +60,14 @@ class SealingThePact extends AgendaCard {
 
         if (factionToAnnounce.length > 1) {
             message += ' (this exceeds the maximum allowed number of factions)';
+            this.game.addAlert(
+                'danger',
+                message,
+                this.controller,
+                factionToAnnounce,
+                factionToAnnounce.length > 1 ? 'factions' : 'faction',
+                this);
+            return;
         }
 
         if (factionToAnnounce.length === 0) {

@@ -5,46 +5,72 @@ import { Tokens } from '../../Constants/Tokens.js';
 class TheIronBankOfBraavos extends AgendaCard {
     setupCardAbilities(ability) {
         this.action({
-            title: 'Kneel your faction card',
+            title: 'Reduce cost or move gold',
             cost: ability.costs.kneelFactionCard(),
-            choices: {
-                'Reduce cost': () => {
-                    this.game.addMessage(
-                        '{0} uses {1} to kneel their faction card and reduce the cost of the next bestow card by 1',
-                        this.controller,
-                        this
-                    );
-                    this.untilEndOfPhase((ability) => ({
-                        targetController: 'current',
-                        effect: ability.effects.reduceNextMarshalledOrPlayedCardCost(1, (card) =>
-                            card.hasPrintedKeyword('bestow')
-                        )
-                    }));
-                },
-                'Move gold': {
-                    target: {
-                        cardCondition: (card) =>
-                            card.location === 'play area' &&
-                            card.controller === this.controller &&
-                            this.controller.gold >= 1 &&
-                            !card.hasToken(Tokens.gold)
+            handler: (context) => {
+                this.context = context;
+
+                this.game.promptWithMenu(this.controller, this, {
+                    activePrompt: {
+                        menuTitle: 'Choose one',
+                        buttons: [
+                            { text: 'Reduce cost', method: 'reduceCost' },
+                            { text: 'Move gold', method: 'moveGold' }
+                        ]
                     },
-                    gameAction: GameActions.genericHandler((context) => {
-                        this.game.addMessage(
-                            '{0} uses {1} to kneel their faction card and move 1 gold from their gold pool to {2}',
-                            this.controller,
-                            this,
-                            context.target
-                        );
-                        this.game.transferGold({
-                            from: this.context.player,
-                            to: context.target,
-                            amount: 1
-                        });
-                    })
-                }
+                    source: this
+                });
             }
         });
+    }
+
+    reduceCost() {
+        this.untilEndOfPhase((ability) => ({
+            targetController: 'current',
+            effect: ability.effects.reduceNextMarshalledOrPlayedCardCost(1, (card) =>
+                card.isBestow()
+            )
+        }));
+        this.game.addMessage(
+            '{0} uses {1} to kneel their faction card and reduce the cost of the next bestow card by 1',
+            this.controller,
+            this
+        );
+
+        return true;
+    }
+
+    moveGold() {
+        this.game.promptForSelect(this.controller, {
+            activePromptTitle: 'Select a card',
+            source: this,
+            cardCondition: (card) => 
+                card.location === 'play area' &&
+                card.controller === this.controller &&
+                this.controller.gold >= 1 &&
+                !card.hasToken(Tokens.gold),
+            onSelect: (player, card) => this.onCardSelected(player, card),
+            onCancel: (player) => this.cancelSelection(player)
+        });
+
+        return true;
+    }
+
+    onCardSelected(player, card) {
+        this.game.transferGold({ from: player, to: card, amount: 1 });
+
+        this.game.addMessage(
+            '{0} uses {1} and kneels their faction card to move 1 gold from from their gold pool to {2}',
+            player,
+            this,
+            card
+        );
+
+        return true;
+    }
+
+    cancelSelection(player) {
+        this.game.addAlert('danger', '{0} cancels the resolution of {1}', player, this);
     }
 }
 

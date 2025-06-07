@@ -66,6 +66,14 @@ class ThreeHeadsOfTheDragon extends AgendaCard {
 
         if (factionsToAnnounce.length > 2) {
             message += ' (this exceeds the maximum allowed number of factions)';
+            this.game.addAlert(
+                'danger',
+                message,
+                this.controller,
+                factionsToAnnounce,
+                'factions',
+                this);
+            return;
         }
 
         if (factionsToAnnounce.length === 0) {

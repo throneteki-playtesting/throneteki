@@ -17,6 +17,9 @@ class JoinForces extends AgendaCard {
     }
 
     onDecksPrepared() {
+        // TODO BD this assumes that there is an out-of-faction card with a chosen trait in the deck
+        // and will not pick up traits from in-faction and neutral cards in the unlikely case 
+        // that someone wants to play this with a mono-faction deck for the reduction effect
         let traitsInDeck = [];
         for (const card of this.game.allCards) {
             if (
@@ -48,7 +51,8 @@ class JoinForces extends AgendaCard {
                 this
             );
         } else {
-            this.game.addMessage(
+            this.game.addAlert(
+                'danger',
                 "{0}'s deck does not share a common trait to name with {1}",
                 this.controller,
                 this
