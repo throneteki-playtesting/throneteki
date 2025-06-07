@@ -11,7 +11,7 @@ class JoinForces extends AgendaCard {
         this.persistentEffect({
             targetController: 'current',
             effect: ability.effects.reduceFirstMarshalledOrPlayedCardCostEachRound(1, (card) =>
-                card.hasTrait(this.namedTrait)
+                this.namedTrait && card.hasTrait(this.namedTrait)
             )
         });
     }
@@ -21,8 +21,9 @@ class JoinForces extends AgendaCard {
         for (const card of this.game.allCards) {
             if (
                 card.owner !== this.owner ||
-                card.faction === this.controller.getFaction() ||
-                card.faction === 'neutral'
+                card.getPrintedFaction() === this.controller.getFaction() ||
+                card.getPrintedFaction() === 'neutral' ||
+                ['agenda', 'faction'].includes(card.getType())
             ) {
                 continue;
             }
@@ -43,7 +44,7 @@ class JoinForces extends AgendaCard {
             this.game.addMessage(
                 '{0} names {1} as their trait for {2}',
                 this.controller,
-                this.namedTrait,
+                this.capitalize(this.namedTrait),
                 this
             );
         } else {
@@ -53,6 +54,10 @@ class JoinForces extends AgendaCard {
                 this
             );
         }
+    }
+
+    capitalize(string) {
+        return string.replace(/\b\w/g, char => char.toUpperCase());
     }
 }
 

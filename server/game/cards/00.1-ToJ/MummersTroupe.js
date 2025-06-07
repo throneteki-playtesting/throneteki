@@ -19,6 +19,7 @@ class MummersTroupe extends DrawCard {
             },
             limit: ability.limit.perRound(1),
             target: {
+                activePromptTitle: 'Select a card',
                 cardCondition: (card) =>
                     card.location === 'play area' &&
                     card.controller === this.controller &&

@@ -16,14 +16,15 @@ class WallBoundKnight extends DrawCard {
                     ['active plot', 'faction', 'play area'].includes(card.location) &&
                     card.controller !== this.controller &&
                     (card.hasToken(Tokens.gold) ||
-                        (card.type === 'faction' && card.controller.gold >= 1)),
-                cardType: ['character', 'faction']
+                        (card.getType() === 'faction' && card.controller.gold >= 1)),
+                cardType: ['character', 'location', 'attachment', 'faction']
             },
             handler: (context) => {
-                if (context.target.hasToken(Tokens.gold)) {
-                    this.moveGoldFromCard(context);
-                } else if (context.target.getType() === 'faction') {
+                // Prefer stealing from gold pool even if faction card has gold
+                if (context.target.getType() === 'faction' && context.target.controller.gold >= 1) {
                     this.moveGoldFromGoldPool(context);
+                } else if (context.target.hasToken(Tokens.gold)) {
+                    this.moveGoldFromCard(context);
                 }
             }
         });
