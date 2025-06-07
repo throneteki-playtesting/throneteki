@@ -18,17 +18,27 @@ class StonyShoreThrall extends DrawCard {
                     },
                     match: (card) =>
                         card === card.controller.activePlot && card.controller === context.opponent,
+                    targetController: context.opponent,
                     effect: ability.effects.modifyReserve(-1)
                 }));
+                this.lastingEffect((ability) => ({
+                    until: {
+                        onCardEntersPlay: (event) =>
+                            event.card.getType() === 'plot' &&
+                            event.card.controller === context.opponent
+                    },
+                    targetController: context.opponent,
+                    effect: ability.effects.setMinReserve(2)
+                }));
                 this.game.resolveGameAction(
-                    // TODO BD change this to check reserve only for the chosen opponent
                     GameActions.may({
                         title: 'Have each player check reserve?',
                         message: {
                             format: '{player} forces each player to check reserve'
                         },
                         gameAction: GameActions.checkReserve()
-                    })
+                    }),
+                    context
                 );
             }
         });
