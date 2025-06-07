@@ -416,6 +416,7 @@ class DrawCard extends BaseCard {
         this.new = false;
         this.clearDanger();
         this.resetForChallenge();
+        this.lastKnownStrength = this.getStrength();
 
         super.leavesPlay();
     }
