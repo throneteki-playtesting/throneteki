@@ -32,6 +32,21 @@ export function cardSetLabel(cardSet) {
 }
 
 const parseCardLine = (packs, cards, line) => {
+    const { count, name } = parseCardCount(line);
+    if (!count || count === 0 || !name) {
+        return { count: 0 };
+    }
+
+    const card = lookupCardByName({
+        cardName: name,
+        cards: Object.values(cards),
+        packs: packs
+    });
+
+    return { count: count, card: card };
+};
+
+const parseCardCount = (line) => {
     const pattern = /^(\d+)x?\s+(.+)$/;
 
     const match = line.trim().match(pattern);
@@ -40,13 +55,7 @@ const parseCardLine = (packs, cards, line) => {
     }
 
     const count = parseInt(match[1]);
-    const card = lookupCardByName({
-        cardName: match[2],
-        cards: Object.values(cards),
-        packs: packs
-    });
-
-    return { count: count, card: card };
+    return { count: count, name: match[2] };
 };
 
 const addCard = (list, card, number) => {
@@ -145,6 +154,70 @@ export const processThronesDbDeckText = (factions, packs, cards, deckText) => {
         faction: faction,
         agenda: agenda,
         bannerCards: bannerCards,
+        plotCards: plotCards,
+        drawCards: drawCards
+    };
+};
+
+export const processPlainDeckText = (factions, packs, cards, deckText) => {
+    let split = deckText.split('\n');
+    let faction, agenda, bannerCards;
+
+    const plotCards = [];
+    const drawCards = [];
+
+    for (const line of split) {
+        if (line.trim() === '') {
+            break; // Stop processing on empty line (beginning of sideboard for draftmancer export)
+        }
+
+        let { count, name } = parseCardCount(line);
+        if (!count || count === 0 || !name) {
+            count = 1;
+            name = line.trim();
+        }
+        const newFaction = Object.values(factions).find(
+                (faction) => faction.name === name
+            );
+        if (newFaction) {
+            if (faction) {
+                return null; // Faction already set, invalid deck
+            }
+            console.log(`Setting faction: ${newFaction.name}`);
+            faction = newFaction;
+        } else {
+            const card = lookupCardByName({
+                cardName: name,
+                cards: Object.values(cards),
+                packs: packs
+            });
+            if (card) {
+                switch (card.type) {
+                    case 'agenda':
+                        if (agenda) {
+                            return null; // Agenda already set, invalid deck // TODO BD handle Alliance
+                        }
+                        agenda = card;
+                        break;
+                    case 'plot':
+                        addCard(plotCards, card, count);
+                        break;
+                    default:
+                        addCard(drawCards, card, count);
+                }
+            }
+        }
+    }
+    
+    if (!faction || !faction.value) {
+        return null;
+    }
+
+    return {
+        name: 'Imported Deck',
+        faction: faction,
+        agenda: agenda,
+        //bannerCards: bannerCards, // TODO BD handle Alliance
         plotCards: plotCards,
         drawCards: drawCards
     };
