@@ -14,6 +14,15 @@ class RestrictedList {
                   banned: this.rules.banned,
                   pods: this.rules.pods
               };
+
+        if (!formatRules) {
+            return {
+                name: format === 'tower of joy' ? 'Tower of Joy' : format,
+                valid: true,
+                version: ''
+            };
+        }
+
         const restrictedCardsOnList = cards.filter((card) =>
             formatRules.restricted.includes(card.code)
         );
