@@ -210,7 +210,7 @@ describe('Winning and losing', function () {
                     const deck = this.buildDeck('stark', [
                         'Valar Morghulis',
                         'A Noble Cause',
-                        { name: 'Jon Arryn', count: 60 }
+                        { name: 'Jon Arryn (AHaH)', count: 60 }
                     ]);
                     this.player1.selectDeck(deck);
                     this.player2.selectDeck(deck);

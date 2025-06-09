@@ -165,6 +165,7 @@ export const processPlainDeckText = (factions, packs, cards, deckText) => {
 
     const plotCards = [];
     const drawCards = [];
+    const agendaCards = new Map();
 
     for (const line of split) {
         if (line.trim() === '') {
@@ -177,7 +178,7 @@ export const processPlainDeckText = (factions, packs, cards, deckText) => {
             name = line.trim();
         }
         const newFaction = Object.values(factions).find(
-                (faction) => faction.name === name
+                (faction) => faction.name.localeCompare(name, "en", { sensitivity: "base" }) === 0
             );
         if (newFaction) {
             if (faction) {
@@ -194,10 +195,7 @@ export const processPlainDeckText = (factions, packs, cards, deckText) => {
             if (card) {
                 switch (card.type) {
                     case 'agenda':
-                        if (agenda) {
-                            return null; // Agenda already set, invalid deck // TODO BD handle Alliance
-                        }
-                        agenda = card;
+                        agendaCards.set(card.name, card);
                         break;
                     case 'plot':
                         addCard(plotCards, card, count);
@@ -213,11 +211,22 @@ export const processPlainDeckText = (factions, packs, cards, deckText) => {
         return null;
     }
 
+    const alliance = agendaCards.get('Alliance');
+    if (agendaCards.size === 1) {
+        agenda = agendaCards.values().next().value;
+    } else if (agendaCards.size > 1 && alliance) {
+        agenda = alliance;
+        agendaCards.delete(alliance.name);
+        bannerCards = Array.from(agendaCards.values());
+    } else if (agendaCards.size > 1) {
+        return null;
+    }
+
     return {
         name: 'Imported Deck',
         faction: faction,
         agenda: agenda,
-        //bannerCards: bannerCards, // TODO BD handle Alliance
+        bannerCards: bannerCards,
         plotCards: plotCards,
         drawCards: drawCards
     };

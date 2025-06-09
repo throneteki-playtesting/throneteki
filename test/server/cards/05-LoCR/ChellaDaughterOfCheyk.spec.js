@@ -4,10 +4,10 @@ describe('Chella Daughter of Cheyk', function () {
     integration(function () {
         beforeEach(function () {
             const deck1 = this.buildDeck('lannister', [
-                'A Clash of Kings',
+                'A Clash of Kings (Core)',
                 'Chella Daughter of Cheyk'
             ]);
-            const deck2 = this.buildDeck('lannister', ['A Clash of Kings', 'Hedge Knight']);
+            const deck2 = this.buildDeck('lannister', ['A Clash of Kings (Core)', 'Hedge Knight']);
             this.player1.selectDeck(deck1);
             this.player2.selectDeck(deck2);
             this.startGame();

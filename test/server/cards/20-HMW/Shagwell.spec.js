@@ -4,7 +4,7 @@ describe('Shagwell', function () {
             const deck1 = this.buildDeck('tyrell', [
                 "A Mummer's Farce",
                 'Late Summer Feast',
-                'Shagwell',
+                'Shagwell (HMW)',
                 'Jinglebell',
                 'Maester Aemon (Core)',
                 'Veteran Builder',

@@ -10,7 +10,7 @@ describe('Scouting Vessel', function () {
                 ]);
                 const deck2 = this.buildDeck('tyrell', [
                     'Sneak Attack',
-                    { name: 'The Kingsroad', count: 20 }
+                    { name: 'The Kingsroad (Core)', count: 20 }
                 ]);
                 this.player1.selectDeck(deck1);
                 this.player2.selectDeck(deck2);
@@ -94,7 +94,7 @@ describe('Scouting Vessel', function () {
                 ]);
                 const deck2 = this.buildDeck('tyrell', [
                     'Sneak Attack',
-                    { name: 'The Kingsroad', count: 20 }
+                    { name: 'The Kingsroad (Core)', count: 20 }
                 ]);
                 this.player1.selectDeck(deck1);
                 this.player2.selectDeck(deck2);

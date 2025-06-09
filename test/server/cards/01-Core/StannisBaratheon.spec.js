@@ -7,7 +7,7 @@ describe('Stannis Baratheon', function () {
                 'Robert Baratheon (Core)',
                 'Dragonstone Faithful',
                 'Maester Cressen (Core)',
-                'The Roseroad',
+                'The Roseroad (Core)',
                 'Bodyguard',
                 'Recruiter for the Watch'
             ]);

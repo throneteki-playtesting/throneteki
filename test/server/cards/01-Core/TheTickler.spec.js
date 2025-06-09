@@ -4,8 +4,8 @@ describe('The Tickler', function () {
             const deck1 = this.buildDeck('lannister', ['Sneak Attack', 'The Tickler']);
             const deck2 = this.buildDeck('lannister', [
                 'Sneak Attack',
-                'The Roseroad',
-                'The Roseroad'
+                'The Roseroad (Core)',
+                'The Roseroad (Core)'
             ]);
             this.player1.selectDeck(deck1);
             this.player2.selectDeck(deck2);

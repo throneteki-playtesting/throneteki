@@ -27,7 +27,7 @@ describe('Pleasure Barge', function () {
                     'A Noble Cause',
                     'Political Disaster',
                     'Pleasure Barge',
-                    'The Roseroad',
+                    'The Roseroad (Core)',
                     'Highgarden (Core)'
                 ]);
                 this.player1.selectDeck(deck);

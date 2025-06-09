@@ -10,7 +10,7 @@ describe('take control', function () {
                 ]);
                 const deck2 = this.buildDeck('tyrell', [
                     'Sneak Attack',
-                    'Confiscation',
+                    'Confiscation (Core)',
                     'Paxter Redwyne',
                     'Paxter Redwyne'
                 ]);
@@ -135,7 +135,7 @@ describe('take control', function () {
                     'Sneak Attack',
                     'Sneak Attack',
                     "Euron Crow's Eye (Core)",
-                    'The Kingsroad',
+                    'The Kingsroad (Core)',
                     'Theon Greyjoy (Core)'
                 ]);
                 this.player1.selectDeck(deck);

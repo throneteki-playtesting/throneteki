@@ -52,8 +52,8 @@ describe('Tyrion Lannister', function () {
                     'Fealty',
                     'Late Summer Feast',
                     'Tyrion Lannister (TB)',
-                    'The Roseroad',
-                    'The Roseroad'
+                    'The Roseroad (Core)',
+                    'The Roseroad (Core)'
                 ]);
                 this.player1.selectDeck(deck);
                 this.player2.selectDeck(deck);

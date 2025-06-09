@@ -3,7 +3,7 @@ describe('Cersei Lannister (LoCR)', function () {
         beforeEach(function () {
             const deck1 = this.buildDeck('lannister', [
                 'Sneak Attack',
-                'A Clash of Kings',
+                'A Clash of Kings (Core)',
                 'Heads on Spikes',
                 'Cersei Lannister (LoCR)'
             ]);

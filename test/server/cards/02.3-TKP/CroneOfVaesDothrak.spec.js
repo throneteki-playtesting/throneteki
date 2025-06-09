@@ -11,8 +11,8 @@ describe('Crone of Vaes Dothrak', function () {
                 'Sneak Attack',
                 'Hedge Knight',
                 'Hedge Knight',
-                'The Roseroad',
-                'The Roseroad'
+                'The Roseroad (Core)',
+                'The Roseroad (Core)'
             ]);
             this.player1.selectDeck(deck1);
             this.player2.selectDeck(deck2);

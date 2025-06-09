@@ -5,7 +5,7 @@ describe('SummerHarvest', function () {
                 'Summer Harvest',
                 'Tyrion Lannister (Core)'
             ]);
-            const deck2 = this.buildDeck('lannister', ['A Noble Cause', "Varys's Riddle"]);
+            const deck2 = this.buildDeck('lannister', ['A Noble Cause', "Varys's Riddle (AtSK)"]);
             this.player = this.player1Object;
             this.opponent = this.player2Object;
 

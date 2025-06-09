@@ -4,7 +4,7 @@ describe('At The Gates', function () {
             beforeEach(function () {
                 const deck = this.buildDeck('targaryen', [
                     'At the Gates',
-                    "Varys's Riddle",
+                    "Varys's Riddle (AtSK)",
                     'Gates of the Moon'
                 ]);
                 this.player1.selectDeck(deck);

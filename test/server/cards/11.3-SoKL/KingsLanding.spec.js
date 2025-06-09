@@ -5,7 +5,7 @@ describe("King's Landing (SoKL)", function () {
                 const deck = this.buildDeck('stark', [
                     'A Noble Cause',
                     "King's Landing (SoKL)",
-                    'The Roseroad',
+                    'The Roseroad (Core)',
                     'Winterfell Crypt',
                     'Skagos (IDP)'
                 ]);

@@ -2,10 +2,10 @@ describe('The Last Greenseer', function () {
     integration(function () {
         beforeEach(function () {
             const deck = this.buildDeck('martell', [
-                'The Last Greenseer',
+                'The Last Greenseer (TIC)',
                 "At Prince Doran's Behest",
                 'Snowed Under',
-                "Varys's Riddle",
+                "Varys's Riddle (AtSK)",
                 'Summer Harvest',
                 'The Winds of Winter'
             ]);
