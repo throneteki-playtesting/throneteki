@@ -13,7 +13,7 @@ class TheKnightOfFlowers extends DrawCard {
                             card.hasTrait('Knight')
                     )
             },
-            max: ability.limit.perRound(1),
+            limit: ability.limit.perRound(1),
             handler: (context) => {
                 let participatingCard = this.controller.filterCardsInPlay((card) => {
                     return (

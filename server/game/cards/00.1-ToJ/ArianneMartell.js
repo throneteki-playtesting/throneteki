@@ -2,9 +2,10 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class ArianneMartell extends DrawCard {
-    setupCardAbilities() {
+    setupCardAbilities(ability) {
         this.action({
             title: 'Remove and gain icon',
+            limit: ability.limit.perPhase(1),
             target: {
                 cardCondition: (card) =>
                     card.location === 'play area' && card.getType() === 'character'

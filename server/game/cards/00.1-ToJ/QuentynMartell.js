@@ -13,6 +13,7 @@ class QuentynMartell extends DrawCard {
                     (card.getPrintedStrength() < this.getStrength() ||
                         card.getPrintedStrength() < this.lastKnownStrength)
             },
+            max: ability.limit.perRound(1),
             cost: ability.costs.putSelfIntoShadows(),
             handler: (context) => {
                 let targetCharacter = context.target;
