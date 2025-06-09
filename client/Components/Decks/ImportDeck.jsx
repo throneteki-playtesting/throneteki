@@ -31,7 +31,8 @@ const ImportDeck = () => {
 
     const processDeck = async () => {
         try {
-            const deck = processThronesDbDeckText(factions, packs, cards, deckText) ??
+            const deck =
+                processThronesDbDeckText(factions, packs, cards, deckText) ??
                 processPlainDeckText(factions, packs, cards, deckText);
 
             if (!deck) {

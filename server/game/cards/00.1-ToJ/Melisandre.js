@@ -1,5 +1,4 @@
 import DrawCard from '../../drawcard.js';
-import GameActions from '../../GameActions/index.js';
 
 class Melisandre extends DrawCard {
     setupCardAbilities(ability) {

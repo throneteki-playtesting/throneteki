@@ -25,7 +25,7 @@ function rulesForBanner(faction, factionName) {
     };
 }
 
-function rulesForGenericBanner(allowedBannerFactions){
+function rulesForGenericBanner(allowedBannerFactions) {
     return {
         mayInclude: () => true,
         rules: [
@@ -46,7 +46,7 @@ function rulesForGenericBanner(allowedBannerFactions){
                 }
             }
         ]
-    }
+    };
 }
 
 /**
@@ -406,11 +406,11 @@ const agendaRules = {
     '00358': rulesForGenericBanner(2),
     // Shadowbinders of Asshai
     '00359': {
-        mayInclude: (card) => hasKeyword(card, /Shadow \((\d+|X)\)/),
+        mayInclude: (card) => hasKeyword(card, /Shadow \((\d+|X)\)/)
     },
     // Seeking Fortunes
     '00360': {
-        mayInclude: (card) => hasKeyword(card, /Bestow \((\d+|X)\)/),
+        mayInclude: (card) => hasKeyword(card, /Bestow \((\d+|X)\)/)
     },
     // Join Forces
     '00361': {
@@ -432,7 +432,9 @@ const agendaRules = {
                         if (traitsInDeck.length === 0) {
                             traitsInDeck.push(...traits);
                         } else {
-                            traitsInDeck = traitsInDeck.filter((trait) => hasTrait(cardQuantity.card, trait));
+                            traitsInDeck = traitsInDeck.filter((trait) =>
+                                hasTrait(cardQuantity.card, trait)
+                            );
                             if (traitsInDeck.length === 0) {
                                 break;
                             }
@@ -445,7 +447,7 @@ const agendaRules = {
     },
     // Desperate Hope
     '00362': {
-        mayInclude: () => true, // No restrictions
+        mayInclude: () => true // No restrictions
     }
 };
 

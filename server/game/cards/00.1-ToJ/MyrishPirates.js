@@ -80,7 +80,7 @@ class MyrishPirates extends DrawCard {
         if (moveGold) {
             this.game.transferGold({ from: from, to: to, amount: 1 });
         } else {
-            this.game.movePower( from, to, 1 );
+            this.game.movePower(from, to, 1);
         }
         let token = moveGold ? 'gold' : 'power';
         this.game.addMessage(

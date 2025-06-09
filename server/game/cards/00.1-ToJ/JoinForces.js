@@ -10,15 +10,16 @@ class JoinForces extends AgendaCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
             targetController: 'current',
-            effect: ability.effects.reduceFirstMarshalledOrPlayedCardCostEachRound(1, (card) =>
-                this.namedTrait && card.hasTrait(this.namedTrait)
+            effect: ability.effects.reduceFirstMarshalledOrPlayedCardCostEachRound(
+                1,
+                (card) => this.namedTrait && card.hasTrait(this.namedTrait)
             )
         });
     }
 
     onDecksPrepared() {
         // TODO BD this assumes that there is an out-of-faction card with a chosen trait in the deck
-        // and will not pick up traits from in-faction and neutral cards in the unlikely case 
+        // and will not pick up traits from in-faction and neutral cards in the unlikely case
         // that someone wants to play this with a mono-faction deck for the reduction effect
         let traitsInDeck = [];
         for (const card of this.game.allCards) {
@@ -61,7 +62,7 @@ class JoinForces extends AgendaCard {
     }
 
     capitalize(string) {
-        return string.replace(/\b\w/g, char => char.toUpperCase());
+        return string.replace(/\b\w/g, (char) => char.toUpperCase());
     }
 }
 

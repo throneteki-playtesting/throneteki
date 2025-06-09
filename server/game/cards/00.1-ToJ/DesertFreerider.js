@@ -34,7 +34,9 @@ class DesertFreerider extends DrawCard {
     handleIcon(context, isGain) {
         this.untilEndOfPhase((ability) => ({
             match: context.target,
-            effect: isGain ? ability.effects.addIcon('intrigue') : ability.effects.removeIcon('intrigue')
+            effect: isGain
+                ? ability.effects.addIcon('intrigue')
+                : ability.effects.removeIcon('intrigue')
         }));
 
         this.game.addMessage(

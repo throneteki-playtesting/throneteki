@@ -8,8 +8,7 @@ class FightingPit extends DrawCard {
             phase: 'challenge',
             target: {
                 cardCondition: (card) =>
-                    card.location === 'hand' &&
-                    card.controller === this.controller
+                    card.location === 'hand' && card.controller === this.controller
             },
             message: '{player} uses {source} to discard a card',
             cost: ability.costs.sacrificeSelf(),
@@ -37,7 +36,9 @@ class FightingPit extends DrawCard {
                                     this.atEndOfPhase((ability) => ({
                                         match: event.card,
                                         condition: () =>
-                                            ['play area', 'duplicate'].includes(event.card.location),
+                                            ['play area', 'duplicate'].includes(
+                                                event.card.location
+                                            ),
                                         targetLocation: 'any',
                                         effect: ability.effects.returnToHandIfStillInPlay(true)
                                     }));

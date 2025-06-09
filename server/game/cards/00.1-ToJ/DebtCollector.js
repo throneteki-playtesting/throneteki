@@ -9,7 +9,8 @@ class DebtCollector extends DrawCard {
             cost: ability.costs.moveGoldFromCardToFixedTarget({
                 target: this.controller,
                 amount: 1,
-                condition: (card) => card.getType() === 'character' &&
+                condition: (card) =>
+                    card.getType() === 'character' &&
                     card.controller === this.controller &&
                     card.hasToken(Tokens.gold)
             }),

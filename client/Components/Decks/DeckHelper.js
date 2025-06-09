@@ -178,8 +178,8 @@ export const processPlainDeckText = (factions, packs, cards, deckText) => {
             name = line.trim();
         }
         const newFaction = Object.values(factions).find(
-                (faction) => faction.name.localeCompare(name, "en", { sensitivity: "base" }) === 0
-            );
+            (faction) => faction.name.localeCompare(name, 'en', { sensitivity: 'base' }) === 0
+        );
         if (newFaction) {
             if (faction) {
                 return null; // Faction already set, invalid deck
@@ -206,7 +206,7 @@ export const processPlainDeckText = (factions, packs, cards, deckText) => {
             }
         }
     }
-    
+
     if (!faction || !faction.value) {
         return null;
     }

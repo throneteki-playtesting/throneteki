@@ -1,7 +1,7 @@
 import DrawCard from '../../drawcard.js';
 
 class FaceMask extends DrawCard {
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.attachmentRestriction({ controller: 'current' });
         this.reaction({
             when: {

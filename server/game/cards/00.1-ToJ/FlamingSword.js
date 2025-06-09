@@ -15,7 +15,11 @@ class FlamingSword extends DrawCard {
             },
             handler: () => {
                 this.game.once('onAtEndOfPhase', () => {
-                    this.game.addMessage('{0} is forced to sacrifice {1} at the end of the phase', this.controller, this);
+                    this.game.addMessage(
+                        '{0} is forced to sacrifice {1} at the end of the phase',
+                        this.controller,
+                        this
+                    );
                     this.controller.sacrificeCard(this);
                 });
             }
