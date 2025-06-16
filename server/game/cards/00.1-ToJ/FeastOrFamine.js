@@ -6,10 +6,10 @@ class FeastOrFamine extends PlotCard {
             handler: (context) => {
                 this.game.promptWithMenu(context.player, this, {
                     activePrompt: {
-                        menuTitle: 'Increase gold value on ' + this.name + ' by 5?',
+                        menuTitle: `Increase gold value or claim value on ${this.name}?`,
                         buttons: [
-                            { text: 'Yes', method: 'accept' },
-                            { text: 'No', method: 'decline' }
+                            { text: 'Gold +5', method: 'chooseGold' },
+                            { text: 'Claim +2', method: 'chooseClaim' }
                         ]
                     },
                     source: this
@@ -18,23 +18,24 @@ class FeastOrFamine extends PlotCard {
         });
     }
 
-    accept(player) {
+    chooseGold(player) {
         this.untilEndOfRound((ability) => ({
             match: this,
-            effect: [ability.effects.modifyGold(5), ability.effects.modifyClaim(-2)]
+            effect: ability.effects.modifyGold(5)
         }));
 
-        this.game.addMessage(
-            '{0} increases the gold value by 5 and reduces the claim value by 2 on {1}',
-            player,
-            this
-        );
+        this.game.addMessage('{0} increases the gold value by 5 on {1}', player, this);
 
         return true;
     }
 
-    decline(player) {
-        this.game.addMessage('{0} does not increase the gold value on {1}', player, this);
+    chooseClaim(player) {
+        this.untilEndOfRound((ability) => ({
+            match: this,
+            effect: ability.effects.modifyClaim(2)
+        }));
+
+        this.game.addMessage('{0} increases the claim value by 2 on {1}', player, this);
 
         return true;
     }

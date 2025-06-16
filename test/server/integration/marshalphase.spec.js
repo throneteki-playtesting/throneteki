@@ -9,7 +9,7 @@ describe('marshal phase', function () {
                     'Eddard Stark (Core)',
                     'Eddard Stark (Core)',
                     'Eddard Stark (WotN)',
-                    'The Kingsroad (Core)',
+                    'The Kingsroad',
                     'Hear Me Roar!',
                     'Gold Cloaks'
                 ]);
@@ -96,7 +96,7 @@ describe('marshal phase', function () {
             beforeEach(function () {
                 const deck = this.buildDeck('tyrell', [
                     'Sneak Attack',
-                    'The Roseroad (Core)',
+                    'The Roseroad',
                     'The Arbor',
                     'The Arbor'
                 ]);
@@ -239,7 +239,7 @@ describe('marshal phase', function () {
                 const deck = this.buildDeck('stark', [
                     'Trading with the Pentoshi',
                     'Sneak Attack',
-                    'The Roseroad (Core)'
+                    'The Roseroad'
                 ]);
                 this.player1.selectDeck(deck);
                 this.player2.selectDeck(deck);

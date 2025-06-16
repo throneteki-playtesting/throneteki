@@ -5,7 +5,7 @@ describe('The Last Greenseer', function () {
                 'The Last Greenseer (TIC)',
                 "At Prince Doran's Behest",
                 'Snowed Under',
-                "Varys's Riddle (AtSK)",
+                "Varys's Riddle",
                 'Summer Harvest',
                 'The Winds of Winter'
             ]);

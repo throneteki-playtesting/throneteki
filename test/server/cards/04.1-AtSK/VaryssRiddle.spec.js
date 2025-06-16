@@ -1,7 +1,7 @@
 describe("Varys's Riddle", function () {
     integration(function () {
         beforeEach(function () {
-            const deck1 = this.buildDeck('greyjoy', ["Varys's Riddle (AtSK)", 'The Roseroad (Core)']);
+            const deck1 = this.buildDeck('greyjoy', ["Varys's Riddle", 'The Roseroad']);
 
             this.player1.selectDeck(deck1);
         });
@@ -49,7 +49,7 @@ describe("Varys's Riddle", function () {
         describe('when played against Calm Over Westeros', function () {
             integration(function () {
                 beforeEach(function () {
-                    const deck1 = this.buildDeck('lannister', ["Varys's Riddle (AtSK)", 'Hedge Knight']);
+                    const deck1 = this.buildDeck('lannister', ["Varys's Riddle", 'Hedge Knight']);
                     const deck2 = this.buildDeck('lannister', [
                         '"The Rains of Castamere"',
                         'Calm Over Westeros',

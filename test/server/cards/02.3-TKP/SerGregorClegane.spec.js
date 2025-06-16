@@ -11,7 +11,7 @@ describe('Ser Gregor Clegane (TKP)', function () {
                 'Maester Cressen (Core)',
                 'Hedge Knight',
                 'Shireen Baratheon (Core)',
-                'The Roseroad (Core)'
+                'The Roseroad'
             ]);
             this.player1.selectDeck(deck1);
             this.player2.selectDeck(deck2);

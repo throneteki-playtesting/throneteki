@@ -7,7 +7,7 @@ describe('setup phase', function () {
                     'Eddard Stark (Core)',
                     'Eddard Stark (Core)',
                     'Eddard Stark (WotN)',
-                    'The Roseroad (Core)',
+                    'The Roseroad',
                     'Hear Me Roar!'
                 ]);
                 this.player1.selectDeck(deck);
@@ -83,7 +83,7 @@ describe('setup phase', function () {
             beforeEach(function () {
                 const deck = this.buildDeck('tyrell', [
                     'Elinor Tyrell',
-                    'The Roseroad (Core)',
+                    'The Roseroad',
                     'The Arbor',
                     'The Arbor'
                 ]);

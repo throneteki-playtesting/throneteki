@@ -132,7 +132,7 @@ describe("At Prince Doran's Behest", function () {
             beforeEach(function () {
                 const deck = this.buildDeck('martell', [
                     "At Prince Doran's Behest",
-                    "Varys's Riddle (AtSK)",
+                    "Varys's Riddle",
                     'Valar Morghulis',
                     'Marched to the Wall'
                 ]);

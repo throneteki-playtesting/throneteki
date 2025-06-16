@@ -13,7 +13,7 @@ describe("King Robb's Bannermen", function () {
                 'The Wall (TMoW)',
                 'House of the Undying',
                 'The Great Pyramid',
-                'The Roseroad (Core)'
+                'The Roseroad'
             ]);
             this.player1.selectDeck(deck1);
             this.player2.selectDeck(deck2);

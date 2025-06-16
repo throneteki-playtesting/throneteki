@@ -449,7 +449,7 @@ describe('effects', function () {
         describe('parent dependent "while attached" effects while being discarded', function () {
             beforeEach(function () {
                 const deck = this.buildDeck('targaryen', [
-                    'Confiscation (Core)',
+                    'Confiscation',
                     'A Noble Cause',
                     'Daenerys Targaryen (Core)',
                     'Tokar'

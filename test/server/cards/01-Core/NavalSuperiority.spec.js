@@ -5,8 +5,8 @@ describe('Naval Superiority', function () {
                 'Naval Superiority',
                 'A Noble Cause',
                 'A Feast for Crows',
-                'A Clash of Kings (Core)',
-                'The Roseroad (Core)',
+                'A Clash of Kings',
+                'The Roseroad',
                 'Littlefinger (Core)'
             ]);
             this.player1.selectDeck(deck);

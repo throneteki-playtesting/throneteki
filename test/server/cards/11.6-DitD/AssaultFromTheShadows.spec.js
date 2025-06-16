@@ -39,8 +39,8 @@ describe('Assault from the Shadows', function () {
                 const deck = this.buildDeck('stark', [
                     'Assault from the Shadows',
                     'A Noble Cause',
-                    'The Roseroad (Core)',
-                    'The Roseroad (Core)'
+                    'The Roseroad',
+                    'The Roseroad'
                 ]);
                 this.player1.selectDeck(deck);
                 this.player2.selectDeck(deck);

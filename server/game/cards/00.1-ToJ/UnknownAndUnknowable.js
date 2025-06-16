@@ -72,7 +72,8 @@ class UnknownAndUnknowable extends AgendaCard {
                 this.controller,
                 factionsToAnnounce,
                 'factions',
-                this);
+                this
+            );
             return;
         }
 

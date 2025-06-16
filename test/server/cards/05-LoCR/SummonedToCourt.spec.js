@@ -6,7 +6,7 @@ describe('Summoned to Court', function () {
                 'A Noble Cause',
                 'Aeron Damphair (Core)',
                 'Balon Greyjoy (Core)',
-                'The Roseroad (Core)'
+                'The Roseroad'
             ]);
 
             this.player1.selectDeck(deck);

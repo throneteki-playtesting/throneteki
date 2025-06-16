@@ -7,7 +7,7 @@ describe('Anya Waynwood', function () {
                 'Lannisport Merchant',
                 'Lannisport Merchant',
                 'Lannisport Merchant',
-                'The Kingsroad (Core)'
+                'The Kingsroad'
             ]);
             this.player1.selectDeck(deck);
             this.player2.selectDeck(deck);

@@ -8,7 +8,6 @@ class ManningTheCityWalls extends PlotCard {
                     card.controller === context.player &&
                     card.location === 'hand' &&
                     card.getType() === 'character' &&
-                    !card.isUnique() &&
                     card.getPrintedCost() <= this.maxPrintedCost(context) &&
                     context.player.canPutIntoPlay(card)
             },
@@ -28,6 +27,6 @@ class ManningTheCityWalls extends PlotCard {
     }
 }
 
-ManningTheCityWalls.code = '00373';
+ManningTheCityWalls.code = '00369';
 
 export default ManningTheCityWalls;

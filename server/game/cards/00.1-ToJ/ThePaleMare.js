@@ -45,7 +45,7 @@ class ThePaleMare extends PlotCard {
                     }
                 }
 
-                this.game.killCharacters(toKill, { allowSave: false });
+                this.game.killCharacters(toKill, { allowSave: true });
             }
         });
     }

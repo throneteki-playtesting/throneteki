@@ -4,7 +4,7 @@ describe('faction change', function () {
             beforeEach(function () {
                 const deck = this.buildDeck('thenightswatch', [
                     'Sneak Attack',
-                    'Confiscation (Core)',
+                    'Confiscation',
                     'Hedge Knight',
                     'Sworn to the Watch',
                     'The Wall (Core)'
