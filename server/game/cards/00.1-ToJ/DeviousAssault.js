@@ -1,7 +1,7 @@
 import PlotCard from '../../plotcard.js';
 
 class DeviousAssault extends PlotCard {
-    setupCardAbilities() {
+    setupCardAbilities(ability) {
         this.action({
             title: 'Give an icon or trait',
             target: {
@@ -10,6 +10,7 @@ class DeviousAssault extends PlotCard {
                     card.getType() === 'character' &&
                     card.controller === this.controller
             },
+            limit: ability.limit.perRound(1),
             handler: (context) => {
                 this.context = context;
 
