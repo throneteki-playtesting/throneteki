@@ -59,9 +59,17 @@ class UiPrompt extends BaseStep {
         return { menuTitle: 'Waiting for opponent' };
     }
 
-    continue() {
-        var completed = this.isComplete();
+    checkPlayer() {
+        const player = this.getPlayer();
+        if (player && !player.isPlaying()) {
+            this.complete();
+        }
+    }
 
+    continue() {
+        this.checkPlayer();
+
+        const completed = this.isComplete();
         if (completed) {
             this.clearPrompts();
             this.onCompleted();

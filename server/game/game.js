@@ -49,7 +49,11 @@ class Game extends EventEmitter {
         this.instance = details.instance;
         this.event = details.event;
         this.eventName = details.event && details.event.name;
-        this.restrictedList = details.restrictedList;
+        this.restrictedList = details.restrictedList && {
+            _id: details.restrictedList._id,
+            name: details.restrictedList.name,
+            cardSet: details.restrictedList.cardSet
+        };
         this.allCards = [];
         this.attachmentValidityCheck = new AttachmentValidityCheck(this);
         this.effectEngine = new EffectEngine(this);
@@ -95,9 +99,7 @@ class Game extends EventEmitter {
         this.titlePool = new TitlePool(this, options.titleCardData || []);
         this.cardData = options.cardData || [];
         this.packData = options.packData || [];
-        this.restrictedListData = this.restrictedList
-            ? [this.restrictedList]
-            : options.restrictedListData || [];
+        this.restrictedListData = options.restrictedListData || [];
         this.remainingPhases = [];
         this.skipPhase = {};
         this.cardVisibility = new CardVisibility(this);
@@ -182,7 +184,7 @@ class Game extends EventEmitter {
     }
 
     getPlayers() {
-        return this.getAllPlayers().filter((player) => !player.eliminated);
+        return this.getAllPlayers().filter((player) => player.isPlaying());
     }
 
     getNumberOfPlayers() {
@@ -231,10 +233,24 @@ class Game extends EventEmitter {
     }
 
     setFirstPlayer(firstPlayer) {
-        for (let player of this.getAllPlayers()) {
+        for (const player of this.getAllPlayers()) {
             player.firstPlayer = player === firstPlayer;
         }
         this.raiseEvent('onFirstPlayerDetermined', { player: firstPlayer });
+    }
+
+    checkFirstPlayer() {
+        // Find first player from all players, not just remaining
+        let firstPlayer = this.getAllPlayers().find((p) => p.firstPlayer);
+        const remainingPlayers = this.getPlayers();
+        if (firstPlayer && !firstPlayer.isPlaying() && remainingPlayers.length > 0) {
+            // Search remaining players for next player to their left
+            firstPlayer =
+                remainingPlayers.find((player) => player.seatNo > firstPlayer.seatNo) ||
+                remainingPlayers[0];
+            this.addAlert('info', '{0} has become the first player', remainingPlayers[1]);
+            this.setFirstPlayer(firstPlayer);
+        }
     }
 
     getOpponents(player) {
@@ -543,10 +559,14 @@ class Game extends EventEmitter {
     }
 
     checkWinAndLossConditions() {
-        if (this.currentPhase === 'setup' || this.winner) {
+        if (this.currentPhase === 'setup' || this.winner || this.disableWinning) {
             return;
         }
 
+        // First player is saved here & remains for the win condition checks
+        // Eg. If first player is decked, and 2 opponents reach 15 power in the
+        // same simultaneous action, the decked player should be choosing the winner
+        const firstPlayer = this.getFirstPlayer();
         let players = this.getPlayersInFirstPlayerOrder();
 
         if (players.length === 0) {
@@ -561,22 +581,22 @@ class Game extends EventEmitter {
                 this.recordDraw(deckedPlayers);
             } else if (potentialWinners.length === 1) {
                 this.recordWinner(potentialWinners[0], 'decked');
-            } else if (!this.disableWonPrompt) {
+            } else {
                 this.addAlert(
                     'info',
                     '{0} will be eliminated because their draw decks are empty. {1} chooses the winner because they are first player',
                     deckedPlayers,
-                    players[0]
+                    firstPlayer
                 );
                 this.queueStep(
-                    new ChoosePlayerPrompt(this, players[0], {
+                    new ChoosePlayerPrompt(this, firstPlayer, {
                         activePromptTitle: 'Select the winning player',
                         condition: (player) => potentialWinners.includes(player),
                         onSelect: (chosenPlayer) => {
                             this.addAlert(
                                 'info',
                                 '{0} chooses {1} to win the game',
-                                players[0],
+                                firstPlayer,
                                 chosenPlayer
                             );
                             this.recordWinner(chosenPlayer, 'decked');
@@ -593,15 +613,10 @@ class Game extends EventEmitter {
                 '{0} is eliminated from the game because their draw deck is empty',
                 player
             );
-            player.eliminated = true;
+            this.eliminate(player);
         }
 
-        let remainingPlayers = players.filter((player) => !player.eliminated);
-
-        // If the first player is eliminated, the next non-eliminated player in order becomes first player
-        if (players[0].eliminated && remainingPlayers.length > 1) {
-            this.setFirstPlayer(remainingPlayers[0]);
-        }
+        const remainingPlayers = players.filter((player) => !player.eliminated);
 
         if (remainingPlayers.length === 1) {
             let lastPlayer = remainingPlayers[0];
@@ -619,7 +634,6 @@ class Game extends EventEmitter {
         if (potentialWinners.length === 1) {
             this.recordWinner(potentialWinners[0], 'power');
         } else if (potentialWinners.length > 1) {
-            const firstPlayer = this.getFirstPlayer();
             this.addAlert(
                 'info',
                 '{0} have reached 15 power. {1} chooses the winner because they are first player',
@@ -641,6 +655,8 @@ class Game extends EventEmitter {
                     }
                 })
             );
+        } else {
+            this.checkFirstPlayer();
         }
     }
 
@@ -704,7 +720,7 @@ class Game extends EventEmitter {
             let valueGetter;
             switch (stat) {
                 case 'claim':
-                    if (!player.activePlot.claim.setValue) {
+                    if (typeof player.activePlot.claim.setValue !== 'number') {
                         effect = Effects.modifyClaim(value);
                     } else {
                         effect = Effects.setClaim(Math.max(player.getClaim() + value, 0));
@@ -712,7 +728,7 @@ class Game extends EventEmitter {
                     valueGetter = () => player.getClaim();
                     break;
                 case 'initiative':
-                    if (!player.activePlot.initiative.setValue) {
+                    if (typeof player.activePlot.initiative.setValue !== 'number') {
                         effect = Effects.modifyInitiative(value);
                     } else {
                         effect = Effects.setInitiative(Math.max(player.getInitiative() + value, 0));
@@ -720,7 +736,7 @@ class Game extends EventEmitter {
                     valueGetter = () => player.getInitiative();
                     break;
                 case 'reserve':
-                    if (!player.activePlot.reserve.setValue) {
+                    if (typeof player.activePlot.reserve.setValue !== 'number') {
                         effect = Effects.modifyReserve(value);
                     } else {
                         effect = Effects.setReserve(Math.max(player.getReserve() + value, 0));
@@ -799,20 +815,29 @@ class Game extends EventEmitter {
     }
 
     concede(playerName) {
-        var player = this.getPlayerByName(playerName);
+        const player = this.getPlayerByName(playerName);
 
         if (!player) {
             return;
         }
 
         this.addAlert('info', '{0} concedes', player);
-        player.eliminated = true;
+        this.eliminate(player);
 
-        let remainingPlayers = this.getPlayers().filter((player) => !player.eliminated);
+        const remainingPlayers = this.getPlayers();
 
         if (remainingPlayers.length === 1) {
             this.recordWinner(remainingPlayers[0], 'concede');
+        } else {
+            this.checkFirstPlayer();
         }
+    }
+
+    eliminate(player) {
+        player.eliminated = true;
+        player.setPrompt({
+            menuTitle: 'You have been eliminated'
+        });
     }
 
     selectDeck(playerName, deck) {
@@ -1359,24 +1384,30 @@ class Game extends EventEmitter {
         return true;
     }
 
-    isEmpty() {
+    isEmpty(includeSpectators = true) {
         return Object.values(this.playersAndSpectators).every((player) => {
-            if (player.left || player.id === 'TBA') {
+            if (player.isSpectator()) {
+                return !includeSpectators;
+            }
+
+            // Player has left the game
+            if (player.left) {
                 return true;
             }
 
-            if (!player.disconnectedAt) {
-                return false;
+            // Player has disconnected for longer than 30 seconds
+            if (player.disconnectedAt) {
+                const difference = moment().diff(moment(player.disconnectedAt), 'seconds');
+                return difference > 30;
             }
 
-            let difference = moment().diff(moment(player.disconnectedAt), 'seconds');
-
-            return difference > 30;
+            // Player is still within the game
+            return false;
         });
     }
 
     leave(playerName) {
-        let player = this.playersAndSpectators[playerName];
+        const player = this.playersAndSpectators[playerName];
 
         if (!player) {
             return;
@@ -1387,13 +1418,14 @@ class Game extends EventEmitter {
         } else {
             this.addAlert('info', '{0} has left the game', player);
             player.left = true;
+            this.checkFirstPlayer();
 
-            if (!this.finishedAt) {
+            if (this.getPlayers().length < 2 && !this.finishedAt) {
                 this.finishedAt = new Date();
             }
         }
 
-        if (this.isEmpty()) {
+        if (this.isEmpty(false)) {
             if (this.timeLimit) {
                 this.timeLimit.stop();
             }
@@ -1616,7 +1648,10 @@ class Game extends EventEmitter {
                 };
             }),
             muteSpectators: this.muteSpectators,
-            restrictedList: this.restrictedList,
+            restrictedList: this.restrictedList && {
+                name: this.restrictedList.name,
+                cardSet: this.restrictedList.cardSet
+            },
             useChessClocks: this.useChessClocks
         };
     }

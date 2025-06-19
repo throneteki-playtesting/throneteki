@@ -402,7 +402,11 @@ class PendingGame {
             node: this.node ? this.node.identity : undefined,
             owner: this.owner.username,
             players: playerSummaries,
-            restrictedList: this.restrictedList,
+            restrictedList: this.restrictedList && {
+                _id: this.restrictedList._id,
+                name: this.restrictedList.name,
+                cardSet: this.restrictedList.cardSet
+            },
             showHand: this.showHand,
             started: this.started,
             spectators: _.map(this.spectators, (spectator) => {

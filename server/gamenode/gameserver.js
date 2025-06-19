@@ -162,18 +162,19 @@ class GameServer {
     }
 
     clearStaleAndFinishedGames() {
+        // 20 minutes
         const timeout = 20 * 60 * 1000;
 
-        let staleGames = Object.values(this.games).filter(
+        const staleGames = Object.values(this.games).filter(
             (game) => game.finishedAt && Date.now() - game.finishedAt > timeout
         );
-        for (let game of staleGames) {
+        for (const game of staleGames) {
             logger.info('closed finished game %s due to inactivity', game.id);
             this.closeGame(game);
         }
 
-        let emptyGames = Object.values(this.games).filter((game) => game.isEmpty());
-        for (let game of emptyGames) {
+        const emptyGames = Object.values(this.games).filter((game) => game.isEmpty());
+        for (const game of emptyGames) {
             logger.info('closed empty game %s', game.id);
             this.closeGame(game);
         }
@@ -444,29 +445,26 @@ class GameServer {
 
             this.gameSocket.send('GAMECLOSED', { game: game.id });
         }
-
-        this.sendGameState(game);
     }
 
     onGameMessage(socket, command, ...args) {
         var game = this.findGameForUser(socket.user.username);
-
         if (!game) {
             return;
         }
 
-        if (command === 'leavegame') {
-            return this.onLeaveGame(socket);
-        }
-
-        if (!game[command] || !_.isFunction(game[command])) {
-            return;
-        }
-
         this.runAndCatchErrors(game, () => {
-            game[command](socket.user.username, ...args);
+            if (command === 'leavegame') {
+                this.onLeaveGame(socket);
+            } else if (!game[command] || !_.isFunction(game[command])) {
+                return;
+            } else {
+                game[command](socket.user.username, ...args);
+            }
 
-            game.continue();
+            if (!game.isEmpty(false)) {
+                game.continue();
+            }
 
             this.sendGameState(game);
         });

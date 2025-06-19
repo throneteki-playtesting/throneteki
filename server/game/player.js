@@ -12,7 +12,6 @@ import BestowPrompt from './gamesteps/bestowprompt.js';
 import AllowedChallenges from './AllowedChallenges.js';
 import PlayableLocation from './playablelocation.js';
 import PlayActionPrompt from './gamesteps/playactionprompt.js';
-import PlayerPromptState from './playerpromptstate.js';
 import MinMaxProperty from './PropertyTypes/MinMaxProperty.js';
 import ReferenceCountedSetProperty from './PropertyTypes/ReferenceCountedSetProperty.js';
 import GoldSource from './GoldSource.js';
@@ -78,11 +77,6 @@ class Player extends Spectator {
         this.mustChooseAsClaim = [];
         this.plotRevealRestrictions = [];
         this.mustRevealPlot = undefined;
-        this.promptedActionWindows = user.promptedActionWindows;
-        this.promptDupes = user.settings.promptDupes;
-        this.timerSettings = user.settings.timerSettings || {};
-        this.timerSettings.windowTimer = user.settings.windowTimer;
-        this.keywordSettings = user.settings.keywordSettings;
         this.goldSources = [new GoldSource(this)];
         this.groupedPiles = {};
         this.bonusesFromRivals = new Set();
@@ -117,6 +111,10 @@ class Player extends Spectator {
 
     isSpectator() {
         return false;
+    }
+
+    isPlaying() {
+        return !this.isSpectator() && !this.left && !this.eliminated;
     }
 
     anyCardsInPlay(predicateOrMatcher) {
@@ -1426,6 +1424,10 @@ class Player extends Spectator {
             id: this.id,
             name: this.name,
             cardSize: this.cardSize,
+            promptDupes: this.promptDupes,
+            promptedActionWindows: this.promptedActionWindows,
+            timerSettings: this.timerSettings,
+            keywordSettings: this.keywordSettings,
             ...promptState,
             seatNo: this.seatNo,
             activePlot: this.activePlot ? this.activePlot.getSummary(activePlayer) : undefined,
@@ -1450,7 +1452,6 @@ class Player extends Spectator {
             disconnected: !!this.disconnectedAt,
             faction: this.faction.getSummary(activePlayer),
             firstPlayer: this.firstPlayer,
-            keywordSettings: this.keywordSettings,
             left: this.left,
             numDrawCards: this.drawDeck.length,
             numPlotCards: this.plotDeck.length,
@@ -1459,12 +1460,9 @@ class Player extends Spectator {
                 ? this.selectedPlot.getSummary(activePlayer)
                 : undefined,
             mustShowPlotSelection: this.mustShowPlotSelection.includes(activePlayer),
-            promptedActionWindows: this.promptedActionWindows,
-            promptDupes: this.promptDupes,
             revealTopCard: this.isRevealingTopOfDeck(),
             showDeck: this.showDeck,
             stats: this.getStats(isActivePlayer),
-            timerSettings: this.timerSettings,
             title: this.title ? this.title.getSummary(activePlayer) : undefined,
             user: {
                 username: this.user.username
