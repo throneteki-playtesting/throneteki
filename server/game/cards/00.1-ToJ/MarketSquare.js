@@ -16,7 +16,7 @@ class MarketSquare extends DrawCard {
                 this.untilEndOfPhase((ability) => ({
                     condition: () => !context.abilityDeactivated,
                     targetController: 'current',
-                    effect: ability.effects.reduceNextMarshalledCardCost(1, (card) => card)
+                    effect: ability.effects.reduceNextMarshalledCardCost(1)
                 }));
             }
         });
