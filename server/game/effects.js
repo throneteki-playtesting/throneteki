@@ -16,7 +16,7 @@ import PowerAsGoldSource from './PowerAsGoldSource.js';
 
 function cannotEffect(type) {
     return function (predicate) {
-        let restriction = new CannotRestriction(type, predicate);
+        const restriction = new CannotRestriction(type, predicate);
         return {
             apply: function (card) {
                 card.addAbilityRestriction(restriction);
@@ -131,6 +131,7 @@ function setCardModifier(propName) {
             unapply: function (card, context) {
                 card[propName].setValue = context[propName][card.uuid];
                 delete context[propName][card.uuid];
+                card[propName].setValue = null;
             },
             isStateDependent
         };
@@ -569,7 +570,7 @@ const Effects = {
     losesAllFactions: losesAspectEffect('factions'),
     losesAllKeywords: losesAspectEffect('keywords'),
     losesAllTraits: losesAspectEffect('traits'),
-    losesAllImmunities: losesAspectEffect('immunities'),
+    losesAllImmunities: losesAspectEffect('immunity'),
     loseFaction: function (faction) {
         return losesAspectEffect(`factions.${faction.toLowerCase()}`)();
     },
@@ -953,13 +954,13 @@ const Effects = {
     immuneTo: function (cardCondition) {
         return {
             apply: function (card, context) {
-                let restriction = new ImmunityRestriction(cardCondition, context.source);
+                const restriction = new ImmunityRestriction(cardCondition, context.source);
                 context.immuneTo = context.immuneTo || {};
                 context.immuneTo[card.uuid] = restriction;
                 card.addAbilityRestriction(restriction);
             },
             unapply: function (card, context) {
-                let restriction = context.immuneTo[card.uuid];
+                const restriction = context.immuneTo[card.uuid];
                 card.removeAbilityRestriction(restriction);
                 delete context.immuneTo[card.uuid];
             }
