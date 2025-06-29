@@ -1,7 +1,7 @@
 import PlotCard from '../../plotcard.js';
 import TextHelper from '../../TextHelper.js';
 
-class CityOfArts extends PlotCard {
+class CityFair extends PlotCard {
     setupCardAbilities() {
         this.whenRevealed({
             handler: (context) => {
@@ -22,6 +22,6 @@ class CityOfArts extends PlotCard {
     }
 }
 
-CityOfArts.code = '00368';
+CityFair.code = '00368';
 
-export default CityOfArts;
+export default CityFair;

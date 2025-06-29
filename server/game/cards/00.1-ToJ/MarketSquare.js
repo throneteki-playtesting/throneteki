@@ -1,24 +1,14 @@
 import DrawCard from '../../drawcard.js';
+import GameActions from '../../GameActions/index.js';
 
 class MarketSquare extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
-            title: 'Reduce next card',
-            clickToActivate: true,
+            title: '',
             phase: 'marshal',
-            cost: ability.costs.kneelSelf(),
-            handler: (context) => {
-                this.game.addMessage(
-                    '{0} kneels {1} to reduce the cost of the next card by 1',
-                    context.player,
-                    this
-                );
-                this.untilEndOfPhase((ability) => ({
-                    condition: () => !context.abilityDeactivated,
-                    targetController: 'current',
-                    effect: ability.effects.reduceNextMarshalledCardCost(1)
-                }));
-            }
+            cost: [ability.costs.kneelSelf(), ability.costs.sacrificeSelf()],
+            message: '{player} kneels and sacrifices {source} to gain 2 gold',
+            gameAction: GameActions.gainGold((context) => ({ player: context.player, amount: 2 }))
         });
     }
 }

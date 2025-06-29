@@ -15,9 +15,13 @@ class DevoutAttendant extends DrawCard {
             handler: (context) => {
                 context.target.controller.standCard(context.target);
                 this.game.currentChallenge.removeFromChallenge(context.target);
+                this.untilEndOfPhase((ability) => ({
+                    match: context.target,
+                    effect: ability.effects.addKeyword('renown')
+                }));
 
                 this.game.addMessage(
-                    '{0} uses {1} to stand and remove {2} from the challenge',
+                    '{0} uses {1} to stand and remove {2} from the challenge and give it renown',
                     context.player,
                     this,
                     context.target

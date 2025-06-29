@@ -4,7 +4,8 @@ class VengefulLordling extends DrawCard {
     setupCardAbilities() {
         this.interrupt({
             when: {
-                onCharacterKilled: (event) => event.card === this
+                afterChallenge: (event) =>
+                    this.isAttacking() && event.challenge.isMatch({ loser: this.controller })
             },
             target: {
                 cardCondition: (card) =>

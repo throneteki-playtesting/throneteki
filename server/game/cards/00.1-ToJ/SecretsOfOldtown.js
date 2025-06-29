@@ -1,6 +1,6 @@
 import PlotCard from '../../plotcard.js';
 
-class DeviousAssault extends PlotCard {
+class SecretsOfOldtown extends PlotCard {
     setupCardAbilities(ability) {
         this.action({
             title: 'Give an icon or trait',
@@ -78,6 +78,6 @@ class DeviousAssault extends PlotCard {
     }
 }
 
-DeviousAssault.code = '00375';
+SecretsOfOldtown.code = '00375';
 
-export default DeviousAssault;
+export default SecretsOfOldtown;

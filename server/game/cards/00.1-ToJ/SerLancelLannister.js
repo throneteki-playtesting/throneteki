@@ -18,7 +18,7 @@ class SerLancelLannister extends DrawCard {
             target: {
                 cardCondition: (card, context) =>
                     context.player === card.controller &&
-                    card.name === "Warrior's Sons" &&
+                    card.hasTrait('The Seven') &&
                     ['hand', 'discard pile'].includes(card.location) &&
                     context.player.canPutIntoPlay(card)
             },

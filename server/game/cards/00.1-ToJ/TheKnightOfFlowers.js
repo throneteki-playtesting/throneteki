@@ -5,8 +5,8 @@ class TheKnightOfFlowers extends DrawCard {
     setupCardAbilities(ability) {
         this.reaction({
             when: {
-                afterChallenge: (event) =>
-                    event.challenge.winner === this.controller &&
+                onChallengeInitiated: (event) =>
+                    event.challenge.attackingPlayer === this.controller &&
                     this.controller.anyCardsInPlay(
                         (card) =>
                             this.game.isDuringChallenge({ attackingAlone: card }) &&

@@ -1,7 +1,7 @@
 import DrawCard from '../../drawcard.js';
 import SatisfyClaim from '../../gamesteps/challenge/SatisfyClaim.js';
 
-class CrownlandsVillage extends DrawCard {
+class RiversideMill extends DrawCard {
     setupCardAbilities(ability) {
         this.plotModifiers({
             gold: 1
@@ -14,7 +14,7 @@ class CrownlandsVillage extends DrawCard {
                     event.challenge.winner === this.controller &&
                     event.challenge.attackingPlayer === this.controller &&
                     event.challenge.challengeType === 'intrigue' &&
-                    event.challenge.defendingPlayer.getHandCount() === 0
+                    event.challenge.defendingPlayer.getHandCount() < this.controller.getHandCount()
             },
             cost: ability.costs.sacrificeSelf(),
             handler: (context) => {
@@ -39,6 +39,6 @@ class CrownlandsVillage extends DrawCard {
     }
 }
 
-CrownlandsVillage.code = '00167';
+RiversideMill.code = '00167';
 
-export default CrownlandsVillage;
+export default RiversideMill;

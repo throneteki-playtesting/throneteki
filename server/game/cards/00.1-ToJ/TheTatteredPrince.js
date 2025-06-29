@@ -38,6 +38,6 @@ class TheTatteredPrince extends DrawCard {
     }
 }
 
-TheTatteredPrince.code = '00174';
+TheTatteredPrince.code = '00175';
 
 export default TheTatteredPrince;
