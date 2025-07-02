@@ -4,7 +4,7 @@ import GameActions from '../../GameActions/index.js';
 class MarketSquare extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
-            title: '',
+            title: 'Sacrifice to gain gold',
             phase: 'marshal',
             cost: [ability.costs.kneelSelf(), ability.costs.sacrificeSelf()],
             message: '{player} kneels and sacrifices {source} to gain 2 gold',

@@ -1,6 +1,6 @@
 import DrawCard from '../../drawcard.js';
 
-class PoisonedArrowhead extends DrawCard {
+class QuillAndParchment extends DrawCard {
     setupCardAbilities(ability) {
         this.whileAttached({
             effect: ability.effects.modifyStrength(1)
@@ -24,6 +24,6 @@ class PoisonedArrowhead extends DrawCard {
     }
 }
 
-PoisonedArrowhead.code = '00320';
+QuillAndParchment.code = '00320';
 
-export default PoisonedArrowhead;
+export default QuillAndParchment;

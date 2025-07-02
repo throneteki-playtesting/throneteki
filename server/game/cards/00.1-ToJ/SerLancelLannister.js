@@ -13,7 +13,7 @@ class SerLancelLannister extends DrawCard {
         });
 
         this.action({
-            title: "Put Warrior's Sons into play",
+            title: 'Put a character into play',
             cost: ability.costs.kneelSelf(),
             target: {
                 cardCondition: (card, context) =>
