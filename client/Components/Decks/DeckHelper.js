@@ -59,11 +59,13 @@ const parseCardCount = (line) => {
 };
 
 const addCard = (list, card, number) => {
-    const cardCode = parseInt(card.code);
-    if (list[cardCode]) {
-        list[cardCode].count += number;
+    let existingCard = list.find((item) => item.card === card);
+    if (existingCard) {
+        existingCard.count += number;
+        existingCard.count = Math.min(existingCard.count, card.deckLimit);
     } else {
-        list.push({ count: number, card: card });
+        const count = Math.min(number, card.deckLimit);
+        list.push({ count: count, card: card });
     }
 };
 
