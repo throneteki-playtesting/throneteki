@@ -3,12 +3,8 @@ import GameActions from '../../GameActions/index.js';
 
 class DubiousLoyalties extends DrawCard {
     setupCardAbilities(ability) {
-        this.attachmentRestriction({ owner: 'current' });
+        this.attachmentRestriction({ loyal: false, owner: 'current' });
         this.whileAttached({
-            condition: () =>
-                !this.controller.anyCardsInPlay(
-                    (card) => card.getType() === 'character' && card.isLoyal()
-                ),
             match: this.parent,
             effect: [
                 ability.effects.addKeyword('Stealth'),
@@ -18,12 +14,13 @@ class DubiousLoyalties extends DrawCard {
         });
         this.reaction({
             when: {
-                afterChallenge: (event) => !!event.challenge.winner
+                afterChallenge: (event) =>
+                    !!event.challenge.winner && event.challenge.strengthDifference >= 5
             },
             player: () => this.game.currentChallenge.winner,
-            cost: ability.costs.kneelFactionCard(),
+            cost: ability.costs.discardFromDeck(),
             message: {
-                format: '{player} uses {source} and kneels their faction card to take control of {parent}',
+                format: '{player} uses {source} and discards {costs.discardFromDeck} from the top of their deck to take control of {parent}',
                 args: {
                     parent: () => this.parent
                 }
@@ -37,6 +34,6 @@ class DubiousLoyalties extends DrawCard {
 }
 
 DubiousLoyalties.code = '26568';
-DubiousLoyalties.version = '1.1.0';
+DubiousLoyalties.version = '1.1.1';
 
 export default DubiousLoyalties;

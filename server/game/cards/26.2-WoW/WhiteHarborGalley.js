@@ -4,7 +4,10 @@ import GameActions from '../../GameActions/index.js';
 class WhiteHarborGalley extends DrawCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
-            condition: () => this.game.isDuringChallenge(),
+            condition: () =>
+                this.game.isDuringChallenge({
+                    or: [{ attackingPlayer: this.controller }, { defendingPlayer: this.controller }]
+                }),
             match: (card) => card.isParticipating(),
             targetController: 'any',
             effect: ability.effects.modifyStrength(1)
@@ -30,7 +33,6 @@ class WhiteHarborGalley extends DrawCard {
     }
 }
 
-WhiteHarborGalley.code = '26570';
-WhiteHarborGalley.version = '1.1.1';
+WhiteHarborGalley.code = '26032';
 
 export default WhiteHarborGalley;

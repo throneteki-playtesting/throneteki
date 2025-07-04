@@ -15,7 +15,7 @@ class GhostHillElite extends DrawCard {
                 }
             },
             message:
-                '{player} uses {source} to have it steal a challenge icon from {target} until the end of the phase',
+                '{player} uses {source} to have {target} lose a challenge icon of their choice and gain that icon until the end of the phase',
             handler: (context) => {
                 this.target = context.target;
                 this.game.promptWithMenu(context.player, this, {
@@ -60,7 +60,6 @@ class GhostHillElite extends DrawCard {
     }
 }
 
-GhostHillElite.code = '26540';
-GhostHillElite.version = '1.0.1';
+GhostHillElite.code = '26027';
 
 export default GhostHillElite;

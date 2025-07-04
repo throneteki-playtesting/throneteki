@@ -20,7 +20,6 @@ class Biter extends DrawCard {
     }
 }
 
-Biter.code = '26598';
-Biter.version = '1.0.0';
+Biter.code = '26037';
 
 export default Biter;

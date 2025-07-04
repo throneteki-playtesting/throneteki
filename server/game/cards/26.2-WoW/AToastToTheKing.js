@@ -19,18 +19,15 @@ class AToastToTheKing extends DrawCard {
             chooseOpponent: (opponent) => this.getClaimableChallengeTypes(opponent).length > 0,
             handler: (context) => {
                 this.chosenOpponent = context.opponent;
-                const buttons = ChallengeTypes.asButtons((type) => ({
-                    method: 'satisfyClaim',
-                    disabled: () =>
-                        !this.getClaimableChallengeTypes(this.chosenOpponent).includes(type)
-                }));
-                buttons.push({ text: 'Done', method: 'cancel' });
-
-                // TODO: This should be technically done prior to handler (cancel should see challenge type choice)
+                // TODO: Add "chooseChallengeIcon" as a pre-handler choice, as this should be known prior to cancel windows
                 this.game.promptWithMenu(context.player, this, {
                     activePrompt: {
                         menuTitle: 'Select a challenge type',
-                        buttons: buttons
+                        buttons: ChallengeTypes.asButtons((type) => ({
+                            method: 'satisfyClaim',
+                            disabled: () =>
+                                !this.getClaimableChallengeTypes(this.chosenOpponent).includes(type)
+                        }))
                     },
                     source: this
                 });
@@ -39,23 +36,14 @@ class AToastToTheKing extends DrawCard {
     }
 
     getClaimableChallengeTypes(opponent) {
-        const types = [];
-        if (!this.controlsCharacterWithIcon(opponent, 'military')) {
-            types.push('military');
-        }
-        if (!this.controlsCharacterWithIcon(opponent, 'intrigue')) {
-            types.push('intrigue');
-        }
-        if (!this.controlsCharacterWithIcon(opponent, 'power')) {
-            types.push('power');
-        }
-        return types;
-    }
-
-    controlsCharacterWithIcon(player, icon) {
-        return player.anyCardsInPlay(
-            (card) => card.getType() === 'character' && card.hasIcon(icon)
-        );
+        return ChallengeTypes.all
+            .map(({ value }) => value)
+            .filter(
+                (icon) =>
+                    !opponent.anyCardsInPlay(
+                        (card) => card.getType() === 'character' && card.hasIcon(icon)
+                    )
+            );
     }
 
     satisfyClaim(player, claimType) {
@@ -85,7 +73,6 @@ class AToastToTheKing extends DrawCard {
     }
 }
 
-AToastToTheKing.code = '26547';
-AToastToTheKing.version = '1.1.0';
+AToastToTheKing.code = '26028';
 
 export default AToastToTheKing;

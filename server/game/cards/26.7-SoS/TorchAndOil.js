@@ -44,6 +44,6 @@ class TorchAndOil extends DrawCard {
 }
 
 TorchAndOil.code = '26556';
-TorchAndOil.version = '1.0.1';
+TorchAndOil.version = '1.0.2';
 
 export default TorchAndOil;

@@ -14,7 +14,6 @@ class RedKeepServant extends DrawCard {
     }
 }
 
-RedKeepServant.code = '26505';
-RedKeepServant.version = '1.0.0';
+RedKeepServant.code = '26021';
 
 export default RedKeepServant;

@@ -38,14 +38,14 @@ class AbilityChoicePrompt extends BaseStep {
                     card: choice.card,
                     mapCard: true,
                     method: 'chooseAbilityChoice',
-                    disabled: () => !choice.condition(this.context)
+                    disabled: () => !choice.gameAction.allow(this.context)
                 };
             }
             return {
                 text: choice.text,
                 arg: choice.text,
                 method: 'chooseAbilityChoice',
-                disabled: () => !choice.condition(this.context)
+                disabled: () => !choice.gameAction.allow(this.context)
             };
         });
 
@@ -64,7 +64,7 @@ class AbilityChoicePrompt extends BaseStep {
         let choice = this.choices.find(
             (choice) => choiceArg === choice.card || choiceArg === choice.text
         );
-        if (choice) {
+        if (choice && choice.gameAction.allow(this.context)) {
             this.context.selectedChoice = choice;
             choice.message.output(this.game, { ...this.context, gameAction: choice.gameAction });
             this.gameActionResolver(choice.gameAction, this.context);

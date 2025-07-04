@@ -29,7 +29,6 @@ class TheKingsJustice extends DrawCard {
     }
 }
 
-TheKingsJustice.code = '26507';
-TheKingsJustice.version = '1.0.1';
+TheKingsJustice.code = '26022';
 
 export default TheKingsJustice;

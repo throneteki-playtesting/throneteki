@@ -1,6 +1,6 @@
 import DrawCard from '../../drawcard.js';
 
-class HornHillElite extends DrawCard {
+class HornHillVanguard extends DrawCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
             condition: () => this.isAttacking(),
@@ -16,7 +16,6 @@ class HornHillElite extends DrawCard {
     }
 }
 
-HornHillElite.code = '26588';
-HornHillElite.version = '1.0.1';
+HornHillVanguard.code = '26035';
 
-export default HornHillElite;
+export default HornHillVanguard;
