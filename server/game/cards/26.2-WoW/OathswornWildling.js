@@ -1,7 +1,7 @@
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
-class ConvertBeyondTheWall extends DrawCard {
+class OathswornWildling extends DrawCard {
     constructor(owner, cardData) {
         super(owner, cardData);
 
@@ -45,7 +45,6 @@ class ConvertBeyondTheWall extends DrawCard {
     }
 }
 
-ConvertBeyondTheWall.code = '26554';
-ConvertBeyondTheWall.version = '1.0.0';
+OathswornWildling.code = '26029';
 
-export default ConvertBeyondTheWall;
+export default OathswornWildling;

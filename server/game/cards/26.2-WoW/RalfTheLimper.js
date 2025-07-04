@@ -25,7 +25,6 @@ class RalfTheLimper extends DrawCard {
     }
 }
 
-RalfTheLimper.code = '26513';
-RalfTheLimper.version = '1.0.3';
+RalfTheLimper.code = '26023';
 
 export default RalfTheLimper;

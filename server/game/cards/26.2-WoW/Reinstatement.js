@@ -28,7 +28,6 @@ class Reinstatement extends DrawCard {
     }
 }
 
-Reinstatement.code = '26609';
-Reinstatement.version = '1.0.0';
+Reinstatement.code = '26038';
 
 export default Reinstatement;

@@ -9,14 +9,13 @@ class JoffreysCrossbow extends DrawCard {
         this.persistentEffect({
             condition: () =>
                 this.game.isDuringChallenge({ challengeType: 'military' }) &&
-                this.parent.isParticipating(),
+                this.parent.isAttacking(),
             match: (card) => card.getType() === 'character' && card.isUnique(),
             effect: ability.effects.mustChooseAsClaim()
         });
     }
 }
 
-JoffreysCrossbow.code = '26531';
-JoffreysCrossbow.version = '1.0.0';
+JoffreysCrossbow.code = '26026';
 
 export default JoffreysCrossbow;

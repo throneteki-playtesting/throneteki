@@ -16,7 +16,7 @@ import PowerAsGoldSource from './PowerAsGoldSource.js';
 
 function cannotEffect(type) {
     return function (predicate) {
-        let restriction = new CannotRestriction(type, predicate);
+        const restriction = new CannotRestriction(type, predicate);
         return {
             apply: function (card) {
                 card.addAbilityRestriction(restriction);
@@ -95,16 +95,15 @@ function dynamicCardModifier(propName) {
             apply: function (card, context) {
                 context[propName] = context[propName] || {};
                 context[propName][card.uuid] = calculate(card, context) || 0;
-                card[propName].modifier += context[propName][card.uuid];
+                card[propName].addModifier(context.effect, context[propName][card.uuid]);
             },
             reapply: function (card, context) {
-                const currentValue = context[propName][card.uuid];
                 const newValue = calculate(card, context) || 0;
                 context[propName][card.uuid] = newValue;
-                card[propName].modifier += newValue - currentValue;
+                card[propName].changeModifier(context.effect, newValue);
             },
             unapply: function (card, context) {
-                card[propName].modifier -= context[propName][card.uuid];
+                card[propName].removeModifier(context.effect);
                 delete context[propName][card.uuid];
             },
             isStateDependent
@@ -121,16 +120,16 @@ function setCardModifier(propName) {
             apply: function (card, context) {
                 context[propName] = context[propName] || {};
                 context[propName][card.uuid] = calculate(card, context) || 0;
-                card[propName].setValue = context[propName][card.uuid];
+                card[propName].addSetValue(context.effect, context[propName][card.uuid]);
             },
             reapply: function (card, context) {
                 const newValue = calculate(card, context) || 0;
                 context[propName][card.uuid] = newValue;
-                card[propName].setValue = newValue;
+                card[propName].addSetValue(context.effect, newValue);
             },
             unapply: function (card, context) {
-                card[propName].setValue = context[propName][card.uuid];
                 delete context[propName][card.uuid];
+                card[propName].removeSetValue(context.effect);
             },
             isStateDependent
         };
@@ -271,11 +270,11 @@ const Effects = {
     modifyStrength: function (value) {
         return {
             gameAction: value < 0 ? 'decreaseStrength' : 'increaseStrength',
-            apply: function (card) {
-                card.modifyStrength(value, true);
+            apply: function (card, context) {
+                card.addStrengthModifier(context.effect, value, true);
             },
-            unapply: function (card) {
-                card.modifyStrength(-value, false);
+            unapply: function (card, context) {
+                card.removeStrengthModifier(context.effect, false);
             },
             order: value >= 0 ? 0 : 1000
         };
@@ -286,21 +285,21 @@ const Effects = {
                 card.getType() === 'character' && card.getStrength() > value
                     ? 'decreaseStrength'
                     : 'increaseStrength',
-            apply: function (card) {
-                card.strengthSet = value;
+            apply: function (card, context) {
+                card.setStrength(context.effect, value);
             },
-            unapply: function (card) {
-                card.strengthSet = undefined;
+            unapply: function (card, context) {
+                card.removeSetStrengthEffect(context.effect);
             }
         };
     },
     modifyStrengthMultiplier: function (value) {
         return {
-            apply: function (card) {
-                card.modifyStrengthMultiplier(value, true);
+            apply: function (card, context) {
+                card.modifyStrengthMultiplier(context.effect, value, true);
             },
-            unapply: function (card) {
-                card.modifyStrengthMultiplier(1.0 / value, false);
+            unapply: function (card, context) {
+                card.removeStrengthMultiplier(context.effect, false);
             }
         };
     },
@@ -364,18 +363,15 @@ const Effects = {
                 context.dynamicStrength = context.dynamicStrength || {};
                 context.dynamicStrength[card.uuid] = calculate(card, context) || 0;
                 let value = context.dynamicStrength[card.uuid];
-                card.modifyStrength(value, true);
+                card.addStrengthModifier(context.effect, value, true);
             },
             reapply: function (card, context) {
-                let currentStrength = context.dynamicStrength[card.uuid];
                 let newStrength = calculate(card, context) || 0;
                 context.dynamicStrength[card.uuid] = newStrength;
-                let value = newStrength - currentStrength;
-                card.modifyStrength(value, true);
+                card.changeStrengthModifier(context.effect, newStrength, true);
             },
             unapply: function (card, context) {
-                let value = context.dynamicStrength[card.uuid];
-                card.modifyStrength(-value, false);
+                card.removeStrengthModifier(context.effect, false);
                 delete context.dynamicStrength[card.uuid];
             },
             isStateDependent: true
@@ -569,7 +565,7 @@ const Effects = {
     losesAllFactions: losesAspectEffect('factions'),
     losesAllKeywords: losesAspectEffect('keywords'),
     losesAllTraits: losesAspectEffect('traits'),
-    losesAllImmunities: losesAspectEffect('immunities'),
+    losesAllImmunities: losesAspectEffect('immunity'),
     loseFaction: function (faction) {
         return losesAspectEffect(`factions.${faction.toLowerCase()}`)();
     },
@@ -953,13 +949,13 @@ const Effects = {
     immuneTo: function (cardCondition) {
         return {
             apply: function (card, context) {
-                let restriction = new ImmunityRestriction(cardCondition, context.source);
+                const restriction = new ImmunityRestriction(cardCondition, context.source);
                 context.immuneTo = context.immuneTo || {};
                 context.immuneTo[card.uuid] = restriction;
                 card.addAbilityRestriction(restriction);
             },
             unapply: function (card, context) {
-                let restriction = context.immuneTo[card.uuid];
+                const restriction = context.immuneTo[card.uuid];
                 card.removeAbilityRestriction(restriction);
                 delete context.immuneTo[card.uuid];
             }

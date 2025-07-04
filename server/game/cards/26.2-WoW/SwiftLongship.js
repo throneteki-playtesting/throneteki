@@ -29,7 +29,6 @@ class SwiftLongship extends DrawCard {
     }
 }
 
-SwiftLongship.code = '26522';
-SwiftLongship.version = '1.1.1';
+SwiftLongship.code = '26024';
 
 export default SwiftLongship;

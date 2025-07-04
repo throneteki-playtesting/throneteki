@@ -38,7 +38,7 @@ class BeneathThePetals extends DrawCard {
             when: {
                 onCardRevealed: (event) => event.card == this && event.card.location === 'draw deck'
             },
-            message: '{player} plays {source} to give {target} +3 STR and stealth',
+            message: '{player} places {source} in shadows and gains 1 gold',
             gameAction: GameActions.simultaneously([
                 GameActions.placeCard({ card: this, location: 'shadows' }),
                 GameActions.gainGold((context) => ({ player: context.player, amount: 1 }))
@@ -47,7 +47,6 @@ class BeneathThePetals extends DrawCard {
     }
 }
 
-BeneathThePetals.code = '26595';
-BeneathThePetals.version = '1.1.0';
+BeneathThePetals.code = '26036';
 
 export default BeneathThePetals;

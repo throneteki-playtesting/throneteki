@@ -9,7 +9,8 @@ class QueenOfMeereen extends DrawCard {
         this.action({
             title: 'Discard to reduce',
             cost: ability.costs.kneelSelf(),
-            message: '{player} kneels {source} to discard any number of cards from their hand',
+            message: '{player} kneels {costs.kneel} to discard 1 or more cards from their hand',
+            condition: (context) => context.player.hand.length > 0,
             handler: (context) => {
                 this.game.promptForSelect(context.player, {
                     type: 'select',
@@ -29,7 +30,7 @@ class QueenOfMeereen extends DrawCard {
                         }));
                         this.game.addMessage(
                             '{0} discards {1} to reduce the cost of the next card they marshal, ambush or bring out of shadows this phase by {2}',
-                            context.player,
+                            player,
                             cards,
                             reduction
                         );
@@ -41,7 +42,6 @@ class QueenOfMeereen extends DrawCard {
     }
 }
 
-QueenOfMeereen.code = '26579';
-QueenOfMeereen.version = '1.0.1';
+QueenOfMeereen.code = '26034';
 
 export default QueenOfMeereen;

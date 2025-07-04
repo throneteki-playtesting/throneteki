@@ -2,12 +2,11 @@ import AgendaCard from '../../agendacard.js';
 import GameActions from '../../GameActions/index.js';
 
 class TheSmallCouncil extends AgendaCard {
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.reaction({
             when: {
                 onDominanceDetermined: (event) => this.controller === event.winner
             },
-            cost: ability.costs.kneelFactionCard(),
             target: {
                 cardCondition: {
                     location: 'play area',
@@ -18,8 +17,7 @@ class TheSmallCouncil extends AgendaCard {
                     condition: (card) => GameActions.gainPower({ card, amount: 1 }).allow()
                 }
             },
-            message:
-                '{player} uses {source} and kneels their faction card to have {target} gain 1 power',
+            message: '{player} uses {source} to have {target} gain 1 power',
             handler: (context) => {
                 this.game.resolveGameAction(
                     GameActions.gainPower((context) => ({
@@ -41,7 +39,6 @@ class TheSmallCouncil extends AgendaCard {
     }
 }
 
-TheSmallCouncil.code = '26619';
-TheSmallCouncil.version = '1.0.1';
+TheSmallCouncil.code = '26040';
 
 export default TheSmallCouncil;
