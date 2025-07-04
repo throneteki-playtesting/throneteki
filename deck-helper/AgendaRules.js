@@ -326,12 +326,8 @@ const agendaRules = {
             }
         ]
     },
-    // Armed to the Teeth
-    26618: {
-        cannotInclude: (card) => card.type === 'attachment' && !hasTrait(card, 'Weapon')
-    },
     // The Small Council
-    26619: {
+    26040: {
         mayInclude: (card) =>
             card.type === 'character' && hasTrait(card, 'Small Council') && !card.loyal,
         rules: [
@@ -343,6 +339,10 @@ const agendaRules = {
                     ) >= 7
             }
         ]
+    },
+    // Armed to the Teeth
+    26618: {
+        cannotInclude: (card) => card.type === 'attachment' && !hasTrait(card, 'Weapon')
     },
     // Trading with Braavos
     26620: {
