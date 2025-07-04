@@ -2,7 +2,7 @@ describe('Wardens of the East', function () {
     integration(function () {
         beforeEach(function () {
             const deck1 = this.buildDeck('baratheon', [
-                'Wardens of the East',
+                'Wardens of the East (AHaH)',
                 'A Very Large Shadow',
                 'A Very Large Shadow',
                 'A Very Large Shadow',

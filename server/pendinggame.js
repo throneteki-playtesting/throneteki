@@ -28,11 +28,11 @@ class PendingGame {
         this.chessClockTimeLimit = details.chessClockTimeLimit;
         this.chessClockDelay = details.chessClockDelay;
         this.started = false;
-        if (this.gameFormat === 'joust') {
-            this.maxPlayers = 2;
-        } else if (this.gameFormat === 'melee') {
+        if (this.gameFormat === 'melee') {
             this.maxPlayers = details.maxPlayers || 4;
             this.randomSeats = details.randomSeats;
+        } else {
+            this.maxPlayers = 2;
         }
     }
 

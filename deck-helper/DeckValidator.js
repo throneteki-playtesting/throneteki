@@ -53,7 +53,7 @@ class DeckValidator {
                 }
 
                 const unreleasedCards = [];
-                if (format !== 'draft') {
+                if (!['draft', 'tower of joy'].includes(format)) {
                     for (const card of deck.getUniqueCards()) {
                         if (!this.releasedPackCodes.has(card.packCode)) {
                             unreleasedCards.push(card.label);

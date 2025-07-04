@@ -3,7 +3,7 @@ describe('Anya Waynwood', function () {
         beforeEach(function () {
             const deck = this.buildDeck('greyjoy', [
                 'Time of Plenty',
-                'Anya Waynwood',
+                'Anya Waynwood (AHaH)',
                 'Lannisport Merchant',
                 'Lannisport Merchant',
                 'Lannisport Merchant',

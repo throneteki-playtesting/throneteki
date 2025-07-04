@@ -4,7 +4,7 @@ import {
     useGetFactionsQuery,
     useGetPacksQuery
 } from '../../redux/middleware/api';
-import { processThronesDbDeckText } from './DeckHelper';
+import { processThronesDbDeckText, processPlainDeckText } from './DeckHelper';
 import {
     Button,
     Link,
@@ -85,15 +85,16 @@ const ImportDeckModal = ({
                                 isLoading={isProcessing || isLoading}
                                 onPress={async () => {
                                     setIsProcessing(true);
-                                    const deck = processThronesDbDeckText(
-                                        factions,
-                                        packs,
-                                        cards,
-                                        deckText
-                                    );
+                                    const deck =
+                                        processThronesDbDeckText(
+                                            factions,
+                                            packs,
+                                            cards,
+                                            deckText
+                                        ) ?? processPlainDeckText(factions, packs, cards, deckText);
                                     if (!deck) {
                                         toast.error(
-                                            'There was an error processing your deck. Please ensure you have pasted a plain text export from ThronesDB.'
+                                            'There was an error processing your deck. Please ensure you have pasted a plain text export from ThronesDB or a plain card list.'
                                         );
                                     } else {
                                         await onProcessed(deck);
