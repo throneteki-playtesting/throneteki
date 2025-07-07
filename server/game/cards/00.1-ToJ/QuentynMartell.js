@@ -4,14 +4,17 @@ class QuentynMartell extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
             title: 'Put a character into play',
+            condition: () => {
+                this.strengthAtInitiation = this.getStrength();
+                return this.strengthAtInitiation > 0;
+            },
             target: {
+                cardType: 'character',
+                location: ['hand', 'discard pile'],
                 cardCondition: (card, context) =>
-                    (card.location === 'hand' || card.location === 'discard pile') &&
                     card.controller === context.player &&
-                    card.getType() === 'character' &&
-                    context.player.canPutIntoPlay(card) &&
-                    (card.getPrintedStrength() < this.getStrength() ||
-                        card.getPrintedStrength() < this.lastKnownStrength)
+                    card.getPrintedStrength() < this.strengthAtInitiation &&
+                    context.player.canPutIntoPlay(card)
             },
             max: ability.limit.perRound(1),
             cost: ability.costs.putSelfIntoShadows(),

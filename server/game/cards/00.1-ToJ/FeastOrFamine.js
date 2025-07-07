@@ -41,6 +41,6 @@ class FeastOrFamine extends PlotCard {
     }
 }
 
-FeastOrFamine.code = '00366';
+FeastOrFamine.code = '00367';
 
 export default FeastOrFamine;

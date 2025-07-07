@@ -22,6 +22,6 @@ class CityFair extends PlotCard {
     }
 }
 
-CityFair.code = '00368';
+CityFair.code = '00369';
 
 export default CityFair;

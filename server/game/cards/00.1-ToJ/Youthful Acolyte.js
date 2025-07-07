@@ -1,6 +1,6 @@
 import DrawCard from '../../drawcard.js';
 
-class DevoutAttendant extends DrawCard {
+class YouthfulAcolyte extends DrawCard {
     setupCardAbilities() {
         this.reaction({
             when: {
@@ -31,6 +31,6 @@ class DevoutAttendant extends DrawCard {
     }
 }
 
-DevoutAttendant.code = '00281';
+YouthfulAcolyte.code = '00281';
 
-export default DevoutAttendant;
+export default YouthfulAcolyte;

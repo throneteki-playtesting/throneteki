@@ -27,6 +27,6 @@ class MilkwaterCrossing extends DrawCard {
     }
 }
 
-MilkwaterCrossing.code = '00304';
+MilkwaterCrossing.code = '00305';
 
 export default MilkwaterCrossing;

@@ -12,6 +12,6 @@ class Sweetsleep extends DrawCard {
     }
 }
 
-Sweetsleep.code = '00305';
+Sweetsleep.code = '00306';
 
 export default Sweetsleep;

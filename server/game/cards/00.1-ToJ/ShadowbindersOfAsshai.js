@@ -88,6 +88,6 @@ class ShadowbindersOfAsshai extends AgendaCard {
     }
 }
 
-ShadowbindersOfAsshai.code = '00359';
+ShadowbindersOfAsshai.code = '00360';
 
 export default ShadowbindersOfAsshai;

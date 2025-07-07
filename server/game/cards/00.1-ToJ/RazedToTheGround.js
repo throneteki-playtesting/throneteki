@@ -10,6 +10,6 @@ class RazedToTheGround extends PlotCard {
     }
 }
 
-RazedToTheGround.code = '00370';
+RazedToTheGround.code = '00371';
 
 export default RazedToTheGround;

@@ -10,6 +10,6 @@ class StalwartShields extends DrawCard {
     }
 }
 
-StalwartShields.code = '00256';
+StalwartShields.code = '00257';
 
 export default StalwartShields;

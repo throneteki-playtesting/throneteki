@@ -5,7 +5,7 @@ class FreezingCold extends PlotCard {
         this.whenRevealed({
             handler: () => {
                 let kneelCharacters = this.game.filterCardsInPlay(
-                    (card) => card.getType() === 'character' && card.getPrintedCost() <= 2
+                    (card) => card.getType() === 'character' && card.getPrintedCost() <= 3
                 );
 
                 if (kneelCharacters.length > 0) {
@@ -13,7 +13,7 @@ class FreezingCold extends PlotCard {
                         card.controller.kneelCard(card);
                     }
                     this.game.addMessage(
-                        '{0} uses {1} to kneel each character with printed cost 2 or lower',
+                        '{0} uses {1} to kneel each character with printed cost 3 or lower',
                         this.controller
                     );
                 }
@@ -22,6 +22,6 @@ class FreezingCold extends PlotCard {
     }
 }
 
-FreezingCold.code = '00374';
+FreezingCold.code = '00375';
 
 export default FreezingCold;

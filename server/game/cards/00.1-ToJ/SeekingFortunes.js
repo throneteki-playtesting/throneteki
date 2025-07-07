@@ -73,6 +73,6 @@ class SeekingFortunes extends AgendaCard {
     }
 }
 
-SeekingFortunes.code = '00360';
+SeekingFortunes.code = '00361';
 
 export default SeekingFortunes;

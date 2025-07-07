@@ -85,6 +85,6 @@ class SealingThePact extends AgendaCard {
     }
 }
 
-SealingThePact.code = '00357';
+SealingThePact.code = '00358';
 
 export default SealingThePact;

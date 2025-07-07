@@ -35,6 +35,6 @@ class CruelBrigand extends DrawCard {
     }
 }
 
-CruelBrigand.code = '00165';
+CruelBrigand.code = '00164';
 
 export default CruelBrigand;

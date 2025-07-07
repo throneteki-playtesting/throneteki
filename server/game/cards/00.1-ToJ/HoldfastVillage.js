@@ -50,6 +50,6 @@ class HoldfastVillage extends DrawCard {
     }
 }
 
-HoldfastVillage.code = '00364';
+HoldfastVillage.code = '00365';
 
 export default HoldfastVillage;

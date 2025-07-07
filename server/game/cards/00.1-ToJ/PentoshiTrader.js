@@ -26,6 +26,6 @@ class PentoshiTrader extends DrawCard {
     }
 }
 
-PentoshiTrader.code = '00363';
+PentoshiTrader.code = '00364';
 
 export default PentoshiTrader;

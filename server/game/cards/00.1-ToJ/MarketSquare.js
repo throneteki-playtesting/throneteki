@@ -13,6 +13,6 @@ class MarketSquare extends DrawCard {
     }
 }
 
-MarketSquare.code = '00365';
+MarketSquare.code = '00366';
 
 export default MarketSquare;
