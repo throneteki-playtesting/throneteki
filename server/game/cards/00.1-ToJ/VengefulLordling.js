@@ -1,33 +1,21 @@
 import DrawCard from '../../drawcard.js';
+import GameActions from '../../GameActions/index.js';
 
 class VengefulLordling extends DrawCard {
     setupCardAbilities() {
         this.interrupt({
             when: {
                 afterChallenge: (event) =>
-                    this.isAttacking() && event.challenge.isMatch({ loser: this.controller })
+                    this.isParticipating() && event.challenge.isMatch({ loser: this.controller })
             },
-            target: {
-                cardCondition: (card) =>
-                    card.location === 'play area' && card.getType() === 'character'
-            },
-            handler: (context) => {
-                this.game.promptForIcon(this.controller, this, (icon) => {
-                    this.untilEndOfPhase((ability) => ({
-                        match: context.target,
-                        effect: ability.effects.removeIcon(icon)
-                    }));
-
-                    this.game.addMessage(
-                        '{0} uses {1} to remove {2} {3} icon from {4}',
-                        this.controller,
-                        this,
-                        icon === 'intrigue' ? 'an' : 'a',
-                        icon,
-                        context.target
-                    );
-                });
-            }
+            message:
+                '{player} uses {source} to reduce the cost of the next card they ambush or bring out of shadows this phase by 1',
+            gameAction: GameActions.genericHandler(() => {
+                this.untilEndOfPhase((ability) => ({
+                    targetController: 'current',
+                    effect: ability.effects.reduceNextAmbushedOrOutOfShadowsCardCost(1)
+                }));
+            })
         });
     }
 }

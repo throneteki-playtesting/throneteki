@@ -1,15 +1,15 @@
-describe("War Scorpion", function () {
+describe('War Scorpion', function () {
     integration(function () {
         beforeEach(function () {
             const arrynDeck = this.buildDeck('Stark', [
                 'A Noble Cause',
-                'Knights of the Vale',
+                'Knights of the Vale (AHaH)',
                 'The Eyrie (CoW)'
             ]);
             const martellDeck = this.buildDeck('Martell', [
                 'A Noble Cause',
                 'Scorpion Knight',
-                'War Scorpion'
+                'War Scorpion (TSoW)'
             ]);
 
             this.player1.selectDeck(arrynDeck);
@@ -18,11 +18,11 @@ describe("War Scorpion", function () {
             this.startGame();
             this.keepStartingHands();
 
-            this.army = this.player1.findCardByName('Knights of the Vale', 'hand');
+            this.army = this.player1.findCardByName('Knights of the Vale (AHaH)', 'hand');
             this.eyrie = this.player1.findCardByName('The Eyrie (CoW)', 'hand');
 
             this.martellChar = this.player2.findCardByName('Scorpion Knight', 'hand');
-            this.scorpion = this.player2.findCardByName('War Scorpion', 'hand');
+            this.scorpion = this.player2.findCardByName('War Scorpion (TSoW)', 'hand');
 
             this.player1.clickCard(this.army);
             this.player2.clickCard(this.martellChar);
@@ -46,7 +46,7 @@ describe("War Scorpion", function () {
             this.player1.clickPrompt('Done');
             expect(this.army.inChallenge).toBe(true);
             this.player1.clickPrompt('Done');
-            this.player2.clickMenu('War Scorpion', 'Remove attacker from challenge');
+            this.player2.clickMenu('War Scorpion (TSoW)', 'Remove attacker from challenge');
             this.player2.clickCard(this.army);
             expect(this.player2).toHaveDisabledPromptButton('Kill');
         });

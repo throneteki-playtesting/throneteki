@@ -5,7 +5,7 @@ describe('Shagwell', function () {
                 "A Mummer's Farce",
                 'Late Summer Feast',
                 'Shagwell (HMW)',
-                'Jinglebell',
+                'Jinglebell (HMW)',
                 'Maester Aemon (Core)',
                 'Veteran Builder',
                 'Asha Greyjoy (KotI)',
@@ -19,7 +19,7 @@ describe('Shagwell', function () {
             this.keepStartingHands();
 
             this.shagwell = this.player1.findCardByName('Shagwell');
-            this.jinglebell = this.player1.findCardByName('Jinglebell');
+            this.jinglebell = this.player1.findCardByName('Jinglebell (HMW)');
             this.patchface = this.player1.findCardByName('Patchface');
             this.noAttach = this.player1.findCardByName('Maester Aemon');
             this.noAttachExcept = this.player1.findCardByName('Veteran Builder');

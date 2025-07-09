@@ -4,7 +4,7 @@ describe('A Mummer´s Farce', function () {
             const deck1 = this.buildDeck('tyrell', [
                 "A Mummer's Farce",
                 'Late Summer Feast',
-                'Jinglebell',
+                'Jinglebell (HMW)',
                 'Green-Apple Knight',
                 'Green-Apple Knight',
                 'Warhammer',
@@ -15,7 +15,7 @@ describe('A Mummer´s Farce', function () {
             this.startGame();
             this.keepStartingHands();
 
-            this.jinglebell = this.player1.findCardByName('Jinglebell');
+            this.jinglebell = this.player1.findCardByName('Jinglebell (HMW)');
             [this.knight1, this.knight2] = this.player1.filterCardsByName(
                 'Green-Apple Knight',
                 'hand'

@@ -1,7 +1,7 @@
 import AgendaCard from '../../agendacard.js';
 import GameActions from '../../GameActions/index.js';
 
-class ShadowbindersOfAsshai extends AgendaCard {
+class PassBeneathTheShadow extends AgendaCard {
     constructor(owner, cardData) {
         super(owner, cardData);
 
@@ -16,7 +16,7 @@ class ShadowbindersOfAsshai extends AgendaCard {
         }
     }
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.reaction({
             when: {
                 onCardOutOfShadows: (event) => event.card.controller === this.controller
@@ -25,17 +25,16 @@ class ShadowbindersOfAsshai extends AgendaCard {
                 'Gain 1 gold': {
                     condition: () => this.controller.canGainGold() && !this.hasGainedGoldThisRound,
                     gameAction: GameActions.genericHandler(() => {
-                        this.game.addMessage(
-                            '{0} uses {1} to gain 1 gold',
-                            this.controller,
-                            this
-                        );
+                        this.game.addMessage('{0} uses {1} to gain 1 gold', this.controller, this);
                         this.game.addGold(this.controller, 1);
                         this.hasGainedGoldThisRound = true;
                     })
                 },
                 'Pay 1 gold to draw a card': {
-                    condition: () => this.controller.canDraw() && this.controller.gold >= 1 && !this.hasDrawnThisRound,
+                    condition: () =>
+                        this.controller.canDraw() &&
+                        this.controller.gold >= 1 &&
+                        !this.hasDrawnThisRound,
                     gameAction: GameActions.genericHandler(() => {
                         this.game.spendGold({ player: this.controller, amount: 1 });
                         this.controller.drawCardsToHand(1);
@@ -48,13 +47,15 @@ class ShadowbindersOfAsshai extends AgendaCard {
                     })
                 },
                 'Give character +2 STR': {
-                    condition: () => this.game.anyCardsInPlay((card) => card.getType() === 'character') &&
+                    condition: () =>
+                        this.game.anyCardsInPlay((card) => card.getType() === 'character') &&
                         !this.hasBuffedThisRound,
-                    gameAction: GameActions.genericHandler((context) => {
+                    gameAction: GameActions.genericHandler(() => {
                         this.game.promptForSelect(this.controller, {
                             activePromptTitle: 'Select a character',
                             source: this,
-                            cardCondition: (card) => card.location === 'play area' && card.getType() === 'character',
+                            cardCondition: (card) =>
+                                card.location === 'play area' && card.getType() === 'character',
                             onSelect: (player, card) => this.onCardSelected(player, card),
                             onCancel: (player) => this.cancelSelection(player)
                         });
@@ -88,6 +89,6 @@ class ShadowbindersOfAsshai extends AgendaCard {
     }
 }
 
-ShadowbindersOfAsshai.code = '00360';
+PassBeneathTheShadow.code = '00360';
 
-export default ShadowbindersOfAsshai;
+export default PassBeneathTheShadow;

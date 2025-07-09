@@ -213,7 +213,7 @@ describe('Winning and losing', function () {
                     this.startGame();
                     this.keepStartingHands();
 
-                    this.player1.clickCard('Jon Arryn', 'hand');
+                    this.player1.clickCard('Jon Arryn (AHaH)', 'hand');
                     this.completeSetup();
 
                     this.player1Object.faction.power = 14;

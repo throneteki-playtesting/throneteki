@@ -28,6 +28,6 @@ class Windblown extends DrawCard {
     }
 }
 
-Windblown.code = '00186';
+Windblown.code = '00188';
 
 export default Windblown;

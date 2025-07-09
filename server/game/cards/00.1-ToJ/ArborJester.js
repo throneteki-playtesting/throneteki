@@ -12,7 +12,7 @@ class ArborJester extends DrawCard {
                     card.location === 'play area' && card.getType() === 'character'
             },
             message:
-                '{player} uses {source} to choose {target} and reveal the top card of their deck',
+                '{player} uses {source} to choose {target} and reveal the top 2 cards of their deck',
             handler: (context) => {
                 this.game.resolveGameAction(
                     GameActions.revealTopCards((context) => ({
@@ -21,7 +21,30 @@ class ArborJester extends DrawCard {
                         whileRevealed: GameActions.genericHandler((context) => {
                             const numRevealed = context.revealed.length;
                             if (numRevealed > 0) {
-                                this.buffCharWithRevealedCards(context);
+                                this.game.promptForSelect(context.player, {
+                                    activePromptTitle: `Select a card`,
+                                    numCards: 1,
+                                    cardCondition: (card) => context.revealed.includes(card),
+                                    onSelect: (player, card) => {
+                                        this.placeOnBottom(player, card);
+                                        let otherCard = context.revealed.find((c) => c !== card);
+                                        let strBoost = otherCard
+                                            ? otherCard.translateXValue(otherCard.getPrintedCost())
+                                            : 0;
+                                        this.buffChar(context, strBoost);
+                                        return true;
+                                    },
+                                    onCancel: (player) => {
+                                        this.game.addAlert(
+                                            'danger',
+                                            '{0} does not select any cards for {1}',
+                                            player,
+                                            this
+                                        );
+                                        return true;
+                                    },
+                                    source: this
+                                });
                             } else {
                                 this.buffChar(context, 0);
                             }
@@ -30,28 +53,6 @@ class ArborJester extends DrawCard {
                     context
                 );
             }
-        });
-    }
-
-    buffCharWithRevealedCards(context) {
-        this.game.promptForSelect(context.player, {
-            activePromptTitle: `Select a card`,
-            numCards: 1,
-            cardCondition: (card) => context.revealed.includes(card),
-            onSelect: (player, card) => {
-                this.placeOnBottom(player, card);
-                let otherCard = context.revealed.find((c) => c !== card);
-                let strBoost = otherCard
-                    ? otherCard.translateXValue(otherCard.getPrintedCost())
-                    : 0;
-                this.buffChar(context, strBoost);
-                return true;
-            },
-            onCancel: (player) => {
-                this.game.addAlert('danger', '{0} does not select any cards for {1}', player, this);
-                return true;
-            },
-            source: this
         });
     }
 
