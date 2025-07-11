@@ -70,7 +70,7 @@ describe('Pass Beneath the Shadow', function () {
 
                     describe('and the player chooses to pay 1 gold to draw a card', function () {
                         beforeEach(function () {
-                            this.player1.dragCard(this.melisandre, 'deck');
+                            this.player1.dragCard(this.melisandre, 'draw deck');
                             this.goldBefore = this.player1Object.gold;
                             this.player1.clickPrompt(PROMPT_CARD);
                         });
