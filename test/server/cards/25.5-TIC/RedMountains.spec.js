@@ -6,7 +6,7 @@ describe('Red Mountains', function () {
                 'Arianne Martell (Core)',
                 'Obara Sand (SoD)',
                 'Edric Dayne (Core)',
-                'Red Mountains'
+                'Red Mountains (TIC)'
             ]);
             this.player1.selectDeck(deck);
             this.player2.selectDeck(deck);

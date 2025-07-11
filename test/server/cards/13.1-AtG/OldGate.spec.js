@@ -10,7 +10,7 @@ describe('Old Gate', function () {
                 'A Noble Cause',
                 'Old Gate',
                 'Bran Stark (Core)',
-                'Hot Pie'
+                'Hot Pie (FFH)'
             ]);
             this.player1.selectDeck(deck1);
             this.player2.selectDeck(deck2);
@@ -25,7 +25,7 @@ describe('Old Gate', function () {
 
             this.oldGate2 = this.player2.findCardByName('Old Gate');
             this.bran2 = this.player2.findCardByName('Bran Stark (Core)');
-            this.hotpie = this.player2.findCardByName('Hot Pie');
+            this.hotpie = this.player2.findCardByName('Hot Pie (FFH)');
 
             this.player1.clickCard(this.oldGate1);
             this.player1.clickCard(this.bran1);

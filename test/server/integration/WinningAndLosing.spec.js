@@ -205,7 +205,7 @@ describe('Winning and losing', function () {
                     const deck = this.buildDeck('stark', [
                         'Valar Morghulis',
                         'A Noble Cause',
-                        { name: 'Jon Arryn', count: 60 }
+                        { name: 'Jon Arryn (AHaH)', count: 60 }
                     ]);
                     this.player1.selectDeck(deck);
                     this.player2.selectDeck(deck);
@@ -213,7 +213,7 @@ describe('Winning and losing', function () {
                     this.startGame();
                     this.keepStartingHands();
 
-                    this.player1.clickCard('Jon Arryn', 'hand');
+                    this.player1.clickCard('Jon Arryn (AHaH)', 'hand');
                     this.completeSetup();
 
                     this.player1Object.faction.power = 14;
