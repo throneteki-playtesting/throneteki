@@ -6,8 +6,8 @@ class SerGuilianQorgyle extends DrawCard {
         this.reaction({
             when: {
                 // TODO: Add checks that character can lose challenge icon(s). Maybe a new gameaction for prompting icons?
-                onDeclaredAsAttacker: () => true,
-                onDeclaredAsDefender: () => true
+                onDeclaredAsAttacker: (event) => event.card.controller !== this.controller,
+                onDeclaredAsDefender: (event) => event.card.controller !== this.controller
             },
             limit: ability.limit.perPhase(2),
             message: {
@@ -35,6 +35,6 @@ class SerGuilianQorgyle extends DrawCard {
 }
 
 SerGuilianQorgyle.code = '26539';
-SerGuilianQorgyle.version = '1.0.0';
+SerGuilianQorgyle.version = '1.0.1';
 
 export default SerGuilianQorgyle;

@@ -3,6 +3,9 @@ import GameActions from '../../GameActions/index.js';
 
 class MagisterIllyrio extends DrawCard {
     setupCardAbilities() {
+        this.plotModifiers({
+            gold: 1
+        });
         const numOfShadowCards = (context) =>
             context.game.allCards.reduce(
                 (count, card) => (card.location === 'shadows' ? count + 1 : count),
@@ -12,7 +15,7 @@ class MagisterIllyrio extends DrawCard {
 
         this.reaction({
             when: {
-                onIncomeCollected: (event) => event.player === this.controller
+                onPhaseStarted: (event) => event.phase === 'challenge'
             },
             message: {
                 format: '{player} uses {source} to gain {amountToGain} gold',
@@ -27,6 +30,6 @@ class MagisterIllyrio extends DrawCard {
 }
 
 MagisterIllyrio.code = '26573';
-MagisterIllyrio.version = '1.0.0';
+MagisterIllyrio.version = '1.0.1';
 
 export default MagisterIllyrio;
