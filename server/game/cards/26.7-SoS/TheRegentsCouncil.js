@@ -14,8 +14,9 @@ class TheRegentsCouncil extends DrawCard {
                     )
             },
             max: ability.limit.perChallenge(),
+            message: '{player} plays {source} to determine dominance',
             handler: () => {
-                this.game.queueStep(DetermineDominance(this.game, this));
+                this.game.queueStep(new DetermineDominance(this.game, this));
             }
         });
     }
