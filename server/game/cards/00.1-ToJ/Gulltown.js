@@ -12,6 +12,6 @@ class Gulltown extends DrawCard {
     }
 }
 
-Gulltown.code = '00303';
+Gulltown.code = '00304';
 
 export default Gulltown;

@@ -5,8 +5,7 @@ class DaenerysTargaryen extends DrawCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
             match: (card) =>
-                (card.name === 'Ser Barristan Selmy' || card.name === 'Arstan Whitebeard') &&
-                card.controller === this.controller,
+                card.name === 'Ser Barristan Selmy' && card.controller === this.controller,
             effect: ability.effects.addKeyword('intimidate')
         });
         this.reaction({

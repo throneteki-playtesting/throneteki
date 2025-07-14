@@ -5,7 +5,7 @@ class TommenBaratheon extends DrawCard {
         this.persistentEffect({
             condition: () => this.kneeled,
             match: this,
-            effect: ability.effects.modifyDominanceStrength(2)
+            effect: ability.effects.contributesToDominanceWhileKneeling()
         });
         this.persistentEffect({
             condition: () => this.getNumberOfCats() >= 1,
@@ -25,9 +25,7 @@ class TommenBaratheon extends DrawCard {
     }
 
     getNumberOfCats() {
-        return this.controller.getNumberOfCardsInPlay(
-            (card) => card.hasTrait('Cat')
-        );
+        return this.controller.getNumberOfCardsInPlay((card) => card.hasTrait('Cat'));
     }
 }
 

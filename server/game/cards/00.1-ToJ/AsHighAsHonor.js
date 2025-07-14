@@ -44,6 +44,6 @@ class AsHighAsHonor extends DrawCard {
     }
 }
 
-AsHighAsHonor.code = '00307';
+AsHighAsHonor.code = '00308';
 
 export default AsHighAsHonor;

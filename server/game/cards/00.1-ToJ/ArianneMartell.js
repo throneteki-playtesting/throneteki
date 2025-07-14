@@ -5,7 +5,7 @@ class ArianneMartell extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
             title: 'Remove and gain icon',
-            limit: ability.limit.perPhase(1),
+            max: ability.limit.perRound(1),
             target: {
                 cardCondition: (card) =>
                     card.location === 'play area' && card.getType() === 'character'
