@@ -22,7 +22,7 @@ class HoldfastVillage extends DrawCard {
         });
 
         this.action({
-            title: 'Sacrifice to draw 1 card',
+            title: 'Sacrifice to draw 1 card or gain 1 gold',
             cost: ability.costs.sacrificeSelf(),
             choices: {
                 'Gain 1 gold': (context) => {

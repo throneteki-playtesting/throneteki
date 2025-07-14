@@ -401,19 +401,19 @@ const agendaRules = {
     },
     // Tower of Joy Draft Agendas
     // Sealing the Pact
-    '00357': rulesForGenericBanner(1),
+    '00358': rulesForGenericBanner(1),
     // Unknown and Unkowable
-    '00358': rulesForGenericBanner(2),
+    '00359': rulesForGenericBanner(2),
     // Shadowbinders of Asshai
-    '00359': {
+    '00360': {
         mayInclude: (card) => hasKeyword(card, /Shadow \((\d+|X)\)/)
     },
     // Seeking Fortunes
-    '00360': {
+    '00361': {
         mayInclude: (card) => hasKeyword(card, /Bestow \((\d+|X)\)/)
     },
     // Join Forces
-    '00361': {
+    '00362': {
         mayInclude: () => true,
         rules: [
             {
@@ -446,7 +446,7 @@ const agendaRules = {
         ]
     },
     // Desperate Hope
-    '00362': {
+    '00363': {
         mayInclude: () => true // No restrictions
     }
 };
