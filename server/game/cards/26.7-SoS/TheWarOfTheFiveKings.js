@@ -4,18 +4,18 @@ class TheWarOfTheFiveKings extends PlotCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
             match: this,
-            // TODO: Properly implement X claim
-            effect: ability.effects.setClaim(
-                () =>
-                    this.game
-                        .getOpponents(this.controller)
-                        .filter((player) => !this.controller.isSupporter(player)).length
-            )
+            effect: ability.effects.modifyClaim(() => this.getNumberOfRivals().length)
         });
+    }
+
+    getNumberOfRivals() {
+        return this.game
+            .getOpponents(this.controller)
+            .map((player) => player.isRival(this.controller));
     }
 }
 
 TheWarOfTheFiveKings.code = '26613';
-TheWarOfTheFiveKings.version = '1.0.1';
+TheWarOfTheFiveKings.version = '1.0.2';
 
 export default TheWarOfTheFiveKings;

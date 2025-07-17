@@ -1,9 +1,9 @@
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
-class GuerrillaTactics extends DrawCard {
+class HiddenInShadow extends DrawCard {
     setupCardAbilities(ability) {
-        this.attachmentRestriction({ faction: 'martell', controller: 'current' });
+        this.attachmentRestriction({ controller: 'current' });
         this.action({
             title: 'Return attached to shadows',
             cost: ability.costs.sacrificeSelf(),
@@ -18,7 +18,7 @@ class GuerrillaTactics extends DrawCard {
     }
 }
 
-GuerrillaTactics.code = '26544';
-GuerrillaTactics.version = '1.0.0';
+HiddenInShadow.code = '26544';
+HiddenInShadow.version = '1.0.1';
 
-export default GuerrillaTactics;
+export default HiddenInShadow;

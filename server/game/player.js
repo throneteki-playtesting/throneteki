@@ -19,7 +19,7 @@ import GameActions from './GameActions/index.js';
 import RemoveFromGame from './GameActions/RemoveFromGame.js';
 import SacrificeCard from './GameActions/SacrificeCard.js';
 import ChessClock from './ChessClock.js';
-import { DrawPhaseCards, MarshalIntoShadowsCost, SetupGold } from './Constants/index.js';
+import { DrawPhaseCards, SetupGold } from './Constants/index.js';
 
 class Player extends Spectator {
     constructor(id, user, owner, game, seatNo) {
@@ -515,31 +515,6 @@ class Player extends Spectator {
         return reduction;
     }
 
-    getReducedCost(playingType, card) {
-        let baseCost = this.getBaseCost(playingType, card);
-        let reducedCost = baseCost - this.getCostReduction(playingType, card);
-        return Math.max(reducedCost, card.getMinCost());
-    }
-
-    getBaseCost(playingType, card) {
-        if (playingType === 'marshalIntoShadows') {
-            return MarshalIntoShadowsCost;
-        }
-
-        if (
-            playingType === 'outOfShadows' ||
-            (playingType === 'play' && card.location === 'shadows')
-        ) {
-            return card.getShadowCost();
-        }
-
-        if (playingType === 'ambush') {
-            return card.getAmbushCost();
-        }
-
-        return card.getCost();
-    }
-
     markUsedReducers(playingType, card) {
         var matchingReducers = this.costReducers.filter((reducer) =>
             reducer.canReduce(playingType, card)
@@ -766,7 +741,12 @@ class Player extends Spectator {
 
             if (needsShadowEvent) {
                 event.addChildEvent(
-                    new Event('onCardOutOfShadows', { player: this, card: card, type: 'card' })
+                    new Event('onCardOutOfShadows', {
+                        player: this,
+                        card: card,
+                        type: 'card',
+                        xValue: options.xValue
+                    })
                 );
             }
 
@@ -1429,6 +1409,10 @@ class Player extends Spectator {
             timerSettings: this.timerSettings,
             keywordSettings: this.keywordSettings,
             ...promptState,
+            isPlaying: this.isPlaying(),
+            left: this.left,
+            eliminated: !!this.eliminated,
+            disconnected: !!this.disconnectedAt,
             seatNo: this.seatNo,
             activePlot: this.activePlot ? this.activePlot.getSummary(activePlayer) : undefined,
             agendas: this.agendas
@@ -1449,10 +1433,8 @@ class Player extends Spectator {
                 shadows: this.getSummaryForCardList(this.shadows, activePlayer)
             },
             isActivePrompt,
-            disconnected: !!this.disconnectedAt,
             faction: this.faction.getSummary(activePlayer),
             firstPlayer: this.firstPlayer,
-            left: this.left,
             numDrawCards: this.drawDeck.length,
             numPlotCards: this.plotDeck.length,
             phase: this.game.currentPhase,
