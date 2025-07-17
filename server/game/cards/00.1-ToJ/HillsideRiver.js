@@ -15,14 +15,14 @@ class HillsideRiver extends DrawCard {
                         winner: this.controller,
                         challengeType: 'intrigue'
                     }) &&
-                    event.challenge.defendingPlayer.getHandCount() < this.controller.getHandCount()
+                    event.challenge.loser.getHandCount() < this.controller.getHandCount()
             },
             cost: ability.costs.sacrificeSelf(),
             message: '{player} sacrifices {source} to gain 1 power',
-            gameAction: GameActions.gainPower({
-                card: this.controller.faction,
+            gameAction: GameActions.gainPower((context) => ({
+                card: context.player.faction,
                 amount: 1
-            })
+            }))
         });
     }
 }
