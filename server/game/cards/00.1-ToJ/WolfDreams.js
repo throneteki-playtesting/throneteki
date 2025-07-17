@@ -67,6 +67,7 @@ class WolfDreams extends DrawCard {
     }
 
     // Explicitly override since it has printed type 'event'.
+    // TODO BD clarify if this is supposed to keep printed traits or should be changed to become a Direwolf attachment
     canAttach(player, card) {
         return card.getType() === 'character';
     }

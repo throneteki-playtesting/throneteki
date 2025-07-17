@@ -23,7 +23,7 @@ describe('AlysaneMormont', function () {
             this.rickon = this.player1.findCardByName('Rickon Stark');
             this.alysaneMormont2 = this.player2.findCardByName('Alysane Mormont');
             this.bran2 = this.player2.findCardByName('Bran Stark (Core)');
-            this.hotpie = this.player2.findCardByName('Hot Pie (FFH)');
+            this.hotpie = this.player2.findCardByName('Hot Pie');
 
             this.player1.clickCard(this.alysaneMormont1);
             this.player1.clickCard(this.bran1);

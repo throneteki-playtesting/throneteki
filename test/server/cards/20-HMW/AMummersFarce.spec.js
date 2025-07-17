@@ -15,7 +15,7 @@ describe('A Mummer´s Farce', function () {
             this.startGame();
             this.keepStartingHands();
 
-            this.jinglebell = this.player1.findCardByName('Jinglebell (HMW)');
+            this.jinglebell = this.player1.findCardByName('Jinglebell');
             [this.knight1, this.knight2] = this.player1.filterCardsByName(
                 'Green-Apple Knight',
                 'hand'

@@ -19,7 +19,7 @@ describe('Shagwell', function () {
             this.keepStartingHands();
 
             this.shagwell = this.player1.findCardByName('Shagwell');
-            this.jinglebell = this.player1.findCardByName('Jinglebell (HMW)');
+            this.jinglebell = this.player1.findCardByName('Jinglebell');
             this.patchface = this.player1.findCardByName('Patchface');
             this.noAttach = this.player1.findCardByName('Maester Aemon');
             this.noAttachExcept = this.player1.findCardByName('Veteran Builder');

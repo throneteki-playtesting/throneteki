@@ -9,7 +9,7 @@ describe('Uneasy Truce', function () {
             this.player2.selectDeck(deck2);
             this.startGame();
             this.keepStartingHands();
-            this.jon = this.player1.findCardByName('Jon Arryn (AHaH)', 'hand');
+            this.jon = this.player1.findCardByName('Jon Arryn', 'hand');
             this.player1.clickCard(this.jon);
             this.completeSetup();
             this.selectFirstPlayer(this.player1);

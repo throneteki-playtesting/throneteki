@@ -21,6 +21,7 @@ class JoinForces extends AgendaCard {
         // TODO BD this assumes that there is an out-of-faction card with a chosen trait in the deck
         // and will not pick up traits from in-faction and neutral cards in the unlikely case
         // that someone wants to play this with a mono-faction deck for the reduction effect
+        // to be thourough, we should check all cards in the deck if we don't find a trait at first
         let traitsInDeck = [];
         for (const card of this.game.allCards) {
             if (

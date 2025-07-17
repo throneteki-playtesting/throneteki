@@ -1,7 +1,10 @@
 import DrawCard from '../../drawcard.js';
+import ParticipationTracker from '../../EventTrackers/ParticipationTracker.js';
 
 class FlamingSword extends DrawCard {
     setupCardAbilities(ability) {
+        this.tracker = ParticipationTracker.forPhase(this.game);
+
         this.whileAttached({
             effect: ability.effects.addIcon('power')
         });
@@ -9,19 +12,14 @@ class FlamingSword extends DrawCard {
             effect: ability.effects.addKeyword('Intimidate')
         });
 
-        this.forcedReaction({
+        this.forcedInterrupt({
             when: {
-                onDeclaredAsAttacker: (event) => event.card === this.parent
+                onPhaseEnded: (event) =>
+                    event.phase === 'challenge' && this.tracker.hasAttacked(this.parent)
             },
             handler: () => {
-                this.game.once('onAtEndOfPhase', () => {
-                    this.game.addMessage(
-                        '{0} is forced to sacrifice {1} at the end of the phase',
-                        this.controller,
-                        this
-                    );
-                    this.controller.sacrificeCard(this);
-                });
+                this.game.addMessage('{0} is forced to sacrifice {1}', this.controller, this);
+                this.controller.sacrificeCard(this);
             }
         });
     }

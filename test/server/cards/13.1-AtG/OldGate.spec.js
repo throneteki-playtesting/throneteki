@@ -25,7 +25,7 @@ describe('Old Gate', function () {
 
             this.oldGate2 = this.player2.findCardByName('Old Gate');
             this.bran2 = this.player2.findCardByName('Bran Stark (Core)');
-            this.hotpie = this.player2.findCardByName('Hot Pie (FFH)');
+            this.hotpie = this.player2.findCardByName('Hot Pie');
 
             this.player1.clickCard(this.oldGate1);
             this.player1.clickCard(this.bran1);

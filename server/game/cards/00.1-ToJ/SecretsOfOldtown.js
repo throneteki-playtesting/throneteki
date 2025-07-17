@@ -18,8 +18,8 @@ class SecretsOfOldtown extends PlotCard {
                     activePrompt: {
                         menuTitle: 'Choose one',
                         buttons: [
-                            { text: 'Give icon', method: 'promptForIcon' },
-                            { text: 'Give trait', method: 'promptForTrait' }
+                            { text: 'Give trait', method: 'promptForTrait' },
+                            { text: 'Give icon', method: 'promptForIcon' }
                         ]
                     },
                     source: this
