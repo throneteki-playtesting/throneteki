@@ -14,7 +14,9 @@ class JsonCardSource {
     loadPackFiles(directory) {
         let packs = [];
         let cards = [];
-        let files = fs.readdirSync(path.join(directory, 'packs'));
+        let files = fs
+            .readdirSync(path.join(directory, 'packs'))
+            .filter((file) => file.endsWith('.json'));
         for (let file of files) {
             let pack = JSON.parse(fs.readFileSync(path.join(directory, 'packs', file)));
             for (let card of pack.cards) {

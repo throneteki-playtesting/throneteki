@@ -2,6 +2,8 @@ import DeckValidator from './DeckValidator.js';
 export { formatDeckAsFullCards } from './formatDeckAsFullCards.js';
 export { formatDeckAsShortCards } from './formatDeckAsShortCards.js';
 
+const draftSets = ['VDS', 'ToJ'];
+
 export const validateDeck = (deck, options) => {
     options = Object.assign({ includeExtendedStatus: true }, options);
 
@@ -18,4 +20,8 @@ export const validateDeck = (deck, options) => {
     }
 
     return result;
+};
+
+export const isDraftCard = (card) => {
+    return card && draftSets.includes(card.packCode);
 };
