@@ -15,9 +15,9 @@ class RestrictedList {
                   pods: this.rules.pods
               };
 
-        if (!formatRules) {
+        if (!formatRules && format === 'draft') {
             return {
-                name: format === 'tower of joy' ? 'Tower of Joy' : format,
+                name: 'Tower of Joy',
                 valid: true,
                 version: ''
             };

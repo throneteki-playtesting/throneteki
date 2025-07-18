@@ -53,7 +53,7 @@ class DeckValidator {
                 }
 
                 const unreleasedCards = [];
-                if (!['draft', 'tower of joy'].includes(format)) {
+                if (format !== 'draft') {
                     for (const card of deck.getUniqueCards()) {
                         if (!this.releasedPackCodes.has(card.packCode)) {
                             unreleasedCards.push(card.label);
@@ -141,10 +141,6 @@ class DeckValidator {
         };
 
         return Object.assign({}, ...validators, combined);
-    }
-
-    isDraftCard(card) {
-        return card && card.packCode === 'VDS';
     }
 }
 

@@ -69,7 +69,14 @@ const addCard = (list, card, number) => {
     }
 };
 
-export const processThronesDbDeckText = (factions, packs, cards, deckText) => {
+export const processDeckText = (factions, packs, cards, deckText) => {
+    return (
+        processThronesDbDeckText(factions, packs, cards, deckText) ??
+        processPlainDeckText(factions, packs, cards, deckText)
+    );
+};
+
+const processThronesDbDeckText = (factions, packs, cards, deckText) => {
     let split = deckText.split('\n');
     let deckName, faction, agenda, bannerCards;
 
@@ -161,7 +168,7 @@ export const processThronesDbDeckText = (factions, packs, cards, deckText) => {
     };
 };
 
-export const processPlainDeckText = (factions, packs, cards, deckText) => {
+const processPlainDeckText = (factions, packs, cards, deckText) => {
     let split = deckText.split('\n');
     let faction, agenda, bannerCards;
 
