@@ -5,7 +5,8 @@ export const ItemTypes = {
 
 export const GameFormats = [
     { name: 'joust', label: 'Joust', defaultMaxPlayers: 2 },
-    { name: 'melee', label: 'Melee', defaultMaxPlayers: 4, experimental: true }
+    { name: 'melee', label: 'Melee', defaultMaxPlayers: 4, experimental: true },
+    { name: 'draft', label: 'Draft', defaultMaxPlayers: 2, experimental: true }
 ];
 
 export const GameTypes = [

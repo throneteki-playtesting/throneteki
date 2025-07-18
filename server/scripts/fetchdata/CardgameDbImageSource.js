@@ -9,7 +9,9 @@ class CardgameDbImageSource {
     }
 
     loadPacks() {
-        let files = fs.readdirSync('throneteki-json-data/packs');
+        let files = fs
+            .readdirSync('throneteki-json-data/packs')
+            .filter((file) => file.endsWith('.json'));
         return files.map((file) =>
             JSON.parse(fs.readFileSync('throneteki-json-data/packs/' + file))
         );

@@ -32,6 +32,21 @@ export function cardSetLabel(cardSet) {
 }
 
 const parseCardLine = (packs, cards, line) => {
+    const { count, name } = parseCardCount(line);
+    if (!count || count === 0 || !name) {
+        return { count: 0 };
+    }
+
+    const card = lookupCardByName({
+        cardName: name,
+        cards: Object.values(cards),
+        packs: packs
+    });
+
+    return { count: count, card: card };
+};
+
+const parseCardCount = (line) => {
     const pattern = /^(\d+)x?\s+(.+)$/;
 
     const match = line.trim().match(pattern);
@@ -40,25 +55,28 @@ const parseCardLine = (packs, cards, line) => {
     }
 
     const count = parseInt(match[1]);
-    const card = lookupCardByName({
-        cardName: match[2],
-        cards: Object.values(cards),
-        packs: packs
-    });
-
-    return { count: count, card: card };
+    return { count: count, name: match[2] };
 };
 
 const addCard = (list, card, number) => {
-    const cardCode = parseInt(card.code);
-    if (list[cardCode]) {
-        list[cardCode].count += number;
+    let existingCard = list.find((item) => item.card === card);
+    if (existingCard) {
+        existingCard.count += number;
+        existingCard.count = Math.min(existingCard.count, card.deckLimit);
     } else {
-        list.push({ count: number, card: card });
+        const count = Math.min(number, card.deckLimit);
+        list.push({ count: count, card: card });
     }
 };
 
-export const processThronesDbDeckText = (factions, packs, cards, deckText) => {
+export const processDeckText = (factions, packs, cards, deckText) => {
+    return (
+        processThronesDbDeckText(factions, packs, cards, deckText) ??
+        processPlainDeckText(factions, packs, cards, deckText)
+    );
+};
+
+const processThronesDbDeckText = (factions, packs, cards, deckText) => {
     let split = deckText.split('\n');
     let deckName, faction, agenda, bannerCards;
 
@@ -142,6 +160,79 @@ export const processThronesDbDeckText = (factions, packs, cards, deckText) => {
 
     return {
         name: deckName,
+        faction: faction,
+        agenda: agenda,
+        bannerCards: bannerCards,
+        plotCards: plotCards,
+        drawCards: drawCards
+    };
+};
+
+const processPlainDeckText = (factions, packs, cards, deckText) => {
+    let split = deckText.split('\n');
+    let faction, agenda, bannerCards;
+
+    const plotCards = [];
+    const drawCards = [];
+    const agendaCards = new Map();
+
+    for (const line of split) {
+        if (line.trim() === '') {
+            break; // Stop processing on empty line (beginning of sideboard for draftmancer export)
+        }
+
+        let { count, name } = parseCardCount(line);
+        if (!count || count === 0 || !name) {
+            count = 1;
+            name = line.trim();
+        }
+        const newFaction = Object.values(factions).find(
+            (faction) => faction.name.localeCompare(name, 'en', { sensitivity: 'base' }) === 0
+        );
+        if (newFaction) {
+            if (faction) {
+                return null; // Faction already set, invalid deck
+            }
+            console.log(`Setting faction: ${newFaction.name}`);
+            faction = newFaction;
+        } else {
+            const card = lookupCardByName({
+                cardName: name,
+                cards: Object.values(cards),
+                packs: packs
+            });
+            if (card) {
+                switch (card.type) {
+                    case 'agenda':
+                        agendaCards.set(card.name, card);
+                        break;
+                    case 'plot':
+                        addCard(plotCards, card, count);
+                        break;
+                    default:
+                        addCard(drawCards, card, count);
+                }
+            }
+        }
+    }
+
+    if (!faction || !faction.value) {
+        return null;
+    }
+
+    const alliance = agendaCards.get('Alliance');
+    if (agendaCards.size === 1) {
+        agenda = agendaCards.values().next().value;
+    } else if (agendaCards.size > 1 && alliance) {
+        agenda = alliance;
+        agendaCards.delete(alliance.name);
+        bannerCards = Array.from(agendaCards.values());
+    } else if (agendaCards.size > 1) {
+        return null;
+    }
+
+    return {
+        name: 'Imported Deck',
         faction: faction,
         agenda: agenda,
         bannerCards: bannerCards,
