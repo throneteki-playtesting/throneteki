@@ -1,36 +1,30 @@
 import DrawCard from '../../drawcard.js';
-import GenericTracker from '../../EventTrackers/GenericTracker.js';
-import GameActions from '../../GameActions/index.js';
 
 class Melisandre extends DrawCard {
     setupCardAbilities(ability) {
-        this.tracker = GenericTracker.forRound(this.game, 'onCardOutOfShadows');
-
         this.reaction({
             when: {
                 afterChallenge: (event) =>
-                    event.challenge.winner === this.controller && this.isParticipating()
+                    event.challenge.winner === this.controller &&
+                    this.controller.anyCardsInPlay({ participating: true, shadow: true })
             },
             target: {
                 cardCondition: (card) =>
-                    card.location === 'play area' &&
-                    card.getType() === 'character' &&
-                    this.tracker.some((event) => event.card === card) &&
-                    GameActions.putIntoShadows({ card }).allow()
+                    card.location === 'play area' && card.getType() === 'character'
             },
-            limit: ability.limit.perPhase(1),
-            message: '{player} uses {source} to return {target} to shadows',
+            limit: ability.limit.perPhase(3),
+            message: '{player} uses {source} to give {target} -1 STR until the end of the phase',
             handler: (context) => {
-                this.game.resolveGameAction(
-                    GameActions.putIntoShadows((context) => ({ card: context.target })),
-                    context
-                );
+                this.untilEndOfPhase((ability) => ({
+                    match: context.target,
+                    effect: ability.effects.putInShadowsByStrength(-1)
+                }));
             }
         });
     }
 }
 
 Melisandre.code = '26501';
-Melisandre.version = '1.1.0';
+Melisandre.version = '1.2.0';
 
 export default Melisandre;
