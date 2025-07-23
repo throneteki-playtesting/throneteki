@@ -1,5 +1,4 @@
 import EventEmitter from 'events';
-import moment from 'moment';
 import AttachmentValidityCheck from './AttachmentValidityCheck.js';
 import ChatCommands from './chatcommands.js';
 import GameChat from './gamechat.js';
@@ -42,7 +41,8 @@ import PrizedKeywordListener from './PrizedKeywordListener.js';
 import GameOverPrompt from './gamesteps/GameOverPrompt.js';
 import shuffle from 'lodash.shuffle';
 import StartRound from './GameActions/StartRound.js';
-import GameOverHandler from './GameOverConditions/GameOverHandler.js';
+import GameOverHandler from './GameHandlers/GameOverHandler.js';
+import DisconnectHandler from './GameHandlers/DisconnectHandler.js';
 
 class Game extends EventEmitter {
     constructor(details, options = {}) {
@@ -86,7 +86,7 @@ class Game extends EventEmitter {
         this.clockPaused = false;
         this.savedGameId = details.savedGameId;
         this.gamePrivate = details.gamePrivate;
-        this.gameFormat = details.gameFormat;
+        this.gameFormat = details.gameFormat ?? 'joust';
         this.gameType = details.gameType;
         this.maxPlayers = details.maxPlayers;
         this.abilityContextStack = [];
@@ -112,6 +112,7 @@ class Game extends EventEmitter {
 
         this.allowMultipleWinners = options.allowMultipleWinners || false;
         this.gameOverHandler = new GameOverHandler(this);
+        this.disconnectHandler = new DisconnectHandler(this, 30);
 
         let players = Object.values(details.players || {});
 
@@ -566,6 +567,7 @@ class Game extends EventEmitter {
             winReason: reason,
             finishedAt
         };
+        this.finishedAt = this.results.finishedAt;
 
         this.router.gameOver(this);
         this.queueStep(new GameOverPrompt(this, winners));
@@ -857,12 +859,6 @@ class Game extends EventEmitter {
             this.allCards = this.titlePool.cards.concat(playerCards);
         } else {
             this.allCards = playerCards;
-        }
-    }
-
-    checkForTimeExpired() {
-        if (this.useGameTimeLimit && this.timeLimit.isTimeLimitReached && !this.finishedAt) {
-            this.determineWinnerAfterTimeLimitExpired();
         }
     }
 
@@ -1261,10 +1257,9 @@ class Game extends EventEmitter {
                 return true;
             }
 
-            // Player has disconnected for longer than 30 seconds
-            if (player.disconnectedAt) {
-                const difference = moment().diff(moment(player.disconnectedAt), 'seconds');
-                return difference > 30;
+            // Player has disconnected longer than wait time
+            if (this.isLongDisconnected(player)) {
+                return true;
             }
 
             // Player is still within the game
@@ -1283,12 +1278,27 @@ class Game extends EventEmitter {
             delete this.playersAndSpectators[playerName];
         } else {
             this.addAlert('info', '{0} has left the game', player);
-            // To ensure game over handler behaves as expected, we eliminate a player who leaves mid-game (without conceding)
-            if (!this.isGameOver && !player.eliminated) {
-                this.gameOverHandler.eliminate(player, 'left');
-            }
+            // Handle player leaving, in case game over needs to be triggered
+            this.gameOverHandler.playerLeft(player);
             player.left = true;
         }
+    }
+
+    /** Whether this player can leave the game without automatically conceding */
+    canSafelyLeave(player) {
+        return (
+            !player.isPlaying() ||
+            this.isGameOver ||
+            !this.disconnectHandler.mustWaitForReconnections(player)
+        );
+    }
+
+    isDisconnected(player) {
+        return this.disconnectHandler.isDisconnected(player);
+    }
+
+    isLongDisconnected(player) {
+        return this.disconnectHandler.isLongDisconnected(player);
     }
 
     disconnect(playerName) {
@@ -1301,12 +1311,7 @@ class Game extends EventEmitter {
         if (player.isSpectator()) {
             delete this.playersAndSpectators[playerName];
         } else {
-            this.addAlert(
-                'warning',
-                '{0} has disconnected.  The game will wait up to 30 seconds for them to reconnect',
-                player
-            );
-            player.disconnectedAt = new Date();
+            this.disconnectHandler.disconnected(player);
         }
 
         player.socket = undefined;
@@ -1322,13 +1327,7 @@ class Game extends EventEmitter {
         if (player.isSpectator() || !this.started) {
             delete this.playersAndSpectators[playerName];
         } else {
-            this.addAlert('danger', '{0} has failed to connect to the game', player);
-
-            player.disconnectedAt = new Date();
-
-            if (!this.finishedAt) {
-                this.finishedAt = new Date();
-            }
+            this.disconnectHandler.failedConnection(player);
         }
     }
 
@@ -1340,22 +1339,19 @@ class Game extends EventEmitter {
 
         player.id = socket.id;
         player.socket = socket;
-        player.disconnectedAt = undefined;
-
-        this.addAlert('info', '{0} has reconnected', player);
+        this.disconnectHandler.reconnected(player);
     }
 
     rematch() {
-        if (!this.finishedAt) {
-            this.finishedAt = new Date();
-            this.winReason = 'rematch';
+        if (!this.isGameOver) {
+            this.gameOverHandler.gameOver('rematch');
         }
 
         this.router.rematch(this);
     }
 
-    timeExpired() {
-        this.emit('onTimeExpired');
+    sendGameState() {
+        this.emit('sendGameState');
     }
 
     activatePersistentEffects() {
@@ -1385,7 +1381,7 @@ class Game extends EventEmitter {
     }
 
     getSaveState() {
-        var players = this.getPlayers().map((player) => {
+        var players = this.getAllPlayers().map((player) => {
             return {
                 name: player.name,
                 faction: player.faction.name || player.faction.value,
@@ -1429,7 +1425,8 @@ class Game extends EventEmitter {
                 showHand: this.showHand,
                 spectators: this.getSpectators().map((spectator) => spectator.getState()),
                 started: this.started,
-                winner: this.winner ? this.winner.name : undefined,
+                gameOver: this.isGameOver,
+                winner: this.results?.winner?.name,
                 gameFormat: this.gameFormat,
                 maxPlayers: this.maxPlayers,
                 cancelPromptUsed: this.cancelPromptUsed,
@@ -1496,6 +1493,7 @@ class Game extends EventEmitter {
             showHand: this.showHand,
             started: this.started,
             startedAt: this.startedAt,
+            finishedAt: this.finishedAt,
             spectators: this.getSpectators().map((spectator) => {
                 return {
                     id: spectator.id,

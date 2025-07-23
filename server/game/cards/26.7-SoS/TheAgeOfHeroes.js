@@ -2,29 +2,27 @@ import GameActions from '../../GameActions/index.js';
 import PlotCard from '../../plotcard.js';
 
 class TheAgeOfHeroes extends PlotCard {
-    setupCardAbilities() {
-        this.whenRevealed({
-            message: '{player} uses {source} to search their deck for an attachment',
+    setupCardAbilities(ability) {
+        this.reaction({
+            when: {
+                onPhaseStarted: (event) => event.phase === 'challenge'
+            },
+            cost: ability.costs.kneelFactionCard(),
+            message:
+                '{player} uses {source} and kneels their faction card to search their deck of a Legacy or Valyrian Steel attachment',
             gameAction: GameActions.search({
                 title: 'Select an attachment',
-                match: { type: 'attachment' },
+                match: { type: 'attachment', trait: ['Legacy', 'Valyrian Steel'] },
                 gameAction: GameActions.ifCondition({
                     condition: (context) =>
-                        (context.searchTarget.hasTrait('Legacy') ||
-                            context.searchTarget.hasTrait('Valyrian Steel')) &&
+                        context.searchTarget.hasTrait('Tapestry') &&
                         context.player.canPutIntoPlay(context.searchTarget),
-                    thenAction: GameActions.choose({
-                        title: 'Put card into play?',
+                    thenAction: {
                         message: '{player} {gameAction}',
-                        choices: {
-                            'Add to hand': GameActions.addToHand((context) => ({
-                                card: context.searchTarget
-                            })),
-                            'Put in play': GameActions.putIntoPlay((context) => ({
-                                card: context.searchTarget
-                            }))
-                        }
-                    }),
+                        gameAction: GameActions.putIntoPlay((context) => ({
+                            card: context.searchTarget
+                        }))
+                    },
                     elseAction: {
                         message: '{player} {gameAction}',
                         gameAction: GameActions.addToHand((context) => ({
@@ -38,6 +36,6 @@ class TheAgeOfHeroes extends PlotCard {
 }
 
 TheAgeOfHeroes.code = '26615';
-TheAgeOfHeroes.version = '1.0.1';
+TheAgeOfHeroes.version = '1.0.2';
 
 export default TheAgeOfHeroes;

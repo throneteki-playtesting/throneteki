@@ -3,6 +3,7 @@ import CardMatcher from './CardMatcher.js';
 import ReferenceCountedSetProperty from './PropertyTypes/ReferenceCountedSetProperty.js';
 import StandardPlayActions from './PlayActions/StandardActions.js';
 import CardStat from './cardStat.js';
+import GameActions from './GameActions/index.js';
 
 const Icons = ['military', 'intrigue', 'power'];
 
@@ -552,11 +553,27 @@ class DrawCard extends BaseCard {
             this.events.unregisterHandlerForEventName('onChallengeFinished');
         }
     }
+    // TODO: Implement this (and probably regular burn, modernly)
+    setIsShadowBurning(burning) {
+        this.isShadowBurning = burning;
+        //register/unregister onChallengeFinished event so when the challenge is finished
+        //the burn effect gets evaluated again
+        if (burning) {
+            this.events.register(['onChallengeFinished']);
+        } else {
+            this.events.unregisterHandlerForEventName('onChallengeFinished');
+        }
+    }
 
     //evaluate the burn effect again when the challenge is finished
     onChallengeFinished() {
         if (this.isBurning && this.getStrength() <= 0) {
             this.game.killCharacter(this, { allowSave: false, isBurn: true });
+        } else if (this.isShadowBurning && this.getStrength() <= 0) {
+            this.game.addMessage('{0} is 0 STR and placed in shadows', this);
+            this.game.resolveGameAction(
+                GameActions.putIntoShadows({ allowSave: false, card: this, isBurn: true })
+            );
         }
     }
 
