@@ -457,7 +457,7 @@ class BaseCard {
         return diff;
     }
 
-    get isLoyal() {
+    isLoyal() {
         if (this.loyaltyStack.length === 0) {
             return !!this.cardData.loyal;
         }
@@ -707,9 +707,6 @@ class BaseCard {
     }
 
     allowGameAction(actionType, context) {
-        if (this.losesAspects.contains('immunities')) {
-            return true;
-        }
         let currentAbilityContext = context || this.game.currentAbilityContext;
         return !this.abilityRestrictions.some(
             (restriction) =>
