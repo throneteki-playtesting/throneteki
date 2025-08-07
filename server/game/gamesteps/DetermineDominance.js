@@ -1,3 +1,4 @@
+import { Flags } from '../Constants/Flags.js';
 import GameActions from '../GameActions/index.js';
 import BaseStep from './basestep.js';
 import ChoosePlayerPrompt from './ChoosePlayerPrompt.js';
@@ -80,7 +81,10 @@ class DetermineDominance extends BaseStep {
                     }
 
                     const action = GameActions.gainPower({ card: event.winner.faction, amount: 1 });
-                    if (action.allow() && !event.winner.hasFlag('cannotGainDominancePower')) {
+                    if (
+                        action.allow() &&
+                        !event.winner.hasFlag(Flags.player.cannotGainDominancePower)
+                    ) {
                         if (event.chosenBy) {
                             this.game.addMessage(
                                 '{0} gains 1 power for their faction due to {1} choosing them to win dominance',
