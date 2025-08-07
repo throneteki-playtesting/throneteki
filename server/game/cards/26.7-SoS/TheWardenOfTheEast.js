@@ -9,10 +9,19 @@ class TheWardenOfTheEast extends DrawCard {
         });
         this.reaction({
             when: {
-                onCardRevealed: (event) =>
-                    event.card.getType() === 'character' &&
-                    event.card.controller !== this.controller &&
-                    ['hand', 'draw deck', 'shadows'].includes(event.card.location)
+                onCardRevealed: {
+                    aggregateBy: (event) => ({
+                        controller: event.card.controller,
+                        isCharacter: event.card.getType() === 'character',
+                        isValidLocation: ['hand', 'draw deck', 'shadows'].includes(
+                            event.card.location
+                        )
+                    }),
+                    condition: (aggregate) =>
+                        aggregate.controller !== this.controller &&
+                        aggregate.isCharacter &&
+                        aggregate.isValidLocation
+                }
             },
             limit: ability.limit.perRound(3),
             message: {
@@ -25,6 +34,6 @@ class TheWardenOfTheEast extends DrawCard {
 }
 
 TheWardenOfTheEast.code = '26604';
-TheWardenOfTheEast.version = '1.0.1';
+TheWardenOfTheEast.version = '1.0.2';
 
 export default TheWardenOfTheEast;

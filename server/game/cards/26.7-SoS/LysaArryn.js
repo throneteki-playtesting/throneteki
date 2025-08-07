@@ -24,6 +24,6 @@ class LysaArryn extends DrawCard {
 }
 
 LysaArryn.code = '26597';
-LysaArryn.version = '1.1.0';
+LysaArryn.version = '1.1.1';
 
 export default LysaArryn;

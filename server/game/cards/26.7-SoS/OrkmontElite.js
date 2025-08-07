@@ -10,19 +10,37 @@ class OrkmontElite extends DrawCard {
                     event.source === this &&
                     event.card.getType() === 'attachment'
             },
+            target: {
+                activePromptTitle: 'Select an attachment',
+                cardCondition: (card, context) => this.cardCondition(card, context)
+            },
             message: {
-                format: '{player} uses {source} to put {attachment} into play',
+                format: "{player} uses {source} to put {target} into play from their opponent's discard pile",
                 args: { attachment: (context) => context.event.card }
             },
-            gameAction: GameActions.putIntoPlay((context) => ({
-                player: context.player,
-                card: context.event.card
-            }))
+            handler: (context) => {
+                this.game.resolveGameAction(
+                    GameActions.putIntoPlay((context) => ({
+                        player: context.player,
+                        card: context.target
+                    })),
+                    context
+                );
+            }
         });
+    }
+
+    cardCondition(card, context) {
+        return (
+            card.controller !== context.player &&
+            card.getType() === 'attachment' &&
+            card.location === 'discard pile' &&
+            this.controller.canPutIntoPlay(card)
+        );
     }
 }
 
 OrkmontElite.code = '26516';
-OrkmontElite.version = '1.0.0';
+OrkmontElite.version = '1.0.1';
 
 export default OrkmontElite;
