@@ -555,6 +555,16 @@ const Effects = {
             }
         };
     },
+    setLoyalty: function (loyal) {
+        return {
+            apply: function (card, context) {
+                card.setLoyalty(loyal, context.source);
+            },
+            unapply: function (card, context) {
+                card.revokeLoyalty(context.source);
+            }
+        };
+    },
     burn: {
         apply: function (card) {
             card.setIsBurning(true);
