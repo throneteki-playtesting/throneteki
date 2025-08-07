@@ -2,6 +2,7 @@ import Phase from './phase.js';
 import SimpleStep from './simplestep.js';
 import DiscardToReservePrompt from './taxation/DiscardToReservePrompt.js';
 import ActionWindow from './actionwindow.js';
+import { Flags } from '../Constants/index.js';
 
 class TaxationPhase extends Phase {
     constructor(game) {
@@ -17,7 +18,7 @@ class TaxationPhase extends Phase {
     returnGold() {
         for (const player of this.game.getPlayersInFirstPlayerOrder()) {
             const amountToReturn = Math.max(0, player.gold - player.amountUnspentGoldToKeep);
-            if (!player.doesNotReturnUnspentGold) {
+            if (!player.hasFlag(Flags.player.doesNotReturnUnspentGold)) {
                 this.game.returnGoldToTreasury({ player: player, amount: amountToReturn });
             }
         }

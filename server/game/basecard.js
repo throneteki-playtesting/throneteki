@@ -12,7 +12,7 @@ import GameActions from './GameActions/index.js';
 import KeywordsProperty from './PropertyTypes/KeywordsProperty.js';
 import ReferenceCountedSetProperty from './PropertyTypes/ReferenceCountedSetProperty.js';
 import XValueDefinition from './XValueDefinition.js';
-import { Tokens } from './Constants/index.js';
+import { Flags, Tokens } from './Constants/index.js';
 
 const ValidKeywords = [
     'ambush',
@@ -54,24 +54,16 @@ class BaseCard {
         this.name = cardData.name;
         this.facedown = false;
         this.keywords = new KeywordsProperty();
+        this.flags = new ReferenceCountedSetProperty();
         this.traits = new ReferenceCountedSetProperty();
-        this.blanks = new ReferenceCountedSetProperty();
-        this.losesAspects = new ReferenceCountedSetProperty();
-        this.powerOptions = new ReferenceCountedSetProperty();
         this.controllerStack = [];
+        this.loyaltyStack = [];
         this.eventsForRegistration = [];
         this.keywordSources = [];
 
         this.power = 0;
         this.tokens = {};
         this.printedPlotModifiers = {};
-
-        this.canProvidePlotModifier = {
-            gold: true,
-            initiative: true,
-            reserve: true,
-            claim: true
-        };
 
         this.abilityRestrictions = [];
         this.events = new EventRegistrar(this.game, this);
@@ -134,7 +126,7 @@ class BaseCard {
             if (value) {
                 printed[statName] = value;
                 this.persistentEffect({
-                    condition: () => this.canProvidePlotModifier[statName],
+                    condition: () => !this.hasFlag(Flags.plotModifiers.cannotProvide(statName)),
                     match: (card) => card.controller.activePlot === card,
                     targetController: 'current',
                     effect: plotStatEffects[statName](value)
@@ -324,11 +316,11 @@ class BaseCard {
     createSnapshot() {
         let clone = new BaseCard(this.owner, this.cardData);
 
-        clone.blanks = this.blanks.clone();
         clone.controllerStack = [...this.controllerStack];
+        clone.loyaltyStack = [...this.loyaltyStack];
         clone.factions = this.factions.clone();
+        clone.flags = this.flags.clone();
         clone.location = this.location;
-        clone.losesAspects = this.losesAspects.clone();
         clone.keywords = this.keywords.clone();
         clone.parent = this.parent;
         clone.power = this.power;
@@ -379,18 +371,12 @@ class BaseCard {
         this.controllerStack = this.controllerStack.filter((control) => control.source !== source);
     }
 
-    loseAspect(aspect) {
-        this.losesAspects.add(aspect);
-        this.markAsDirty();
-    }
-
-    restoreAspect(aspect) {
-        this.losesAspects.remove(aspect);
-        this.markAsDirty();
+    hasFlag(flag) {
+        return this.flags.contains(flag);
     }
 
     hasKeyword(keyword) {
-        if (this.losesAspects.contains('keywords')) {
+        if (this.hasFlag(Flags.losesAspect.keywords)) {
             return false;
         }
 
@@ -418,7 +404,7 @@ class BaseCard {
     }
 
     hasTrait(trait) {
-        if (this.losesAspects.contains('traits')) {
+        if (this.hasFlag(Flags.losesAspect.traits)) {
             return false;
         }
 
@@ -428,19 +414,19 @@ class BaseCard {
     isFaction(faction) {
         let normalizedFaction = faction.toLowerCase();
 
-        if (this.losesAspects.contains('factions')) {
+        if (this.hasFlag(Flags.losesAspect.allFactions)) {
             return normalizedFaction === 'neutral';
         }
 
         if (normalizedFaction === 'neutral') {
             return ValidFactions.every(
-                (f) => !this.factions.contains(f) || this.losesAspects.contains(`factions.${f}`)
+                (f) => !this.factions.contains(f) || this.hasFlag(Flags.losesAspect.faction(f))
             );
         }
 
         return (
             this.factions.contains(normalizedFaction) &&
-            !this.losesAspects.contains(`factions.${normalizedFaction}`)
+            !this.hasFlag(Flags.losesAspect.faction(normalizedFaction))
         );
     }
 
@@ -472,7 +458,24 @@ class BaseCard {
     }
 
     isLoyal() {
-        return !!this.cardData.loyal;
+        if (this.loyaltyStack.length === 0) {
+            return !!this.cardData.loyal;
+        }
+
+        return this.loyaltyStack[this.loyaltyStack.length - 1];
+    }
+
+    setLoyalty(loyal, source) {
+        const tracking = { loyal, source };
+        if (!source) {
+            this.loyaltyStack = [tracking];
+        } else {
+            this.loyaltyStack.push(tracking);
+        }
+    }
+
+    revokeLoyalty(source) {
+        this.loyaltyStack = this.loyaltyStack.filter((loyalty) => loyalty.source !== source);
     }
 
     canBeSaved() {
@@ -638,11 +641,11 @@ class BaseCard {
     }
 
     isFullBlank() {
-        return this.blanks.contains('full');
+        return this.hasFlag(Flags.blanks.full);
     }
 
     isBlankExcludingTraits() {
-        return this.blanks.contains('excludingTraits');
+        return this.hasFlag(Flags.blanks.excludingTraits);
     }
 
     isAttacking() {
@@ -695,7 +698,7 @@ class BaseCard {
 
     setBlank(type) {
         let before = this.isAnyBlank();
-        this.blanks.add(type);
+        this.flags.add(type);
         let after = this.isAnyBlank();
 
         if (!before && after) {
@@ -704,14 +707,10 @@ class BaseCard {
     }
 
     allowGameAction(actionType, context) {
-        if (this.losesAspects.contains('immunities')) {
-            return true;
-        }
         let currentAbilityContext = context || this.game.currentAbilityContext;
         return !this.abilityRestrictions.some(
             (restriction) =>
-                !this.losesAspects.contains(restriction.name) &&
-                restriction.isMatch(actionType, currentAbilityContext)
+                restriction.isActive(this) && restriction.isMatch(actionType, currentAbilityContext)
         );
     }
 
@@ -740,7 +739,7 @@ class BaseCard {
     }
 
     getTraits() {
-        if (this.losesAspects.contains('traits')) {
+        if (this.hasFlag(Flags.losesAspect.traits)) {
             return [];
         }
 
@@ -774,7 +773,7 @@ class BaseCard {
 
     clearBlank(type) {
         let before = this.isAnyBlank();
-        this.blanks.remove(type);
+        this.flags.remove(type);
         let after = this.isAnyBlank();
 
         if (before && !after) {
