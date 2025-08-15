@@ -25,6 +25,6 @@ class WeirwoodGrove extends DrawCard {
     }
 }
 
-WeirwoodGrove.code = '00204';
+WeirwoodGrove.code = '00209';
 
 export default WeirwoodGrove;

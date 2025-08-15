@@ -9,6 +9,6 @@ class SerAndreyDalt extends DrawCard {
     }
 }
 
-SerAndreyDalt.code = '00178';
+SerAndreyDalt.code = '00182';
 
 export default SerAndreyDalt;

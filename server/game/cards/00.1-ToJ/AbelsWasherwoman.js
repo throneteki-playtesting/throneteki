@@ -48,6 +48,6 @@ class AbelsWasherwoman extends DrawCard {
     }
 }
 
-AbelsWasherwoman.code = '00209';
+AbelsWasherwoman.code = '00214';
 
 export default AbelsWasherwoman;

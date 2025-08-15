@@ -34,6 +34,6 @@ class NoSongSoSweet extends DrawCard {
     }
 }
 
-NoSongSoSweet.code = '00114';
+NoSongSoSweet.code = '00115';
 
 export default NoSongSoSweet;

@@ -47,6 +47,6 @@ class BeneathThePetals extends DrawCard {
     }
 }
 
-BeneathThePetals.code = '00284';
+BeneathThePetals.code = '00292';
 
 export default BeneathThePetals;

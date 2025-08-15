@@ -16,6 +16,6 @@ class WardensOfTheEast extends PlotCard {
     }
 }
 
-WardensOfTheEast.code = '00356';
+WardensOfTheEast.code = '00344';
 
 export default WardensOfTheEast;

@@ -21,6 +21,6 @@ class CastMeForth extends PlotCard {
     }
 }
 
-CastMeForth.code = '00326';
+CastMeForth.code = '00132';
 
 export default CastMeForth;

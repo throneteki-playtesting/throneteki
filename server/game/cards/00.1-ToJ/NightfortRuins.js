@@ -1,4 +1,5 @@
 import DrawCard from '../../drawcard.js';
+import { Tokens } from '../../Constants/index.js';
 
 class NightfortRuins extends DrawCard {
     setupCardAbilities(ability) {
@@ -13,21 +14,11 @@ class NightfortRuins extends DrawCard {
                     (card) => card.isParticipating() && card.getType() === 'character'
                 ) &&
                 !this.kneeled,
-            effect: ability.effects.contributeStrength(this, 1)
-        });
-
-        this.persistentEffect({
-            condition: () =>
-                this.game.isDuringChallenge({ challengeType: 'power' }) &&
-                this.controller.anyCardsInPlay(
-                    (card) => card.isParticipating() && card.getType() === 'character'
-                ) &&
-                this.kneeled,
-            effect: ability.effects.contributeStrength(this, 2)
+            effect: ability.effects.contributeStrength(this, this.tokens[Tokens.gold])
         });
     }
 }
 
-NightfortRuins.code = '00122';
+NightfortRuins.code = '00123';
 
 export default NightfortRuins;

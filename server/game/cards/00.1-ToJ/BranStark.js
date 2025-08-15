@@ -67,6 +67,6 @@ class BranStark extends DrawCard {
     }
 }
 
-BranStark.code = '00224';
+BranStark.code = '00230';
 
 export default BranStark;

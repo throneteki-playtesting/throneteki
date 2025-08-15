@@ -35,6 +35,6 @@ class BlackLorren extends DrawCard {
     }
 }
 
-BlackLorren.code = '00134';
+BlackLorren.code = '00136';
 
 export default BlackLorren;

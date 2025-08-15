@@ -12,6 +12,6 @@ class BoniferTheGood extends DrawCard {
     }
 }
 
-BoniferTheGood.code = '00109';
+BoniferTheGood.code = '00110';
 
 export default BoniferTheGood;

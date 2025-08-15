@@ -33,6 +33,6 @@ class RedMountains extends DrawCard {
     }
 }
 
-RedMountains.code = '00191';
+RedMountains.code = '00195';
 
 export default RedMountains;

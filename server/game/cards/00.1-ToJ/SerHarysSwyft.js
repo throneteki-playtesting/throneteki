@@ -28,6 +28,6 @@ class SerHarysSwyft extends DrawCard {
     }
 }
 
-SerHarysSwyft.code = '00155';
+SerHarysSwyft.code = '00158';
 
 export default SerHarysSwyft;

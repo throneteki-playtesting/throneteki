@@ -22,6 +22,6 @@ class TheGreenFork extends DrawCard {
     }
 }
 
-TheGreenFork.code = '00303';
+TheGreenFork.code = '00319';
 
 export default TheGreenFork;

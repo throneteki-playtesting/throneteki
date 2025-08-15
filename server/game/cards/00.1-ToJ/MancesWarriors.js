@@ -41,6 +41,6 @@ class MancesWarriors extends DrawCard {
     }
 }
 
-MancesWarriors.code = '00208';
+MancesWarriors.code = '00213';
 
 export default MancesWarriors;

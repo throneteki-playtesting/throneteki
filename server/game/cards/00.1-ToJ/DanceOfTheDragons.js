@@ -40,6 +40,6 @@ class DanceOfTheDragons extends PlotCard {
     }
 }
 
-DanceOfTheDragons.code = '00331';
+DanceOfTheDragons.code = '00252';
 
 export default DanceOfTheDragons;

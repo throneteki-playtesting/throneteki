@@ -28,6 +28,6 @@ class HotPie extends DrawCard {
     }
 }
 
-HotPie.code = '00357';
+HotPie.code = '00361';
 
 export default HotPie;

@@ -91,6 +91,6 @@ class CornCornCorn extends DrawCard {
     }
 }
 
-CornCornCorn.code = '00215';
+CornCornCorn.code = '00220';
 
 export default CornCornCorn;

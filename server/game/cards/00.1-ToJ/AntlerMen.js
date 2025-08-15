@@ -16,6 +16,6 @@ class AntlerMen extends DrawCard {
     }
 }
 
-AntlerMen.code = '00120';
+AntlerMen.code = '00121';
 
 export default AntlerMen;

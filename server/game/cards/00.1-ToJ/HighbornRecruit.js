@@ -47,6 +47,6 @@ class HighbornRecruit extends DrawCard {
     }
 }
 
-HighbornRecruit.code = '00213';
+HighbornRecruit.code = '00218';
 
 export default HighbornRecruit;

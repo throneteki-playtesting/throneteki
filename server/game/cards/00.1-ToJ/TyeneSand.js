@@ -38,6 +38,6 @@ class TyeneSand extends DrawCard {
     }
 }
 
-TyeneSand.code = '00180';
+TyeneSand.code = '00184';
 
 export default TyeneSand;

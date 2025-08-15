@@ -14,6 +14,6 @@ class RalfKenning extends DrawCard {
     }
 }
 
-RalfKenning.code = '00127';
+RalfKenning.code = '00128';
 
 export default RalfKenning;

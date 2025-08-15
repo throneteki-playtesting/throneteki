@@ -17,6 +17,6 @@ class SerRobarRoyce extends DrawCard {
     }
 }
 
-SerRobarRoyce.code = '00272';
+SerRobarRoyce.code = '00280';
 
 export default SerRobarRoyce;

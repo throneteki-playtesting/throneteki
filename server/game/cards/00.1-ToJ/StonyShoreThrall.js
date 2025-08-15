@@ -45,6 +45,6 @@ class StonyShoreThrall extends DrawCard {
     }
 }
 
-StonyShoreThrall.code = '00144';
+StonyShoreThrall.code = '00146';
 
 export default StonyShoreThrall;

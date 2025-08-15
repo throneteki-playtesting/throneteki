@@ -46,6 +46,6 @@ class RaidersAxe extends DrawCard {
     }
 }
 
-RaidersAxe.code = '00145';
+RaidersAxe.code = '00147';
 
 export default RaidersAxe;

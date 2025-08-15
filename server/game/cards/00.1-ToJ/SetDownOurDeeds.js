@@ -53,6 +53,6 @@ class SetDownOurDeeds extends DrawCard {
     }
 }
 
-SetDownOurDeeds.code = '00115';
+SetDownOurDeeds.code = '00116';
 
 export default SetDownOurDeeds;

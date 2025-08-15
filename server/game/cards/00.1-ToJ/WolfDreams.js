@@ -73,6 +73,6 @@ class WolfDreams extends DrawCard {
     }
 }
 
-WolfDreams.code = '00238';
+WolfDreams.code = '00244';
 
 export default WolfDreams;

@@ -1,7 +1,7 @@
 import DrawCard from '../../drawcard.js';
 import { Tokens } from '../../Constants/Tokens.js';
 
-class BeneaththeGoldtheBitterSteel extends DrawCard {
+class BeneathTheGoldTheBitterSteel extends DrawCard {
     setupCardAbilities() {
         this.action({
             target: {
@@ -41,6 +41,6 @@ class BeneaththeGoldtheBitterSteel extends DrawCard {
     }
 }
 
-BeneaththeGoldtheBitterSteel.code = '00253';
+BeneathTheGoldTheBitterSteel.code = '00260';
 
-export default BeneaththeGoldtheBitterSteel;
+export default BeneathTheGoldTheBitterSteel;

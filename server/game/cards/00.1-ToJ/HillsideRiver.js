@@ -27,6 +27,6 @@ class HillsideRiver extends DrawCard {
     }
 }
 
-HillsideRiver.code = '00167';
+HillsideRiver.code = '00170';
 
 export default HillsideRiver;

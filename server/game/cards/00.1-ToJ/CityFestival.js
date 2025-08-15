@@ -19,6 +19,6 @@ class CityFestival extends PlotCard {
     }
 }
 
-CityFestival.code = '00340';
+CityFestival.code = '00331';
 
 export default CityFestival;

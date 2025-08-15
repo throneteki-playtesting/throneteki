@@ -51,6 +51,6 @@ class SerBarristanSelmy extends DrawCard {
     }
 }
 
-SerBarristanSelmy.code = '00240';
+SerBarristanSelmy.code = '00246';
 
 export default SerBarristanSelmy;

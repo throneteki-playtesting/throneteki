@@ -30,6 +30,6 @@ class SerEmmonCuy extends DrawCard {
     }
 }
 
-SerEmmonCuy.code = '00274';
+SerEmmonCuy.code = '00282';
 
 export default SerEmmonCuy;

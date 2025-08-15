@@ -54,6 +54,6 @@ class FightingPit extends DrawCard {
     }
 }
 
-FightingPit.code = '00260';
+FightingPit.code = '00267';
 
 export default FightingPit;

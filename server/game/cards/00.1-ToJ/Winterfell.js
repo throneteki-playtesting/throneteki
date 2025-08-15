@@ -29,6 +29,6 @@ class Winterfell extends DrawCard {
     }
 }
 
-Winterfell.code = '00129';
+Winterfell.code = '00130';
 
 export default Winterfell;

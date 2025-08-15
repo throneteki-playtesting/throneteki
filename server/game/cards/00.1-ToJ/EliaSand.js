@@ -20,6 +20,6 @@ class EliaSand extends DrawCard {
     }
 }
 
-EliaSand.code = '00174';
+EliaSand.code = '00177';
 
 export default EliaSand;

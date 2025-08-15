@@ -45,6 +45,6 @@ class OneTwoThree extends DrawCard {
     }
 }
 
-OneTwoThree.code = '00169';
+OneTwoThree.code = '00172';
 
 export default OneTwoThree;

@@ -49,6 +49,6 @@ class BurningTheBooks extends PlotCard {
     }
 }
 
-BurningTheBooks.code = '00338';
+BurningTheBooks.code = '00329';
 
 export default BurningTheBooks;

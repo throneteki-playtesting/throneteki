@@ -17,6 +17,6 @@ class WarriorsSons extends DrawCard {
     }
 }
 
-WarriorsSons.code = '00162';
+WarriorsSons.code = '00165';
 
 export default WarriorsSons;

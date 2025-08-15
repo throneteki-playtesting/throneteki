@@ -56,6 +56,6 @@ class FlorianAndJonquil extends DrawCard {
     }
 }
 
-FlorianAndJonquil.code = '00322';
+FlorianAndJonquil.code = '00358';
 
 export default FlorianAndJonquil;

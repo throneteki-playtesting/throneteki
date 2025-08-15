@@ -89,6 +89,6 @@ class PassBeneathTheShadow extends AgendaCard {
     }
 }
 
-PassBeneathTheShadow.code = '00360';
+PassBeneathTheShadow.code = '00364';
 
 export default PassBeneathTheShadow;

@@ -27,6 +27,6 @@ class Balerion extends DrawCard {
     }
 }
 
-Balerion.code = '00300';
+Balerion.code = '00316';
 
 export default Balerion;

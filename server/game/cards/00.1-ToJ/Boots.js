@@ -9,6 +9,6 @@ class Boots extends DrawCard {
     }
 }
 
-Boots.code = '00159';
+Boots.code = '00162';
 
 export default Boots;

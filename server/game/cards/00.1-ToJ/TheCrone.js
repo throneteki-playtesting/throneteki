@@ -21,6 +21,6 @@ class TheCrone extends PlotCard {
     }
 }
 
-TheCrone.code = '00346';
+TheCrone.code = '00339';
 
 export default TheCrone;

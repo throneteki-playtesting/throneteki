@@ -52,6 +52,6 @@ class GreyWind extends DrawCard {
     }
 }
 
-GreyWind.code = '00222';
+GreyWind.code = '00227';
 
 export default GreyWind;

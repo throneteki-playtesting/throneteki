@@ -35,6 +35,6 @@ class ThePointyEnd extends PlotCard {
     }
 }
 
-ThePointyEnd.code = '00352';
+ThePointyEnd.code = '00342';
 
 export default ThePointyEnd;

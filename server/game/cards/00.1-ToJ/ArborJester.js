@@ -79,6 +79,6 @@ class ArborJester extends DrawCard {
     }
 }
 
-ArborJester.code = '00280';
+ArborJester.code = '00288';
 
 export default ArborJester;

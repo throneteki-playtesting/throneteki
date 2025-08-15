@@ -46,6 +46,6 @@ class ASouthronPeace extends PlotCard {
     }
 }
 
-ASouthronPeace.code = '00333';
+ASouthronPeace.code = '00325';
 
 export default ASouthronPeace;

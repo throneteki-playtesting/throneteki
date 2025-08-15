@@ -59,6 +59,6 @@ class SerDavenLannister extends DrawCard {
     }
 }
 
-SerDavenLannister.code = '00148';
+SerDavenLannister.code = '00150';
 
 export default SerDavenLannister;

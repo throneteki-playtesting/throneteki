@@ -30,6 +30,6 @@ class Hero extends DrawCard {
     }
 }
 
-Hero.code = '00244';
+Hero.code = '00250';
 
 export default Hero;

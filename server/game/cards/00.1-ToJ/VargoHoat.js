@@ -64,6 +64,6 @@ class VargoHoat extends DrawCard {
     }
 }
 
-VargoHoat.code = '00286';
+VargoHoat.code = '00294';
 
 export default VargoHoat;

@@ -33,6 +33,6 @@ class GoldenCompany extends DrawCard {
     }
 }
 
-GoldenCompany.code = '00254';
+GoldenCompany.code = '00261';
 
 export default GoldenCompany;
