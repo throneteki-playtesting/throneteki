@@ -49,7 +49,6 @@ class Retribution extends DrawCard {
     }
 }
 
-Retribution.code = '26548';
-Retribution.version = '1.0.1';
+Retribution.code = '26048';
 
 export default Retribution;

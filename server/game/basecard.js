@@ -57,7 +57,7 @@ class BaseCard {
         this.flags = new ReferenceCountedSetProperty();
         this.traits = new ReferenceCountedSetProperty();
         this.controllerStack = [];
-        this.loyaltyStack = [];
+        this.loyalStack = [];
         this.eventsForRegistration = [];
         this.keywordSources = [];
 
@@ -317,7 +317,7 @@ class BaseCard {
         let clone = new BaseCard(this.owner, this.cardData);
 
         clone.controllerStack = [...this.controllerStack];
-        clone.loyaltyStack = [...this.loyaltyStack];
+        clone.loyalStack = [...this.loyalStack];
         clone.factions = this.factions.clone();
         clone.flags = this.flags.clone();
         clone.location = this.location;
@@ -458,24 +458,24 @@ class BaseCard {
     }
 
     isLoyal() {
-        if (this.loyaltyStack.length === 0) {
+        if (this.loyalStack.length === 0) {
             return !!this.cardData.loyal;
         }
 
-        return this.loyaltyStack[this.loyaltyStack.length - 1];
+        return this.loyalStack[this.loyalStack.length - 1];
     }
 
-    setLoyalty(loyal, source) {
+    setLoyal(loyal, source) {
         const tracking = { loyal, source };
         if (!source) {
-            this.loyaltyStack = [tracking];
+            this.loyalStack = [tracking];
         } else {
-            this.loyaltyStack.push(tracking);
+            this.loyalStack.push(tracking);
         }
     }
 
-    revokeLoyalty(source) {
-        this.loyaltyStack = this.loyaltyStack.filter((loyalty) => loyalty.source !== source);
+    clearLoyal(source) {
+        this.loyalStack = this.loyalStack.filter((loyalty) => loyalty.source !== source);
     }
 
     canBeSaved() {

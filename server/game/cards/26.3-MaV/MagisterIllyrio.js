@@ -29,7 +29,6 @@ class MagisterIllyrio extends DrawCard {
     }
 }
 
-MagisterIllyrio.code = '26573';
-MagisterIllyrio.version = '1.0.1';
+MagisterIllyrio.code = '26053';
 
 export default MagisterIllyrio;

@@ -30,7 +30,6 @@ class Stormlord extends DrawCard {
     }
 }
 
-Stormlord.code = '26504';
-Stormlord.version = '1.0.0';
+Stormlord.code = '26041';
 
 export default Stormlord;

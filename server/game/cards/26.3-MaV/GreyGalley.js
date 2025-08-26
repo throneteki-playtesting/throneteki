@@ -17,7 +17,6 @@ class GreyGalley extends DrawCard {
     }
 }
 
-GreyGalley.code = '26558';
-GreyGalley.version = '1.1.0';
+GreyGalley.code = '26050';
 
 export default GreyGalley;

@@ -7,7 +7,7 @@ class LysaArryn extends DrawCard {
                 card.controller === this.controller &&
                 card.getType() === 'character' &&
                 card.hasTrait('House Arryn'),
-            effect: ability.effects.setLoyalty(true)
+            effect: ability.effects.setLoyal(true)
         });
 
         this.persistentEffect({
@@ -15,6 +15,7 @@ class LysaArryn extends DrawCard {
             match: this,
             effect: ability.effects.dynamicKeywordSources(
                 (card) =>
+                    card !== this &&
                     card.controller === this.controller &&
                     card.getType() === 'character' &&
                     card.isLoyal()
@@ -23,7 +24,6 @@ class LysaArryn extends DrawCard {
     }
 }
 
-LysaArryn.code = '26597';
-LysaArryn.version = '1.1.1';
+LysaArryn.code = '26057';
 
 export default LysaArryn;

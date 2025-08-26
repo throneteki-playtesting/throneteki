@@ -33,7 +33,6 @@ class DubiousLoyalties extends DrawCard {
     }
 }
 
-DubiousLoyalties.code = '26568';
-DubiousLoyalties.version = '1.1.1';
+DubiousLoyalties.code = '26052';
 
 export default DubiousLoyalties;

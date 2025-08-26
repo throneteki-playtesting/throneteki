@@ -1,11 +1,10 @@
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
-class SerGuilianQorgyle extends DrawCard {
+class SerGulianQorgyle extends DrawCard {
     setupCardAbilities(ability) {
         this.reaction({
             when: {
-                // TODO: Add checks that character can lose challenge icon(s). Maybe a new gameaction for prompting icons?
                 onDeclaredAsAttacker: (event) => event.card.controller !== this.controller,
                 onDeclaredAsDefender: (event) => event.card.controller !== this.controller
             },
@@ -34,7 +33,6 @@ class SerGuilianQorgyle extends DrawCard {
     }
 }
 
-SerGuilianQorgyle.code = '26539';
-SerGuilianQorgyle.version = '1.0.1';
+SerGulianQorgyle.code = '26049';
 
-export default SerGuilianQorgyle;
+export default SerGulianQorgyle;

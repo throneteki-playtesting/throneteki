@@ -12,13 +12,17 @@ class TakingTheShieldIslands extends DrawCard {
                     }) && event.challenge.getWinnerCards().some((card) => card.hasTrait('Raider'))
             },
             message: {
-                format: "{player} plays {source} to look {loser}'s hand",
-                args: { loser: (context) => context.event.challenge.loser }
+                format: "{player} plays {source} to look {loser}'s hand and place {amount} card(s) on top of their deck",
+                args: {
+                    loser: (context) => context.event.challenge.loser,
+                    amount: (context) => this.getAmount(context)
+                }
             },
             handler: (context) => {
-                const numCards = context.cardStateWhenInitiated.location === 'shadows' ? 2 : 1;
+                const numCards = this.getAmount(context);
                 this.game.promptForSelect(context.player, {
-                    activePromptTitle: numCards === 1 ? 'Select a card' : 'Select up to 2 cards',
+                    activePromptTitle:
+                        numCards === 1 ? 'Select a card' : 'Select up to 2 cards (bottom first)',
                     source: this,
                     numCards,
                     revealTargets: true,
@@ -53,9 +57,12 @@ class TakingTheShieldIslands extends DrawCard {
 
         return true;
     }
+
+    getAmount(context) {
+        return context.cardStateWhenInitiated.location === 'shadows' ? 2 : 1;
+    }
 }
 
-TakingTheShieldIslands.code = '26524';
-TakingTheShieldIslands.version = '1.1.0';
+TakingTheShieldIslands.code = '26044';
 
 export default TakingTheShieldIslands;

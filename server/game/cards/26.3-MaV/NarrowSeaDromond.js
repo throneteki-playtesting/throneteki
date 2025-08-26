@@ -5,7 +5,7 @@ class NarrowSeaDromond extends DrawCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
             match: this,
-            effect: ability.effects.modifyDominanceStrength(2)
+            effect: ability.effects.modifyDominanceStrength(1)
         });
         this.reaction({
             when: {
@@ -30,7 +30,6 @@ class NarrowSeaDromond extends DrawCard {
     }
 }
 
-NarrowSeaDromond.code = '26509';
-NarrowSeaDromond.version = '1.1.2';
+NarrowSeaDromond.code = '26042';
 
 export default NarrowSeaDromond;

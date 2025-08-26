@@ -3,17 +3,12 @@ import GameActions from '../../GameActions/index.js';
 
 class TakeToTheSky extends DrawCard {
     setupCardAbilities() {
-        const allowTrigger = (event) =>
-            event.allowSave &&
-            event.card.isMatch({ trait: ['Dragon', 'Stormborn'] }) &&
-            event.card.controller.anyCardsInPlay({ trait: 'Dragon' });
-
         this.interrupt({
             canCancel: true,
             when: {
-                onCharacterKilled: allowTrigger,
+                onCharacterKilled: (event) => this.canBeSavedAndReturned(event),
                 onCardDiscarded: (event) =>
-                    event.card.location == 'play area' && allowTrigger(event)
+                    event.card.location == 'play area' && this.canBeSavedAndReturned(event)
             },
             message: {
                 format: '{player} plays {source} to save {card} and return it to hand',
@@ -29,9 +24,16 @@ class TakeToTheSky extends DrawCard {
             ])
         });
     }
+
+    canBeSavedAndReturned(event) {
+        return (
+            event.allowSave &&
+            event.card.isMatch({ trait: ['Dragon', 'Stormborn'] }) &&
+            event.card.controller.anyCardsInPlay({ trait: 'Dragon' })
+        );
+    }
 }
 
-TakeToTheSky.code = '26583';
-TakeToTheSky.version = '1.0.0';
+TakeToTheSky.code = '26054';
 
 export default TakeToTheSky;

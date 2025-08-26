@@ -37,7 +37,6 @@ class WanderingDisciple extends DrawCard {
     }
 }
 
-WanderingDisciple.code = '26518';
-WanderingDisciple.version = '1.0.0';
+WanderingDisciple.code = '26043';
 
 export default WanderingDisciple;

@@ -9,8 +9,7 @@ class LivingShadow extends DrawCard {
 
         this.forcedReaction({
             when: {
-                onBypassedByStealth: (event) =>
-                    event.source === this && this.controller.canAttach(this, event.target) // TODO: Need to check if the character can take condition attachments
+                onBypassedByStealth: (event) => event.source === this // TODO: Need to check if the character can take condition attachments
             },
             message: {
                 format: '{player} is forced to attach {source} to {character}"',

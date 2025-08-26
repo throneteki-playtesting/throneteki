@@ -5,7 +5,7 @@ class NorthernEnvoy extends DrawCard {
     setupCardAbilities() {
         this.reaction({
             when: {
-                onCardEntersPlay: (event) => event.card === this && event.playingType === 'marshal'
+                onCardEntersPlay: (event) => event.card === this
             },
             chooseOpponent: true,
             handler: (context) => {
@@ -57,7 +57,6 @@ class NorthernEnvoy extends DrawCard {
     }
 }
 
-NorthernEnvoy.code = '26552';
-NorthernEnvoy.version = '1.0.0';
+NorthernEnvoy.code = '26049';
 
 export default NorthernEnvoy;
