@@ -48,6 +48,6 @@ class ArianneMartell extends DrawCard {
     }
 }
 
-ArianneMartell.code = '00176';
+ArianneMartell.code = '00177';
 
 export default ArianneMartell;

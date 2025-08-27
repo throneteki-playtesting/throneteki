@@ -46,6 +46,6 @@ class DoranMartell extends DrawCard {
     }
 }
 
-DoranMartell.code = '00174';
+DoranMartell.code = '00175';
 
 export default DoranMartell;

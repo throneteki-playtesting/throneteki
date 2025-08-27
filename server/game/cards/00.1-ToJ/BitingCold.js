@@ -1,7 +1,7 @@
 import GameActions from '../../GameActions/index.js';
 import PlotCard from '../../plotcard.js';
 
-class TheWindsOfWinter extends PlotCard {
+class BitingCold extends PlotCard {
     setupCardAbilities() {
         this.whenRevealed({
             handler: (context) => {
@@ -35,6 +35,6 @@ class TheWindsOfWinter extends PlotCard {
     }
 }
 
-TheWindsOfWinter.code = '00380';
+BitingCold.code = '00380';
 
-export default TheWindsOfWinter;
+export default BitingCold;

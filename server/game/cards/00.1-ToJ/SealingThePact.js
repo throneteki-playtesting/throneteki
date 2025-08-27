@@ -66,7 +66,8 @@ class SealingThePact extends AgendaCard {
                 this.controller,
                 factionToAnnounce,
                 factionToAnnounce.length > 1 ? 'factions' : 'faction',
-                this);
+                this
+            );
             return;
         }
 

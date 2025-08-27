@@ -1,7 +1,7 @@
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
-class MancesWarriors extends DrawCard {
+class TormundsHorde extends DrawCard {
     setupCardAbilities() {
         this.reaction({
             when: {
@@ -41,6 +41,6 @@ class MancesWarriors extends DrawCard {
     }
 }
 
-MancesWarriors.code = '00213';
+TormundsHorde.code = '00213';
 
-export default MancesWarriors;
+export default TormundsHorde;

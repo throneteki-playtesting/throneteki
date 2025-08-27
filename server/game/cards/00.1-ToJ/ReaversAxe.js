@@ -1,7 +1,7 @@
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
-class RaidersAxe extends DrawCard {
+class ReaversAxe extends DrawCard {
     setupCardAbilities(ability) {
         this.whileAttached({
             effect: [ability.effects.addTrait('Raider'), ability.effects.modifyStrength(1)]
@@ -46,6 +46,6 @@ class RaidersAxe extends DrawCard {
     }
 }
 
-RaidersAxe.code = '00147';
+ReaversAxe.code = '00147';
 
-export default RaidersAxe;
+export default ReaversAxe;
