@@ -10,6 +10,6 @@ class LysonoMaar extends DrawCard {
     }
 }
 
-LysonoMaar.code = '00248';
+LysonoMaar.code = '00249';
 
 export default LysonoMaar;

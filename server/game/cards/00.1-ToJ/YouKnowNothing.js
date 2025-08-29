@@ -18,6 +18,6 @@ class YouKnowNothing extends DrawCard {
     }
 }
 
-YouKnowNothing.code = '00219';
+YouKnowNothing.code = '00220';
 
 export default YouKnowNothing;

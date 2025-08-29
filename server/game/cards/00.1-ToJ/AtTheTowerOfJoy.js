@@ -23,6 +23,6 @@ class AtTheTowerOfJoy extends PlotCard {
     }
 }
 
-AtTheTowerOfJoy.code = '00327';
+AtTheTowerOfJoy.code = '00326';
 
 export default AtTheTowerOfJoy;

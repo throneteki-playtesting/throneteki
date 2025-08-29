@@ -41,6 +41,6 @@ class QuentynMartell extends DrawCard {
     }
 }
 
-QuentynMartell.code = '00249';
+QuentynMartell.code = '00250';
 
 export default QuentynMartell;

@@ -26,6 +26,6 @@ class TheSmith extends PlotCard {
     }
 }
 
-TheSmith.code = '00343';
+TheSmith.code = '00344';
 
 export default TheSmith;

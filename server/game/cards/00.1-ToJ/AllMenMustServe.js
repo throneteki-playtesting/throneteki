@@ -19,6 +19,6 @@ class AllMenMustServe extends PlotCard {
     }
 }
 
-AllMenMustServe.code = '00326';
+AllMenMustServe.code = '00325';
 
 export default AllMenMustServe;

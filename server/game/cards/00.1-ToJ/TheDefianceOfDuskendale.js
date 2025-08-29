@@ -17,6 +17,6 @@ class TheDefianceOfDuskendale extends PlotCard {
     }
 }
 
-TheDefianceOfDuskendale.code = '00340';
+TheDefianceOfDuskendale.code = '00341';
 
 export default TheDefianceOfDuskendale;
