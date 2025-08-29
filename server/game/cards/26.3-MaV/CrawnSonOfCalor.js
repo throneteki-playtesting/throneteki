@@ -12,7 +12,6 @@ class CrawnSonOfCalor extends DrawCard {
     }
 }
 
-CrawnSonOfCalor.code = '26525';
-CrawnSonOfCalor.version = '1.0.0';
+CrawnSonOfCalor.code = '26045';
 
 export default CrawnSonOfCalor;

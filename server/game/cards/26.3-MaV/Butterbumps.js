@@ -30,7 +30,6 @@ class Butterbumps extends DrawCard {
     }
 }
 
-Butterbumps.code = '26587';
-Butterbumps.version = '1.1.1';
+Butterbumps.code = '26055';
 
 export default Butterbumps;

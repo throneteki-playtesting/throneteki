@@ -29,7 +29,6 @@ class SteelshanksWalton extends DrawCard {
     }
 }
 
-SteelshanksWalton.code = '26563';
-SteelshanksWalton.version = '1.0.0';
+SteelshanksWalton.code = '26051';
 
 export default SteelshanksWalton;

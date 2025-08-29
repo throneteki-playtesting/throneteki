@@ -31,7 +31,6 @@ class TheWhisperingSound extends DrawCard {
     }
 }
 
-TheWhisperingSound.code = '26593';
-TheWhisperingSound.version = '1.1.0';
+TheWhisperingSound.code = '26056';
 
 export default TheWhisperingSound;

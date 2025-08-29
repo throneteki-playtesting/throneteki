@@ -13,7 +13,7 @@ class TheRegentsCouncil extends DrawCard {
                             (card.hasTrait('Small Council') || card.name === 'Cersei Lannister')
                     )
             },
-            max: ability.limit.perChallenge(1),
+            max: ability.limit.perPhase(1),
             message: '{player} plays {source} to determine dominance',
             handler: () => {
                 this.game.queueStep(new DetermineDominance(this.game, this));
@@ -22,7 +22,6 @@ class TheRegentsCouncil extends DrawCard {
     }
 }
 
-TheRegentsCouncil.code = '26536';
-TheRegentsCouncil.version = '1.1.0';
+TheRegentsCouncil.code = '26046';
 
 export default TheRegentsCouncil;
