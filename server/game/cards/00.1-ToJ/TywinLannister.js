@@ -25,6 +25,6 @@ class TywinLannister extends DrawCard {
     }
 }
 
-TywinLannister.code = '00147';
+TywinLannister.code = '00149';
 
 export default TywinLannister;

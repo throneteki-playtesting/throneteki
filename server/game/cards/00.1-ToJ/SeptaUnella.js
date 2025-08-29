@@ -15,6 +15,6 @@ class SeptaUnella extends DrawCard {
     }
 }
 
-SeptaUnella.code = '00298';
+SeptaUnella.code = '00314';
 
 export default SeptaUnella;

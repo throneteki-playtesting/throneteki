@@ -25,6 +25,6 @@ class GreatKrakensCrew extends DrawCard {
     }
 }
 
-GreatKrakensCrew.code = '00140';
+GreatKrakensCrew.code = '00142';
 
 export default GreatKrakensCrew;

@@ -31,6 +31,6 @@ class TheMother extends PlotCard {
     }
 }
 
-TheMother.code = '00351';
+TheMother.code = '00342';
 
 export default TheMother;

@@ -42,6 +42,6 @@ class NestorRoyce extends DrawCard {
     }
 }
 
-NestorRoyce.code = '00295';
+NestorRoyce.code = '00311';
 
 export default NestorRoyce;

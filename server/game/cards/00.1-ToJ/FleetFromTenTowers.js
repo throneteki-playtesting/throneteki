@@ -14,6 +14,6 @@ class FleetFromTenTowers extends DrawCard {
     }
 }
 
-FleetFromTenTowers.code = '00139';
+FleetFromTenTowers.code = '00141';
 
 export default FleetFromTenTowers;

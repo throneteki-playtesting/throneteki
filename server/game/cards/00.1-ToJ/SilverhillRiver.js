@@ -1,7 +1,7 @@
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
-class HillsideRiver extends DrawCard {
+class SilverhillRiver extends DrawCard {
     setupCardAbilities(ability) {
         this.plotModifiers({
             gold: 1
@@ -27,6 +27,6 @@ class HillsideRiver extends DrawCard {
     }
 }
 
-HillsideRiver.code = '00167';
+SilverhillRiver.code = '00170';
 
-export default HillsideRiver;
+export default SilverhillRiver;

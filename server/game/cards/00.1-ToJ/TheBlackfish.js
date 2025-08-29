@@ -10,6 +10,6 @@ class TheBlackfish extends DrawCard {
     }
 }
 
-TheBlackfish.code = '00218';
+TheBlackfish.code = '00223';
 
 export default TheBlackfish;

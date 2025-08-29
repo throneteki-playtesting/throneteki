@@ -25,6 +25,6 @@ class BeholdOurBounty extends DrawCard {
     }
 }
 
-BeholdOurBounty.code = '00283';
+BeholdOurBounty.code = '00291';
 
 export default BeholdOurBounty;

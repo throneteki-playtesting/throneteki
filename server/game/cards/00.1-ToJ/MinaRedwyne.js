@@ -24,6 +24,6 @@ class MinaRedwyne extends DrawCard {
     }
 }
 
-MinaRedwyne.code = '00269';
+MinaRedwyne.code = '00277';
 
 export default MinaRedwyne;

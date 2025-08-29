@@ -33,6 +33,6 @@ class Crannogmen extends DrawCard {
     }
 }
 
-Crannogmen.code = '00232';
+Crannogmen.code = '00238';
 
 export default Crannogmen;

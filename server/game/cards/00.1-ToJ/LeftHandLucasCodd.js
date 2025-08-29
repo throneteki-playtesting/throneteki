@@ -40,6 +40,6 @@ class LeftHandLucasCodd extends DrawCard {
     }
 }
 
-LeftHandLucasCodd.code = '00133';
+LeftHandLucasCodd.code = '00135';
 
 export default LeftHandLucasCodd;

@@ -135,6 +135,6 @@ class TheMadKingsCommand extends PlotCard {
     }
 }
 
-TheMadKingsCommand.code = '00349';
+TheMadKingsCommand.code = '00305';
 
 export default TheMadKingsCommand;

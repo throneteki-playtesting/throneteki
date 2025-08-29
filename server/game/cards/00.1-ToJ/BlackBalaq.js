@@ -12,6 +12,6 @@ class BlackBalaq extends DrawCard {
     }
 }
 
-BlackBalaq.code = '00248';
+BlackBalaq.code = '00255';
 
 export default BlackBalaq;

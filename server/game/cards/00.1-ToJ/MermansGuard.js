@@ -36,6 +36,6 @@ class MermansGuard extends DrawCard {
     }
 }
 
-MermansGuard.code = '00233';
+MermansGuard.code = '00239';
 
 export default MermansGuard;

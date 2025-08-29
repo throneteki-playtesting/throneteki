@@ -32,6 +32,6 @@ class GreywaterWatch extends DrawCard {
     }
 }
 
-GreywaterWatch.code = '00230';
+GreywaterWatch.code = '00236';
 
 export default GreywaterWatch;

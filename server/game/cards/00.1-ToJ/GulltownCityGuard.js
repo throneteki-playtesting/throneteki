@@ -17,6 +17,6 @@ class GulltownCityGuard extends DrawCard {
     }
 }
 
-GulltownCityGuard.code = '00309';
+GulltownCityGuard.code = '00345';
 
 export default GulltownCityGuard;

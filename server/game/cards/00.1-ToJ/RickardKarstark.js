@@ -61,6 +61,6 @@ class RickardKarstark extends DrawCard {
     }
 }
 
-RickardKarstark.code = '00219';
+RickardKarstark.code = '00224';
 
 export default RickardKarstark;

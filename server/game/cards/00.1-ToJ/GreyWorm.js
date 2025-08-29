@@ -13,6 +13,6 @@ class GreyWorm extends DrawCard {
     }
 }
 
-GreyWorm.code = '00246';
+GreyWorm.code = '00253';
 
 export default GreyWorm;

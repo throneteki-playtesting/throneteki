@@ -78,6 +78,6 @@ class HaldonHalfmaester extends DrawCard {
     }
 }
 
-HaldonHalfmaester.code = '00249';
+HaldonHalfmaester.code = '00256';
 
 export default HaldonHalfmaester;

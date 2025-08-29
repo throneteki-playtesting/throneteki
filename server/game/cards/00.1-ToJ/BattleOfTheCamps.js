@@ -61,6 +61,6 @@ class BattleOfTheCamps extends PlotCard {
     }
 }
 
-BattleOfTheCamps.code = '00335';
+BattleOfTheCamps.code = '00328';
 
 export default BattleOfTheCamps;

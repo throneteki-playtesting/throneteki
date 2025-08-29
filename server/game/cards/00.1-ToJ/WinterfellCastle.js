@@ -45,6 +45,6 @@ class WinterfellCastle extends DrawCard {
     }
 }
 
-WinterfellCastle.code = '00220';
+WinterfellCastle.code = '00225';
 
 export default WinterfellCastle;

@@ -12,6 +12,6 @@ class TheHolyHundred extends DrawCard {
     }
 }
 
-TheHolyHundred.code = '00118';
+TheHolyHundred.code = '00119';
 
 export default TheHolyHundred;

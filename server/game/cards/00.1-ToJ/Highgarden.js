@@ -149,6 +149,6 @@ class Highgarden extends DrawCard {
     }
 }
 
-Highgarden.code = '00267';
+Highgarden.code = '00274';
 
 export default Highgarden;

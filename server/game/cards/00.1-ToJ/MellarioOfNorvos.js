@@ -29,6 +29,6 @@ class MellarioOfNorvos extends DrawCard {
     }
 }
 
-MellarioOfNorvos.code = '00177';
+MellarioOfNorvos.code = '00181';
 
 export default MellarioOfNorvos;

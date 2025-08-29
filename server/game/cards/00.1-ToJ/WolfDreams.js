@@ -1,10 +1,11 @@
 import DrawCard from '../../drawcard.js';
 
 class WolfDreams extends DrawCard {
-    setupCardAbilities() {
+    setupCardAbilities(ability) {
         this.action({
             title: 'Select a character',
             phase: 'challenge',
+            max: ability.limit.perPhase(1),
             target: {
                 cardCondition: (card) =>
                     card.location === 'play area' &&
@@ -51,6 +52,7 @@ class WolfDreams extends DrawCard {
                 effect: [
                     ability.effects.setCardType('attachment'),
                     ability.effects.addKeyword('Terminal')
+                    // TODO this becomes a Direwolf attachment and loses all other traits
                 ]
             }));
 
@@ -61,18 +63,25 @@ class WolfDreams extends DrawCard {
                 match: (card) => card === this.parent,
                 effect: ability.effects.addTrait(traitName)
             }));
+
+            this.game.addMessage(
+                '{0} attaches {1} to {2} to give it the {3} trait',
+                player,
+                this,
+                this.context.target,
+                traitName
+            );
         }
 
         return true;
     }
 
     // Explicitly override since it has printed type 'event'.
-    // TODO BD clarify if this is supposed to keep printed traits or should be changed to become a Direwolf attachment
     canAttach(player, card) {
         return card.getType() === 'character';
     }
 }
 
-WolfDreams.code = '00238';
+WolfDreams.code = '00244';
 
 export default WolfDreams;

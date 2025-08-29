@@ -34,6 +34,6 @@ class RobbStark extends DrawCard {
     }
 }
 
-RobbStark.code = '00216';
+RobbStark.code = '00221';
 
 export default RobbStark;

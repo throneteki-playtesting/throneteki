@@ -29,6 +29,6 @@ class MyrcellaBaratheon extends DrawCard {
     }
 }
 
-MyrcellaBaratheon.code = '00157';
+MyrcellaBaratheon.code = '00160';
 
 export default MyrcellaBaratheon;

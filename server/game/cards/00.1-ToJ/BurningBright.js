@@ -29,6 +29,6 @@ class BurningBright extends DrawCard {
         });
     }
 }
-BurningBright.code = '00168';
+BurningBright.code = '00171';
 
 export default BurningBright;

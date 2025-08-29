@@ -37,6 +37,6 @@ class Stormcrows extends DrawCard {
     }
 }
 
-Stormcrows.code = '00259';
+Stormcrows.code = '00266';
 
 export default Stormcrows;
