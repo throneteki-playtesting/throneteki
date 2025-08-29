@@ -63,6 +63,14 @@ class WolfDreams extends DrawCard {
                 match: (card) => card === this.parent,
                 effect: ability.effects.addTrait(traitName)
             }));
+
+            this.game.addMessage(
+                '{0} attaches {1} to {2} to give it the {3} trait',
+                player,
+                this,
+                this.context.target,
+                traitName
+            );
         }
 
         return true;
