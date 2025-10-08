@@ -3,6 +3,13 @@ import DrawCard from '../../drawcard.js';
 class WarElephants extends DrawCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
+            location: 'any',
+            targetController: 'current',
+            effect: ability.effects.reduceSelfCost('ambush', () =>
+                this.controller.getNumberOfCardsInPlay({ type: 'character', trait: 'Commander' })
+            )
+        });
+        this.persistentEffect({
             targetController: 'current',
             targetLocation: 'hand',
             effect: [
@@ -14,6 +21,6 @@ class WarElephants extends DrawCard {
 }
 
 WarElephants.code = '26576';
-WarElephants.version = '1.0.2';
+WarElephants.version = '1.0.3';
 
 export default WarElephants;

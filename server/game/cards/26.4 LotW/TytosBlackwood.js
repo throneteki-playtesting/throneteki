@@ -11,7 +11,6 @@ class TytosBlackwood extends DrawCard {
     }
 }
 
-TytosBlackwood.code = '26561';
-TytosBlackwood.version = '1.0.0';
+TytosBlackwood.code = '26071';
 
 export default TytosBlackwood;

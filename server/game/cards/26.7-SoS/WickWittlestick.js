@@ -15,13 +15,14 @@ class WickWittlestick extends DrawCard {
                     card.location === 'play area' &&
                     card.controller === context.choosingPlayer &&
                     card.getType() === 'character' &&
-                    card.isParticipating()
+                    card.isParticipating() &&
+                    GameActions.discardCard({ card }).allow()
             },
-            message: '{player} uses {source} to sacrifice {target}',
+            message: '{player} uses {source} to discard {target}',
             handler: (context) => {
                 this.game.resolveGameAction(
                     GameActions.simultaneously(
-                        context.target.map((card) => GameActions.sacrificeCard({ card }))
+                        context.target.map((card) => GameActions.discardCard({ card }))
                     ),
                     context
                 );
@@ -31,6 +32,6 @@ class WickWittlestick extends DrawCard {
 }
 
 WickWittlestick.code = '26551';
-WickWittlestick.version = '1.0.0';
+WickWittlestick.version = '1.0.1';
 
 export default WickWittlestick;

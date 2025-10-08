@@ -9,7 +9,6 @@ class EdricStorm extends DrawCard {
     }
 }
 
-EdricStorm.code = '26502';
-EdricStorm.version = '1.0.0';
+EdricStorm.code = '26061';
 
 export default EdricStorm;
