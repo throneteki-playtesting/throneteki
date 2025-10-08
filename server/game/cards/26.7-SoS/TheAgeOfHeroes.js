@@ -15,20 +15,26 @@ class TheAgeOfHeroes extends PlotCard {
                 match: { type: 'attachment', trait: ['Legacy', 'Valyrian Steel'] },
                 gameAction: GameActions.ifCondition({
                     condition: (context) =>
-                        context.searchTarget.hasTrait('Tapestry') &&
-                        context.player.canPutIntoPlay(context.searchTarget),
+                        !context.searchTarget.hasTrait('Tapestry') ||
+                        !context.player.canPutIntoPlay(context.searchTarget),
                     thenAction: {
-                        message: '{player} {gameAction}',
-                        gameAction: GameActions.putIntoPlay((context) => ({
-                            card: context.searchTarget
-                        }))
-                    },
-                    elseAction: {
                         message: '{player} {gameAction}',
                         gameAction: GameActions.addToHand((context) => ({
                             card: context.searchTarget
                         }))
-                    }
+                    },
+                    elseAction: GameActions.choose({
+                        title: 'Put card into play?',
+                        message: '{player} {gameAction}',
+                        choices: {
+                            'Add to hand': GameActions.addToHand((context) => ({
+                                card: context.searchTarget
+                            })),
+                            'Put into play': GameActions.putIntoPlay((context) => ({
+                                card: context.searchTarget
+                            }))
+                        }
+                    })
                 })
             })
         });
@@ -36,6 +42,6 @@ class TheAgeOfHeroes extends PlotCard {
 }
 
 TheAgeOfHeroes.code = '26615';
-TheAgeOfHeroes.version = '1.0.2';
+TheAgeOfHeroes.version = '1.0.3';
 
 export default TheAgeOfHeroes;
