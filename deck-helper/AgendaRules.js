@@ -381,6 +381,24 @@ const agendaRules = {
             }
         ]
     },
+    // Draft Agendas
+    // The Power of Wealth
+    '00001': {
+        mayInclude: () => true,
+        rules: [
+            {
+                message: 'Cannot include more than 1 copy of each non-limited location',
+                condition: (deck) => {
+                    const locations = deck.drawCards.filter(
+                        (cardQuantity) =>
+                            cardQuantity.card.type === 'location' &&
+                            !hasKeyword(cardQuantity.card, /Limited/)
+                    );
+                    return locations.every((location) => location.count <= 1);
+                }
+            }
+        ]
+    },
     // Armed to the Teeth
     26618: {
         cannotInclude: (card) => card.type === 'attachment' && !hasTrait(card, 'Weapon')
