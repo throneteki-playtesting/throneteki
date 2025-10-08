@@ -364,12 +364,8 @@ const agendaRules = {
             }
         ]
     },
-    // Armed to the Teeth
-    26618: {
-        cannotInclude: (card) => card.type === 'attachment' && !hasTrait(card, 'Weapon')
-    },
     // Trading with Braavos
-    26620: {
+    26080: {
         mayInclude: (card) => card.type === 'location' && hasTrait(card, 'Warship') && !card.loyal,
         rules: [
             {
@@ -384,6 +380,10 @@ const agendaRules = {
                 }
             }
         ]
+    },
+    // Armed to the Teeth
+    26618: {
+        cannotInclude: (card) => card.type === 'attachment' && !hasTrait(card, 'Weapon')
     },
     // Draft Agendas
     // The Power of Wealth
