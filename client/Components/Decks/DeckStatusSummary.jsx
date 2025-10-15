@@ -10,7 +10,7 @@ const DeckStatusSummary = ({ status }) => {
             title: `${restrictedList.name} Card Legality`,
             value: restrictedList.valid
         },
-        { title: 'Includes playtesting cards', value: !noUnreleasedCards }
+        { title: 'Only released cards', value: noUnreleasedCards }
     ];
 
     return (

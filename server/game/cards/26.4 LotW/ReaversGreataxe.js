@@ -1,15 +1,15 @@
 import DrawCard from '../../drawcard.js';
-import { ChallengeTracker } from '../../EventTrackers/ChallengeTracker.js';
 
-class RaidersScythe extends DrawCard {
+class ReaversGreataxe extends DrawCard {
     setupCardAbilities(ability) {
-        this.tracker = ChallengeTracker.forPhase(this.game);
         this.attachmentRestriction({ unique: false, faction: 'greyjoy' });
         this.whileAttached({
+            effect: ability.effects.addTrait('Raider')
+        });
+        this.whileAttached({
             condition: () =>
-                !!this.game.currentChallenge &&
-                this.hasMoreAttachmentsThanDefender(this.game.currentChallenge.defendingPlayer) &&
-                !this.tracker.some({ attackingPlayer: this.controller }),
+                this.game.isDuringChallenge({ attackingPlayer: this.controller, number: 1 }) &&
+                this.hasMoreAttachmentsThanDefender(this.game.currentChallenge.defendingPlayer),
             match: this.parent,
             effect: ability.effects.doesNotKneelAsAttacker()
         });
@@ -23,7 +23,6 @@ class RaidersScythe extends DrawCard {
     }
 }
 
-RaidersScythe.code = '26520';
-RaidersScythe.version = '1.0.1';
+ReaversGreataxe.code = '26064';
 
-export default RaidersScythe;
+export default ReaversGreataxe;

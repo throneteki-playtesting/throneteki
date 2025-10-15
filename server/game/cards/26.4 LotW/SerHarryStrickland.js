@@ -11,7 +11,7 @@ class SerHarryStrickland extends DrawCard {
                 cardCondition: {
                     location: 'play area',
                     type: 'character',
-                    trait: ['Army', 'Mercenary'],
+                    trait: 'Mercenary',
                     cardCondition: (card) =>
                         GameActions.standCard({ card }).allow() ||
                         GameActions.gainIcon({ card }).allow()
@@ -46,7 +46,6 @@ class SerHarryStrickland extends DrawCard {
     }
 }
 
-SerHarryStrickland.code = '26574';
-SerHarryStrickland.version = '1.1.0';
+SerHarryStrickland.code = '26073';
 
 export default SerHarryStrickland;

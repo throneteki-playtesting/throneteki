@@ -3,8 +3,9 @@ import GameActions from '../../GameActions/index.js';
 
 class IbbeneseWhaler extends DrawCard {
     setupCardAbilities(ability) {
-        this.plotModifiers({
-            initiative: 1
+        this.persistentEffect({
+            targetController: 'current',
+            effect: ability.effects.reduceFirstMarshaledCardIntoShadowsEachRound(1)
         });
         this.action({
             title: 'Draw cards',
@@ -17,7 +18,6 @@ class IbbeneseWhaler extends DrawCard {
     }
 }
 
-IbbeneseWhaler.code = '26606';
-IbbeneseWhaler.version = '1.0.0';
+IbbeneseWhaler.code = '26078';
 
 export default IbbeneseWhaler;

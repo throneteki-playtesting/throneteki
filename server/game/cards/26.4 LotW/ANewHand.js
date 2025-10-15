@@ -27,7 +27,6 @@ class ANewHand extends DrawCard {
     }
 }
 
-ANewHand.code = '26511';
-ANewHand.version = '1.0.1';
+ANewHand.code = '26062';
 
 export default ANewHand;
