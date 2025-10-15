@@ -14,10 +14,10 @@ export function deckStatusLabel(status) {
     }
 
     if (!status.noUnreleasedCards) {
-        return 'Playtest Legal';
+        return 'Casual';
     }
 
-    return 'Regular Legal';
+    return 'Legal';
 }
 
 export function cardSetLabel(cardSet) {
