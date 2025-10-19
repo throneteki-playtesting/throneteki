@@ -1,10 +1,11 @@
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
-class KingsLandingDromond extends DrawCard {
+class QartheenGalleas extends DrawCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
-            effect: ability.effects.raiseAmountUnspentGoldToKeep(1)
+            targetController: 'current',
+            effect: ability.effects.modifyHandCount(-1)
         });
         this.reaction({
             when: {
@@ -12,13 +13,13 @@ class KingsLandingDromond extends DrawCard {
             },
             target: {
                 cardCondition: {
-                    location: 'play area',
-                    type: 'character',
-                    printedCostOrLower: 2,
-                    condition: (card) => GameActions.returnCardToHand({ card }).allow()
+                    location: 'discard pile',
+                    controller: 'current',
+                    condition: (card) => card.isShadow()
                 }
             },
-            message: "{player} uses {source} to return {target} to its owner's hand",
+            message:
+                '{player} uses {source} to return {target} to their hand from their discard pile',
             handler: (context) => {
                 this.game.resolveGameAction(
                     GameActions.returnCardToHand((context) => ({ card: context.target })),
@@ -29,7 +30,6 @@ class KingsLandingDromond extends DrawCard {
     }
 }
 
-KingsLandingDromond.code = '26534';
-KingsLandingDromond.version = '1.1.1';
+QartheenGalleas.code = '26074';
 
-export default KingsLandingDromond;
+export default QartheenGalleas;

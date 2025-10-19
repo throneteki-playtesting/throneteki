@@ -22,7 +22,6 @@ class MeggaTyrell extends DrawCard {
     }
 }
 
-MeggaTyrell.code = '26586';
-MeggaTyrell.version = '1.0.2';
+MeggaTyrell.code = '26075';
 
 export default MeggaTyrell;

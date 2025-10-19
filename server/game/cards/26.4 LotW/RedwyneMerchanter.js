@@ -15,7 +15,7 @@ class RedwyneMerchanter extends DrawCard {
                     type: 'character'
                 }
             },
-            message: '{player} uses {source} to give +2 STR to {target} until the end of the phase',
+            message: '{player} uses {source} to give {target} +2 STR until the end of the phase',
             handler: (context) => {
                 this.untilEndOfPhase((ability) => ({
                     match: context.target,
@@ -26,7 +26,6 @@ class RedwyneMerchanter extends DrawCard {
     }
 }
 
-RedwyneMerchanter.code = '26594';
-RedwyneMerchanter.version = '1.1.2';
+RedwyneMerchanter.code = '26076';
 
 export default RedwyneMerchanter;

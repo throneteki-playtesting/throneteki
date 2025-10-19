@@ -3,13 +3,13 @@ import GameActions from '../../GameActions/index.js';
 
 class SouthronInformant extends DrawCard {
     setupCardAbilities() {
-        this.reaction({
+        this.forcedReaction({
             when: {
                 onCardEntersPlay: (event) =>
                     event.card === this && this.game.currentPhase === 'challenge'
             },
             chooseOpponent: true,
-            message: '{player} uses {source} to give control of {source} to {opponent}',
+            message: '{player} is forced by {source} to give control of {source} to {opponent}',
             handler: (context) => {
                 this.game.resolveGameAction(
                     GameActions.takeControl({ card: this, player: context.opponent }).then({
@@ -32,7 +32,6 @@ class SouthronInformant extends DrawCard {
     }
 }
 
-SouthronInformant.code = '26542';
-SouthronInformant.version = '1.0.1';
+SouthronInformant.code = '26067';
 
 export default SouthronInformant;

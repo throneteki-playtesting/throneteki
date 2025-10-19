@@ -41,7 +41,6 @@ class TradingWithBraavos extends AgendaCard {
     }
 }
 
-TradingWithBraavos.code = '26620';
-TradingWithBraavos.version = '1.0.1';
+TradingWithBraavos.code = '26080';
 
 export default TradingWithBraavos;
