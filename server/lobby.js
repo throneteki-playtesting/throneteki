@@ -15,14 +15,11 @@ import { sortBy } from './Array.js';
 
 class Lobby {
     constructor(server, options = {}) {
-        logger.info('Lobby constructor: Starting...');
         this.instance = options.instance;
 
         this.sockets = {};
         this.users = {};
         this.games = {};
-
-        logger.info('Lobby constructor: Initializing services...');
         this.configService = options.configService || ServiceFactory.configService();
         this.messageService = options.messageService || ServiceFactory.messageService(options.db);
         this.cardService = options.cardService || new CardService(options.db);
@@ -31,7 +28,6 @@ class Lobby {
         this.userService =
             options.userService || ServiceFactory.userService(options.db, this.configService);
         this.router = options.router || new GameRouter(options.db);
-        logger.info('Lobby constructor: Services initialized');
 
         this.router.on('onGameClosed', this.onGameClosed.bind(this));
         this.router.on('onGameRematch', this.onGameRematch.bind(this));
@@ -42,11 +38,9 @@ class Lobby {
 
         this.userService.on('onBlocklistChanged', this.onBlocklistChanged.bind(this));
 
-        logger.info('Lobby constructor: Initializing Socket.IO...');
         this.io = options.io || new socketio(server, { perMessageDeflate: false });
         this.io.use(this.handshake.bind(this));
         this.io.on('connection', this.onConnection.bind(this));
-        logger.info('Lobby constructor: Socket.IO initialized');
 
         this.messageService.on('messageDeleted', (messageId, user) => {
             for (let socket of Object.values(this.sockets)) {
@@ -67,22 +61,11 @@ class Lobby {
         });
 
         setInterval(() => this.clearStalePendingGames(), 60 * 1000);
-        logger.info('Lobby constructor: Stale game cleanup interval set');
-        logger.info('Lobby constructor: Complete');
     }
 
     async init() {
-        logger.info('Lobby.init: Starting initialization...');
-
-        logger.info('Lobby.init: Initializing DeckService...');
         await this.deckService.init();
-        logger.info('Lobby.init: DeckService initialized');
-
-        logger.info('Lobby.init: Initializing EventService...');
         await this.eventService.init();
-        logger.info('Lobby.init: EventService initialized');
-
-        logger.info('Lobby.init: Complete');
     }
 
     // External methods

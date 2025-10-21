@@ -1,4 +1,11 @@
 import { createLogger, format, transports } from 'winston';
+import fs from 'fs';
+
+const __dirname = import.meta.dirname;
+
+if (!fs.existsSync(__dirname + '/logs/')) {
+    fs.mkdirSync(__dirname + '/logs/');
+}
 
 const prettyJson = format.printf((info) => {
     if (info.meta && info.meta instanceof Error) {
