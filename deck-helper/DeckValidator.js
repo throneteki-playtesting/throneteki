@@ -22,6 +22,7 @@ class DeckValidator {
         for (const restrictedList of this.restrictedLists) {
             for (const format of this.formats) {
                 const errors = [];
+                const info = [];
                 const rules = this.getRules(deck, format);
 
                 if (deck.plotCount < rules.requiredPlots) {
@@ -61,7 +62,7 @@ class DeckValidator {
                     }
                 }
                 if (unreleasedCards.length > 0) {
-                    errors.push('Cards are not yet released: ' + unreleasedCards.join(', '));
+                    info.push('Cards are being playtested: ' + unreleasedCards.join(', '));
                 }
 
                 const cardCountByName = deck.getCardCountsByName();
@@ -93,7 +94,7 @@ class DeckValidator {
                     faqVersion: restrictedListResult.version,
                     restrictedList: restrictedListResult,
                     noUnreleasedCards: unreleasedCards.length === 0,
-                    extendedStatus: errors.concat(restrictedListErrors)
+                    extendedStatus: errors.concat(info).concat(restrictedListErrors)
                 };
             }
         }
