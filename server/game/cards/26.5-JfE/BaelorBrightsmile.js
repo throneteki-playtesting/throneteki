@@ -33,7 +33,6 @@ class BaelorBrightsmile extends DrawCard {
     }
 }
 
-BaelorBrightsmile.code = '26585';
-BaelorBrightsmile.version = '1.0.2';
+BaelorBrightsmile.code = '26095';
 
 export default BaelorBrightsmile;

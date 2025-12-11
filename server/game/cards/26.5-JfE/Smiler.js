@@ -44,7 +44,6 @@ class Smiler extends DrawCard {
     }
 }
 
-Smiler.code = '26519';
-Smiler.version = '1.0.0';
+Smiler.code = '26084';
 
 export default Smiler;

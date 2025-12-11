@@ -11,7 +11,11 @@ class TheDoomOfValyria extends PlotCard {
                 const opponents = this.game.getOpponentsInFirstPlayerOrder(context.player);
                 this.remainingOpponents = opponents.filter((opponent) => opponent.hand.length >= 3);
                 this.context = context;
-                this.promptForCancel(context);
+                if (context.ability.cannotBeCanceled) {
+                    this.resolveDiscardFromPlay();
+                } else {
+                    this.promptForCancel();
+                }
             }
         });
     }
@@ -53,19 +57,19 @@ class TheDoomOfValyria extends PlotCard {
     resolveDiscardFromPlay() {
         this.game.resolveGameAction(
             GameActions.simultaneously(() =>
-                this.game
-                    .allCards(
+                this.game.allCards
+                    .filter(
                         (card) =>
                             (card.location === 'play area' && !card.isLimited()) ||
                             card.location === 'shadows'
                     )
                     .map((card) => GameActions.discardCard({ card, source: this }))
-            )
+            ),
+            this.context
         );
     }
 }
 
-TheDoomOfValyria.code = '26612';
-TheDoomOfValyria.version = '1.2.1';
+TheDoomOfValyria.code = '26100';
 
 export default TheDoomOfValyria;

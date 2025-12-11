@@ -15,14 +15,13 @@ class AllerasTheSphinx extends DrawCard {
                 gameAction: GameActions.placeCardUnderneath((context) => ({
                     card: context.searchTarget,
                     parentCard: context.player.agenda,
-                    facedown: false
+                    facedown: true
                 }))
             })
         });
     }
 }
 
-AllerasTheSphinx.code = '26600';
-AllerasTheSphinx.version = '1.0.0';
+AllerasTheSphinx.code = '26097';
 
 export default AllerasTheSphinx;

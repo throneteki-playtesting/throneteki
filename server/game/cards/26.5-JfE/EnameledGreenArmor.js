@@ -2,6 +2,7 @@ import DrawCard from '../../drawcard.js';
 
 class EnameledGreenArmor extends DrawCard {
     setupCardAbilities(ability) {
+        this.attachmentRestriction({ controller: 'current' });
         this.whileAttached({
             effect: ability.effects.addKeyword('renown')
         });
@@ -27,7 +28,6 @@ class EnameledGreenArmor extends DrawCard {
     }
 }
 
-EnameledGreenArmor.code = '26591';
-EnameledGreenArmor.version = '1.0.1';
+EnameledGreenArmor.code = '26096';
 
 export default EnameledGreenArmor;

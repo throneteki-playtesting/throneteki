@@ -23,7 +23,6 @@ class CandleInTheDark extends DrawCard {
     }
 }
 
-CandleInTheDark.code = '26603';
-CandleInTheDark.version = '1.0.0';
+CandleInTheDark.code = '26098';
 
 export default CandleInTheDark;

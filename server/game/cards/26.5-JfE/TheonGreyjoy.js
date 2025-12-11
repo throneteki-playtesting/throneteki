@@ -42,7 +42,6 @@ class TheonGreyjoy extends DrawCard {
     }
 }
 
-TheonGreyjoy.code = '26514';
-TheonGreyjoy.version = '1.0.1';
+TheonGreyjoy.code = '26083';
 
 export default TheonGreyjoy;

@@ -11,8 +11,14 @@ class TorchAndOil extends DrawCard {
             },
             cost: ability.costs.kneelSelf(),
             message: {
-                format: '{player} kneels {costs.kneel} to reveal a card drawn by {opponent}',
-                args: { opponent: (context) => context.event.player }
+                format: '{player} kneels {costs.kneel} to reveal a {action} by {opponent}',
+                args: {
+                    action: (context) =>
+                        context.event.name === 'onCardDrawn'
+                            ? 'card drawn'
+                            : 'card marshaled into shadows',
+                    opponent: (context) => context.event.player
+                }
             },
             gameAction: GameActions.revealCards((context) => ({
                 cards: [context.event.card],
@@ -43,7 +49,6 @@ class TorchAndOil extends DrawCard {
     }
 }
 
-TorchAndOil.code = '26556';
-TorchAndOil.version = '1.0.2';
+TorchAndOil.code = '26090';
 
 export default TorchAndOil;

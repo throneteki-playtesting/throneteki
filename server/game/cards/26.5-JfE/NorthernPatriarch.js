@@ -19,12 +19,17 @@ class NorthernPatriarch extends DrawCard {
                     event.source.controller !== this.controller && event.source.getType() == 'event'
             },
             message: {
-                format: '{player} uses {source} to attempt to cancel {initiatingCard}',
-                args: { initiatingCard: (context) => context.event.source }
+                format: '{player} uses {source} to {action} {initiatingCard}',
+                args: {
+                    action: (context) =>
+                        this.hasCardsWithPower(context.event.source.controller)
+                            ? 'attempt to cancel'
+                            : 'cancel',
+                    initiatingCard: (context) => context.event.source
+                }
             },
             gameAction: GameActions.ifCondition({
-                condition: (context) =>
-                    context.event.source.controller.some((card) => card.power > 0),
+                condition: (context) => this.hasCardsWithPower(context.event.source.controller),
                 thenAction: GameActions.genericHandler((context) => {
                     this.game.promptForSelect(context.event.souce.controller, {
                         source: this,
@@ -57,12 +62,15 @@ class NorthernPatriarch extends DrawCard {
                     context.event.cancel();
                 })
             }),
-            limit: ability.limit.perRound(1)
+            max: ability.limit.perRound(1)
         });
+    }
+
+    hasCardsWithPower(player) {
+        return player.getNumberOfCardsInPlay((card) => card.power > 0) > 0;
     }
 }
 
-NorthernPatriarch.code = '26565';
-NorthernPatriarch.version = '1.0.1';
+NorthernPatriarch.code = '26091';
 
 export default NorthernPatriarch;

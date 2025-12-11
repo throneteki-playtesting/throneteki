@@ -11,7 +11,8 @@ class SlanderAndLies extends DrawCard {
         this.forcedReaction({
             when: {
                 afterChallenge: (event) =>
-                    event.challenge.loser === this.controller && this.parent?.isParticipating()
+                    event.challenge.loser === this.controller &&
+                    event.challenge.isParticipating(this.parent)
             },
             message: {
                 format: '{player} is forced to have {parent} gain 1 power',
@@ -22,7 +23,6 @@ class SlanderAndLies extends DrawCard {
     }
 }
 
-SlanderAndLies.code = '26532';
-SlanderAndLies.version = '1.0.1';
+SlanderAndLies.code = '26086';
 
 export default SlanderAndLies;

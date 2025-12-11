@@ -19,7 +19,6 @@ class TheRedViper extends DrawCard {
     }
 }
 
-TheRedViper.code = '26537';
-TheRedViper.version = '1.0.1';
+TheRedViper.code = '26087';
 
 export default TheRedViper;

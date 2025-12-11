@@ -10,7 +10,6 @@ class AMeetingOfMinds extends DrawCard {
     }
 }
 
-AMeetingOfMinds.code = '26605';
-AMeetingOfMinds.version = '2.0.0';
+AMeetingOfMinds.code = '26099';
 
 export default AMeetingOfMinds;

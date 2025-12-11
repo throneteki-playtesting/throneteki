@@ -25,7 +25,6 @@ class TheVipersSpear extends DrawCard {
     }
 }
 
-TheVipersSpear.code = '26543';
-TheVipersSpear.version = '1.0.1';
+TheVipersSpear.code = '26088';
 
 export default TheVipersSpear;

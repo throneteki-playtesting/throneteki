@@ -47,7 +47,6 @@ class WinterfellKennels extends DrawCard {
     }
 }
 
-WinterfellKennels.code = '26569';
-WinterfellKennels.version = '1.0.0';
+WinterfellKennels.code = '26092';
 
 export default WinterfellKennels;

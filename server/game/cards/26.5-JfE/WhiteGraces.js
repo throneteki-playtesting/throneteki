@@ -32,7 +32,6 @@ class WhiteGraces extends DrawCard {
     }
 }
 
-WhiteGraces.code = '26578';
-WhiteGraces.version = '1.0.0';
+WhiteGraces.code = '26093';
 
 export default WhiteGraces;

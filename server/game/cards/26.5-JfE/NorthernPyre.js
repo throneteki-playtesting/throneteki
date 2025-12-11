@@ -25,7 +25,6 @@ class NorthernPyre extends DrawCard {
     }
 }
 
-NorthernPyre.code = '26510';
-NorthernPyre.version = '1.0.1';
+NorthernPyre.code = '26082';
 
 export default NorthernPyre;

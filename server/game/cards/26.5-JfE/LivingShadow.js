@@ -9,14 +9,15 @@ class LivingShadow extends DrawCard {
 
         this.forcedReaction({
             when: {
-                onBypassedByStealth: (event) => event.source === this // TODO: Need to check if the character can take condition attachments
+                onBypassedByStealth: (event) =>
+                    event.source === this && this.canAttachTo(event.target)
             },
             message: {
                 format: '{player} is forced to attach {source} to {character}"',
                 args: { character: (context) => context.event.target }
             },
             handler: (context) => {
-                context.player.attach(context.player, this, context.target, 'effect');
+                context.player.attach(context.player, this, context.event.target, 'effect');
                 this.lastingEffect((ability) => ({
                     condition: () => !!this.parent,
                     targetLocation: 'any',
@@ -38,9 +39,18 @@ class LivingShadow extends DrawCard {
             }
         });
     }
+
+    canAttachTo(card) {
+        // Need to fake a snapshot of this card when converted to an attachment to determine if it CAN be attached
+        const attachment = this.createSnapshot();
+        attachment.setCardType('attachment');
+        attachment.addKeyword('Terminal');
+        attachment.addTrait('Condition');
+
+        return attachment.controller.canAttach(attachment, card);
+    }
 }
 
-LivingShadow.code = '26506';
-LivingShadow.version = '1.1.0';
+LivingShadow.code = '26081';
 
 export default LivingShadow;

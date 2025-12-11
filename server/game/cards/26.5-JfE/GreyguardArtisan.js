@@ -21,7 +21,6 @@ class GreyguardArtisan extends DrawCard {
     }
 }
 
-GreyguardArtisan.code = '26553';
-GreyguardArtisan.version = '1.0.0';
+GreyguardArtisan.code = '26089';
 
 export default GreyguardArtisan;
