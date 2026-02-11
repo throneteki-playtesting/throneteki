@@ -1,7 +1,7 @@
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
-class StallionWhoMountsTheWorld extends DrawCard {
+class TheStallionWhoMountsTheWorld extends DrawCard {
     setupCardAbilities(ability) {
         this.reaction({
             when: {
@@ -82,7 +82,6 @@ class StallionWhoMountsTheWorld extends DrawCard {
     }
 }
 
-StallionWhoMountsTheWorld.code = '26584';
-StallionWhoMountsTheWorld.version = '1.0.2';
+TheStallionWhoMountsTheWorld.code = '26114';
 
-export default StallionWhoMountsTheWorld;
+export default TheStallionWhoMountsTheWorld;

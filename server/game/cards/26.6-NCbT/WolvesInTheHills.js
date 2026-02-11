@@ -6,7 +6,7 @@ class WolvesInTheHills extends DrawCard {
     setupCardAbilities(ability) {
         this.interrupt({
             when: {
-                onClaimApplied: (event) => event.challenge?.attackingPlayer === this.controller
+                onClaimApplied: () => true
             },
             cost: ability.costs.returnToHand((card) => this.isValidCharacter(card)),
             message:
@@ -48,7 +48,6 @@ class WolvesInTheHills extends DrawCard {
     }
 }
 
-WolvesInTheHills.code = '26572';
-WolvesInTheHills.version = '1.0.1';
+WolvesInTheHills.code = '26112';
 
 export default WolvesInTheHills;

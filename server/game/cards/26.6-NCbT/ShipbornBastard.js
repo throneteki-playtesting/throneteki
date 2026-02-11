@@ -18,7 +18,6 @@ class ShipbornBastard extends DrawCard {
     }
 }
 
-ShipbornBastard.code = '26517';
-ShipbornBastard.version = '1.0.0';
+ShipbornBastard.code = '26103';
 
 export default ShipbornBastard;

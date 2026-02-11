@@ -12,20 +12,19 @@ class GrowingInfluence extends DrawCard {
             },
             cost: ability.costs.giveGold(1, (context) => context.event.source.controller),
             message: {
-                format: '{player} plays {source} and gives {opponent} 2 gold to cancel {card}',
+                format: '{player} plays {source} and gives {opponent} 1 gold to cancel {card}',
                 args: {
                     opponent: (context) => context.event.source.controller,
                     card: (context) => context.event.source
                 }
             },
-            handler: () => {
-                this.cancel();
+            handler: (context) => {
+                context.event.cancel();
             }
         });
     }
 }
 
-GrowingInfluence.code = '26596';
-GrowingInfluence.version = '1.1.1';
+GrowingInfluence.code = '26116';
 
 export default GrowingInfluence;

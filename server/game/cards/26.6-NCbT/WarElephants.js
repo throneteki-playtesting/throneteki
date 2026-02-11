@@ -20,7 +20,6 @@ class WarElephants extends DrawCard {
     }
 }
 
-WarElephants.code = '26576';
-WarElephants.version = '1.0.3';
+WarElephants.code = '26113';
 
 export default WarElephants;

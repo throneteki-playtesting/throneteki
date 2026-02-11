@@ -12,7 +12,6 @@ class SerManfreyMartell extends DrawCard {
     }
 }
 
-SerManfreyMartell.code = '26538';
-SerManfreyMartell.version = '1.0.0';
+SerManfreyMartell.code = '26107';
 
 export default SerManfreyMartell;

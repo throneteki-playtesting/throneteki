@@ -6,7 +6,7 @@ class NoCrownButTruth extends DrawCard {
         this.interrupt({
             canCancel: true,
             when: {
-                //Restrict triggering on own character abilities to forced triggered abilities
+                // Restrict triggering on own character abilities to forced triggered abilities
                 onCardAbilityInitiated: (event) =>
                     event.source.getType() === 'character' &&
                     event.ability.isTriggeredAbility() &&
@@ -28,7 +28,6 @@ class NoCrownButTruth extends DrawCard {
     }
 }
 
-NoCrownButTruth.code = '26512';
-NoCrownButTruth.version = '1.0.0';
+NoCrownButTruth.code = '26102';
 
 export default NoCrownButTruth;

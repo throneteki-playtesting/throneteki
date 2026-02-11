@@ -1,7 +1,7 @@
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
-class GoodAsGold extends DrawCard {
+class AllTheGoldInCasterlyRock extends DrawCard {
     setupCardAbilities() {
         this.reaction({
             when: {
@@ -25,7 +25,6 @@ class GoodAsGold extends DrawCard {
     }
 }
 
-GoodAsGold.code = '26535';
-GoodAsGold.version = '1.0.0';
+AllTheGoldInCasterlyRock.code = '26106';
 
-export default GoodAsGold;
+export default AllTheGoldInCasterlyRock;

@@ -16,7 +16,6 @@ class LonelyLight extends DrawCard {
     }
 }
 
-LonelyLight.code = '26521';
-LonelyLight.version = '1.0.1';
+LonelyLight.code = '26104';
 
 export default LonelyLight;

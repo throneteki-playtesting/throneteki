@@ -38,7 +38,6 @@ class WidowsFord extends DrawCard {
     }
 }
 
-WidowsFord.code = '26608';
-WidowsFord.version = '1.0.0';
+WidowsFord.code = '26118';
 
 export default WidowsFord;

@@ -11,6 +11,7 @@ class WickWittlestick extends DrawCard {
             },
             target: {
                 choosingPlayer: 'each',
+                ifAble: true,
                 cardCondition: (card, context) =>
                     card.location === 'play area' &&
                     card.controller === context.choosingPlayer &&
@@ -31,7 +32,6 @@ class WickWittlestick extends DrawCard {
     }
 }
 
-WickWittlestick.code = '26551';
-WickWittlestick.version = '1.0.1';
+WickWittlestick.code = '26109';
 
 export default WickWittlestick;

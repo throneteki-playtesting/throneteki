@@ -27,7 +27,6 @@ class AlchemistApprentice extends DrawCard {
     }
 }
 
-AlchemistApprentice.code = '26530';
-AlchemistApprentice.version = '1.0.0';
+AlchemistApprentice.code = '26105';
 
 export default AlchemistApprentice;

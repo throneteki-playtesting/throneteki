@@ -11,7 +11,6 @@ class HowlandReed extends DrawCard {
     }
 }
 
-HowlandReed.code = '26562';
-HowlandReed.version = '1.0.1';
+HowlandReed.code = '26111';
 
 export default HowlandReed;

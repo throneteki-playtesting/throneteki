@@ -28,7 +28,6 @@ class SeventyNineSentinels extends DrawCard {
     }
 }
 
-SeventyNineSentinels.code = '26559';
-SeventyNineSentinels.version = '1.0.0';
+SeventyNineSentinels.code = '26110';
 
 export default SeventyNineSentinels;

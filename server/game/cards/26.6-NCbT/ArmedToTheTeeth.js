@@ -51,7 +51,7 @@ class ArmedToTheTeeth extends AgendaCard {
         };
         this.game.resolveGameAction(
             GameActions.search({
-                title: 'Select up to 7 attachments',
+                title: 'Select up to 5 attachments',
                 match: {
                     type: 'attachment',
                     trait: 'Weapon',
@@ -59,7 +59,7 @@ class ArmedToTheTeeth extends AgendaCard {
                         !context.selectedCards.some((sc) => sc.name === card.name)
                 },
                 reveal: true,
-                numToSelect: 7,
+                numToSelect: 5,
                 message: '{player} places {searchTarget} facedown under {source}',
                 gameAction: GameActions.simultaneously((context) =>
                     context.searchTarget.map((card) =>
@@ -83,7 +83,6 @@ class ArmedToTheTeeth extends AgendaCard {
     }
 }
 
-ArmedToTheTeeth.code = '26618';
-ArmedToTheTeeth.version = '1.0.2';
+ArmedToTheTeeth.code = '26120';
 
 export default ArmedToTheTeeth;

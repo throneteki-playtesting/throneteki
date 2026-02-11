@@ -11,7 +11,6 @@ class ElderBrother extends DrawCard {
     }
 }
 
-ElderBrother.code = '26601';
-ElderBrother.version = '1.0.0';
+ElderBrother.code = '26117';
 
 export default ElderBrother;

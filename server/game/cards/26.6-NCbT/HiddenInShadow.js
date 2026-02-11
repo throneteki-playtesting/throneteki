@@ -15,10 +15,17 @@ class HiddenInShadow extends DrawCard {
                 card: this.parent || context.cardStateWhenInitiated.parent
             }))
         });
+        this.reaction({
+            when: {
+                onCardDiscarded: (event) =>
+                    event.card === this && event.originalLocation === 'shadows'
+            },
+            message: '{player} uses {source} to draw 1 card',
+            gameAction: GameActions.drawCards((context) => ({ player: context.player, amount: 1 }))
+        });
     }
 }
 
-HiddenInShadow.code = '26544';
-HiddenInShadow.version = '1.0.1';
+HiddenInShadow.code = '26108';
 
 export default HiddenInShadow;
