@@ -1,5 +1,6 @@
 // Generated with Claude Code - claude-opus-4-5-20251101
 // - 2026-01-25: Implement spec for Sentinels of the Realm
+// - 2026-02-28: Refactored to use semantic helpers (setupCards, initiateChallenge, handSize, skipClaim)
 
 describe('Sentinels of the Realm', function () {
     integration(function () {
@@ -26,12 +27,8 @@ describe('Sentinels of the Realm', function () {
 
             this.attacker = this.player2.findCardByName('Hedge Knight', 'hand');
 
-            this.player1.clickCard(this.nonGuardDefender);
-            this.player1.clickCard(this.guardDefender);
-
-            this.player2.clickCard(this.attacker);
-            this.player2.clickCard('Steward at the Wall');
-            this.player2.clickCard('Dragonstone Faithful');
+            this.player1.setupCards([this.nonGuardDefender, this.guardDefender]);
+            this.player2.setupCards([this.attacker, 'Steward at the Wall', 'Dragonstone Faithful']);
 
             this.completeSetup();
 
@@ -45,16 +42,12 @@ describe('Sentinels of the Realm', function () {
 
         describe('non-Guard character defending alone', function () {
             beforeEach(function () {
-                // Player 2 initiates military challenge
-                this.player2.clickPrompt('Military');
-                this.player2.clickCard(this.attacker);
-                this.player2.clickPrompt('Done');
+                this.player2.initiateChallenge({ type: 'military', attackers: this.attacker });
 
                 this.skipActionWindow();
 
                 // Player 1 defends with non-Guard Hedge Knight alone
-                this.player1.clickCard(this.nonGuardDefender);
-                this.player1.clickPrompt('Done');
+                this.player1.declareDefenders(this.nonGuardDefender);
             });
 
             it('should not contribute strength when defending alone', function () {
@@ -65,16 +58,12 @@ describe('Sentinels of the Realm', function () {
 
         describe('Guard character defending alone', function () {
             beforeEach(function () {
-                // Player 2 initiates intrigue challenge
-                this.player2.clickPrompt('Military');
-                this.player2.clickCard(this.attacker);
-                this.player2.clickPrompt('Done');
+                this.player2.initiateChallenge({ type: 'military', attackers: this.attacker });
 
                 this.skipActionWindow();
 
                 // Player 1 defends with Guard alone
-                this.player1.clickCard(this.guardDefender);
-                this.player1.clickPrompt('Done');
+                this.player1.declareDefenders(this.guardDefender);
             });
 
             it('should contribute strength normally', function () {
@@ -87,121 +76,112 @@ describe('Sentinels of the Realm', function () {
             describe('when no challenges were initiated against the player', function () {
                 beforeEach(function () {
                     // Skip all challenges
-                    this.player2.clickPrompt('Done');
-                    this.player1.clickPrompt('Done');
+                    this.player2.passChallenge();
+                    this.player1.passChallenge();
 
-                    this.initialHandSize = this.player1Object.hand.length;
+                    this.initialHandSize = this.player1.handSize;
                 });
 
                 it('should draw 3 cards', function () {
                     this.player1.triggerAbility('Sentinels of the Realm');
-                    expect(this.player1Object.hand.length).toBe(this.initialHandSize + 3);
+                    expect(this.player1.handSize).toBe(this.initialHandSize + 3);
                 });
             });
 
             describe('when one type of challenge was initiated', function () {
                 beforeEach(function () {
-                    // Player 2 initiates military challenge
-                    this.player2.clickPrompt('Military');
-                    this.player2.clickCard(this.attacker);
-                    this.player2.clickPrompt('Done');
+                    this.player2.initiateChallenge({ type: 'military', attackers: this.attacker });
 
                     this.skipActionWindow();
 
-                    this.player1.clickPrompt('Done');
+                    this.player1.declareDefenders([]);
 
                     this.skipActionWindow();
 
-                    this.player2.clickPrompt('Continue');
+                    this.player2.skipClaim();
 
                     // End challenges
-                    this.player2.clickPrompt('Done');
-                    this.player1.clickPrompt('Done');
+                    this.player2.passChallenge();
+                    this.player1.passChallenge();
 
-                    this.initialHandSize = this.player1Object.hand.length;
+                    this.initialHandSize = this.player1.handSize;
                 });
 
                 it('should draw 2 cards', function () {
                     this.player1.triggerAbility('Sentinels of the Realm');
-                    expect(this.player1Object.hand.length).toBe(this.initialHandSize + 2);
+                    expect(this.player1.handSize).toBe(this.initialHandSize + 2);
                 });
             });
 
             describe('when two types of challenges were initiated', function () {
                 beforeEach(function () {
-                    // Player 2 initiates military challenge
-                    this.player2.clickPrompt('Military');
-                    this.player2.clickCard(this.attacker);
-                    this.player2.clickPrompt('Done');
+                    this.player2.initiateChallenge({ type: 'military', attackers: this.attacker });
 
                     this.skipActionWindow();
-                    this.player1.clickPrompt('Done');
+                    this.player1.declareDefenders([]);
                     this.skipActionWindow();
 
-                    this.player2.clickPrompt('Continue');
+                    this.player2.skipClaim();
 
-                    // Player 2 initiates intrigue challenge
-                    this.player2.clickPrompt('Intrigue');
-                    this.player2.clickCard('Steward at the Wall');
-                    this.player2.clickPrompt('Done');
+                    this.player2.initiateChallenge({
+                        type: 'intrigue',
+                        attackers: 'Steward at the Wall'
+                    });
 
                     this.skipActionWindow();
-                    this.player1.clickPrompt('Done');
+                    this.player1.declareDefenders([]);
                     this.skipActionWindow();
 
-                    this.player2.clickPrompt('Continue');
+                    this.player2.skipClaim();
 
                     // End challenges
-                    this.player2.clickPrompt('Done');
-                    this.player1.clickPrompt('Done');
+                    this.player2.passChallenge();
+                    this.player1.passChallenge();
 
-                    this.initialHandSize = this.player1Object.hand.length;
+                    this.initialHandSize = this.player1.handSize;
                 });
 
                 it('should draw 1 card', function () {
                     this.player1.triggerAbility('Sentinels of the Realm');
-                    expect(this.player1Object.hand.length).toBe(this.initialHandSize + 1);
+                    expect(this.player1.handSize).toBe(this.initialHandSize + 1);
                 });
             });
 
             describe('when all three types of challenges were initiated', function () {
                 beforeEach(function () {
-                    // Player 2 initiates military challenge
-                    this.player2.clickPrompt('Military');
-                    this.player2.clickCard(this.attacker);
-                    this.player2.clickPrompt('Done');
+                    this.player2.initiateChallenge({ type: 'military', attackers: this.attacker });
 
                     this.skipActionWindow();
-                    this.player1.clickPrompt('Done');
+                    this.player1.declareDefenders([]);
                     this.skipActionWindow();
 
-                    this.player2.clickPrompt('Continue');
+                    this.player2.skipClaim();
 
-                    // Player 2 initiates intrigue challenge
-                    this.player2.clickPrompt('Intrigue');
-                    this.player2.clickCard('Steward at the Wall');
-                    this.player2.clickPrompt('Done');
-
-                    this.skipActionWindow();
-                    this.player1.clickPrompt('Done');
-                    this.skipActionWindow();
-
-                    this.player2.clickPrompt('Continue');
-
-                    // Player 2 initiates power challenge
-                    this.player2.clickPrompt('Power');
-                    this.player2.clickCard('Dragonstone Faithful');
-                    this.player2.clickPrompt('Done');
+                    this.player2.initiateChallenge({
+                        type: 'intrigue',
+                        attackers: 'Steward at the Wall'
+                    });
 
                     this.skipActionWindow();
-                    this.player1.clickPrompt('Done');
+                    this.player1.declareDefenders([]);
                     this.skipActionWindow();
 
-                    this.player2.clickPrompt('Continue');
+                    this.player2.skipClaim();
+
+                    this.player2.initiateChallenge({
+                        type: 'power',
+                        attackers: 'Dragonstone Faithful'
+                    });
+
+                    this.skipActionWindow();
+                    this.player1.declareDefenders([]);
+                    this.skipActionWindow();
+
+                    this.player2.skipClaim();
 
                     // End challenges
-                    this.player2.clickPrompt('Done');
-                    this.player1.clickPrompt('Done');
+                    this.player2.passChallenge();
+                    this.player1.passChallenge();
                 });
 
                 it('should not allow triggering the ability', function () {

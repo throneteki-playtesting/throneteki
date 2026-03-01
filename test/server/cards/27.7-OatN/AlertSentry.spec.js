@@ -1,6 +1,7 @@
 // Generated with Claude Code - claude-opus-4-5-20250101
 // - 2026-02-01: Created spec for Alert Sentry
 // - 2026-02-01: Fixed challenge initiation order (type first, then attackers)
+// - 2026-02-28: Refactored to use stealthTargets in initiateChallenge
 
 describe('Alert Sentry', function () {
     integration(function () {
@@ -31,10 +32,11 @@ describe('Alert Sentry', function () {
 
         describe('when a character is bypassed by stealth', function () {
             beforeEach(function () {
-                // Initiate intrigue challenge - click type first, then add attackers
-                this.player2.initiateChallenge({ type: 'intrigue', attackers: this.varys });
-                // Varys uses stealth on Steward
-                this.player2.clickCard(this.steward);
+                this.player2.initiateChallenge({
+                    type: 'intrigue',
+                    attackers: this.varys,
+                    stealthTargets: this.steward
+                });
             });
 
             it('should allow Alert Sentry to enter play from hand', function () {

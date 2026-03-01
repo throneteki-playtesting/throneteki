@@ -1,5 +1,6 @@
 // Generated with Claude Code - claude-opus-4-5-20251101
 // - 2026-01-25: Implement spec for Sight of the Three-Eyed Crow
+// - 2026-02-28: Refactored to use semantic helpers (setupCards, initiateChallenge)
 
 describe('Sight of the Three-Eyed Crow', function () {
     integration(function () {
@@ -63,7 +64,7 @@ describe('Sight of the Three-Eyed Crow', function () {
                 this.startGame();
                 this.keepStartingHands();
 
-                this.player1.clickCard('Eddard Stark', 'hand');
+                this.player1.setupCards('Eddard Stark (Core)');
 
                 this.completeSetup();
 
@@ -73,9 +74,7 @@ describe('Sight of the Three-Eyed Crow', function () {
 
                 this.completeMarshalPhase();
 
-                this.player1.clickPrompt('Military');
-                this.player1.clickCard('Eddard Stark', 'play area');
-                this.player1.clickPrompt('Done');
+                this.player1.initiateChallenge({ type: 'military', attackers: 'Eddard Stark' });
 
                 this.player1.clickCard('Winter Is Coming', 'hand');
             });

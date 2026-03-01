@@ -1,5 +1,6 @@
 // Generated with Claude Code - claude-opus-4-5-20251101
 // - 2026-02-01: Updated to use new test helpers (setupCards)
+// - 2026-02-28: Refactored to use attachCard for post-setup attachment prompt
 
 describe('Snow Storm', function () {
     integration(function () {
@@ -43,10 +44,8 @@ describe('Snow Storm', function () {
             this.completeSetup();
 
             // Attach Ice to Bran and Widow's Wail to knight
-            this.player1.clickCard(this.ice);
-            this.player1.clickCard(this.bran);
-            this.player2.clickCard(this.widowsWail);
-            this.player2.clickCard(this.knight);
+            this.player1.attachCard(this.ice, this.bran);
+            this.player2.attachCard(this.widowsWail, this.knight);
 
             this.selectFirstPlayer(this.player1);
         });

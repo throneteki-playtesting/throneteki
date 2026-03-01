@@ -2,6 +2,7 @@
 // - 2026-02-01: Created spec for Sigorn
 // - 2026-02-05: Fixed to use Sansa Stark (Lady trait) instead of Ygritte
 // - 2026-02-28: Disambiguated Thenns (FtR)
+// - 2026-02-28: Refactored to use skipAssault in initiateChallenge
 
 describe('Sigorn', function () {
     integration(function () {
@@ -41,11 +42,7 @@ describe('Sigorn', function () {
 
         describe('when not controlling a Lady character', function () {
             beforeEach(function () {
-                const deck1 = this.buildDeck('stark', [
-                    'A Noble Cause',
-                    'Sigorn',
-                    'Thenns (FtR)'
-                ]);
+                const deck1 = this.buildDeck('stark', ['A Noble Cause', 'Sigorn', 'Thenns (FtR)']);
                 const deck2 = this.buildDeck('lannister', ['A Noble Cause', 'Hedge Knight']);
                 this.player1.selectDeck(deck1);
                 this.player2.selectDeck(deck2);
@@ -75,11 +72,7 @@ describe('Sigorn', function () {
 
         describe('participating while standing', function () {
             beforeEach(function () {
-                const deck1 = this.buildDeck('stark', [
-                    'A Noble Cause',
-                    'Sigorn',
-                    'Thenns (FtR)'
-                ]);
+                const deck1 = this.buildDeck('stark', ['A Noble Cause', 'Sigorn', 'Thenns (FtR)']);
                 const deck2 = this.buildDeck('lannister', ['A Noble Cause', 'Hedge Knight']);
                 this.player1.selectDeck(deck1);
                 this.player2.selectDeck(deck2);
@@ -99,9 +92,11 @@ describe('Sigorn', function () {
             });
 
             it('should be considered attacking when another Wildling attacks', function () {
-                this.player1.initiateChallenge({ type: 'military', attackers: this.thenns });
-                // Skip Thenns assault target selection
-                this.player1.clickPrompt('Done');
+                this.player1.initiateChallenge({
+                    type: 'military',
+                    attackers: this.thenns,
+                    skipAssault: true
+                });
 
                 expect(this.sigorn.isParticipating()).toBe(true);
                 expect(this.sigorn.kneeled).toBe(false);

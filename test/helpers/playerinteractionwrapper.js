@@ -1,6 +1,8 @@
 // Generated with Claude Code - claude-opus-4-5-20251101
 // - 2026-02-01: Added high-level game action helpers (marshalCard, playEvent, attachCard,
 //               initiateChallenge, declareDefenders, passChallenge, applyClaim, selectClaimTarget)
+// - 2026-02-28: Added gold, handSize properties; placeTokenOnCard helper; phase-aware attachCard
+// - 2026-02-28: Added keyword handling (stealthTargets/skipAssault) to initiateChallenge; skipClaim; selectIcon
 
 import uuid from 'uuid';
 import { matchCardByNameAndPack } from './cardutil.js';
@@ -27,6 +29,18 @@ class PlayerInteractionWrapper {
 
     get activePlot() {
         return this.player.activePlot;
+    }
+
+    get gold() {
+        return this.player.gold;
+    }
+
+    set gold(value) {
+        this.player.gold = value;
+    }
+
+    get handSize() {
+        return this.player.hand.length;
     }
 
     currentPrompt() {
@@ -322,6 +336,32 @@ class PlayerInteractionWrapper {
     }
 
     /**
+     * Place tokens on a card in play and refresh game state.
+     * Handles the modifyToken + refreshGameState + continue dance needed
+     * for state-dependent effects to recalculate.
+     * @param {string|object} cardOrName - Card name or card object
+     * @param {string} token - Token type from Tokens constants (e.g. Tokens.gold)
+     * @param {number} amount - Number of tokens to add
+     */
+    placeTokenOnCard(cardOrName, token, amount) {
+        const card =
+            typeof cardOrName === 'string'
+                ? this.findCardByName(cardOrName, 'play area')
+                : cardOrName;
+
+        if (card.location !== 'play area') {
+            throw new Error(
+                `Cannot place token on "${card.name}" - not in play area (location: ${card.location})`
+            );
+        }
+
+        card.modifyToken(token, amount);
+        this.game.refreshGameState();
+        this.game.continue();
+        this.checkUnserializableGameState();
+    }
+
+    /**
      * Setup a card from hand during the setup phase.
      * @param {string|object|Array} cardNameOrCard - Card name, card object, or array of cards to setup
      * @param {object} options - Optional parameters
@@ -437,12 +477,14 @@ class PlayerInteractionWrapper {
     }
 
     /**
-     * Attach a card to a target during marshal or setup.
+     * Attach a card to a target. During setup phase, looks for attachment in play area
+     * (post-setup attachment prompt); during other phases, looks in hand (marshalling).
      * @param {string|object} attachmentNameOrCard - Attachment card name or object
      * @param {string|object} targetNameOrCard - Target card name or object
      */
     attachCard(attachmentNameOrCard, targetNameOrCard) {
-        const attachment = this.findCardByName(attachmentNameOrCard, 'hand');
+        const attachmentLocation = this.game.currentPhase === 'setup' ? 'play area' : 'hand';
+        const attachment = this.findCardByName(attachmentNameOrCard, attachmentLocation);
         const target = this.findCardByName(targetNameOrCard, 'play area');
 
         if (attachment.getType() !== 'attachment') {
@@ -461,8 +503,10 @@ class PlayerInteractionWrapper {
      * @param {string} options.type - Challenge type: 'military', 'intrigue', or 'power'
      * @param {string|object|Array} options.attackers - Attacker card(s)
      * @param {object} options.opponent - Opponent player (for melee games)
+     * @param {string|object|Array} options.stealthTargets - Card(s) to select as stealth targets
+     * @param {boolean} options.skipAssault - If true, skip assault target selection (click Done)
      */
-    initiateChallenge({ type, attackers, opponent = null }) {
+    initiateChallenge({ type, attackers, opponent = null, stealthTargets, skipAssault = false }) {
         if (this.game.currentPhase !== 'challenge') {
             throw new Error(
                 `Cannot initiate challenge - not in challenge phase (current: ${this.game.currentPhase})`
@@ -500,6 +544,24 @@ class PlayerInteractionWrapper {
         }
 
         this.clickPrompt('Done');
+
+        // Handle keyword prompts (stealth resolves before assault per InitiatingKeywordsWindow)
+        let keywordPrompt = this.currentPrompt();
+
+        if (
+            stealthTargets !== undefined &&
+            keywordPrompt.menuTitle?.toLowerCase().includes('stealth target')
+        ) {
+            const targets = Array.isArray(stealthTargets) ? stealthTargets : [stealthTargets];
+            for (const target of targets) {
+                this.clickCard(target);
+            }
+            keywordPrompt = this.currentPrompt();
+        }
+
+        if (skipAssault && keywordPrompt.menuTitle?.toLowerCase().includes('assault target')) {
+            this.clickPrompt('Done');
+        }
     }
 
     /**
@@ -584,6 +646,35 @@ class PlayerInteractionWrapper {
         }
 
         this.clickCard(targetNameOrCard);
+    }
+
+    /**
+     * Skip claim after winning a challenge (click Continue on the claim prompt).
+     * This declines to apply claim.
+     */
+    skipClaim() {
+        const prompt = this.currentPrompt();
+        if (!prompt.menuTitle?.toLowerCase().includes('claim')) {
+            throw new Error(
+                `Cannot skip claim - not being prompted. Current prompt: ${prompt.menuTitle}`
+            );
+        }
+        this.clickPrompt('Continue');
+    }
+
+    /**
+     * Select a challenge icon from a prompt.
+     * @param {string} icon - Icon name: 'military', 'intrigue', or 'power'
+     */
+    selectIcon(icon) {
+        const prompt = this.currentPrompt();
+        if (!prompt.menuTitle?.toLowerCase().includes('icon')) {
+            throw new Error(
+                `Cannot select icon - not in icon prompt. Current prompt: ${prompt.menuTitle}`
+            );
+        }
+        const iconCapitalized = icon.charAt(0).toUpperCase() + icon.slice(1);
+        this.clickPrompt(iconCapitalized);
     }
 }
 

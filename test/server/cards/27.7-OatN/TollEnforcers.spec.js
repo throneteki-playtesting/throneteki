@@ -1,6 +1,9 @@
 // Generated with Claude Code - claude-opus-4-6-20250605
 // - 2026-02-01: Created spec for Toll Enforcers
 // - 2026-02-05: Fixed gold token check and challenge cancel assertion
+// - 2026-02-28: Refactored to use semantic helpers (placeTokenOnCard, gold)
+
+import { Tokens } from '../../../../server/game/Constants/Tokens.js';
 
 describe('Toll Enforcers', function () {
     integration(function () {
@@ -34,9 +37,7 @@ describe('Toll Enforcers', function () {
             });
 
             it('should have renown with 2 or more gold', function () {
-                this.tollEnforcers.modifyGold(2);
-                this.game.refreshGameState();
-                this.game.continue();
+                this.player1.placeTokenOnCard(this.tollEnforcers, Tokens.gold, 2);
                 expect(this.tollEnforcers.hasKeyword('renown')).toBe(true);
             });
         });
@@ -72,12 +73,12 @@ describe('Toll Enforcers', function () {
 
                     describe('when opponent chooses to move gold', function () {
                         beforeEach(function () {
-                            this.initialGold = this.player2Object.gold;
+                            this.initialGold = this.player2.gold;
                             this.player2.clickPrompt('Move 1 gold');
                         });
 
                         it('should move 1 gold from opponent to the selected card', function () {
-                            expect(this.player2Object.gold).toBe(this.initialGold - 1);
+                            expect(this.player2.gold).toBe(this.initialGold - 1);
                             expect(this.tollEnforcers.gold).toBe(1);
                         });
 

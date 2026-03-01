@@ -1,5 +1,6 @@
 // Generated with Claude Code - claude-opus-4-5-20251101
 // - 2026-01-25: Implement spec for Streets of King's Landing
+// - 2026-02-28: Refactored to use semantic helpers (gold, initiateChallenge, declareDefenders)
 
 describe("Streets of King's Landing", function () {
     integration(function () {
@@ -30,7 +31,7 @@ describe("Streets of King's Landing", function () {
 
             it('should reduce plot gold by 1', function () {
                 // A Noble Cause gives 5 gold, reduced by 1 = 4 gold
-                expect(this.player1Object.gold).toBe(4);
+                expect(this.player1.gold).toBe(4);
             });
         });
 
@@ -43,7 +44,7 @@ describe("Streets of King's Landing", function () {
 
             it('should not reduce plot gold', function () {
                 // A Noble Cause gives 5 gold
-                expect(this.player1Object.gold).toBe(5);
+                expect(this.player1.gold).toBe(5);
             });
         });
 
@@ -57,13 +58,11 @@ describe("Streets of King's Landing", function () {
                 this.completeMarshalPhase();
 
                 // Win a challenge
-                this.player1.clickPrompt('Intrigue');
-                this.player1.clickCard(this.character);
-                this.player1.clickPrompt('Done');
+                this.player1.initiateChallenge({ type: 'intrigue', attackers: this.character });
 
                 this.skipActionWindow();
 
-                this.player2.clickPrompt('Done');
+                this.player2.declareDefenders([]);
 
                 this.skipActionWindow();
             });

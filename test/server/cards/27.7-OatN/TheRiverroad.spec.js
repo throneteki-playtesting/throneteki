@@ -1,6 +1,7 @@
 // Generated with Claude Code - claude-opus-4-6-20250605
 // - 2026-02-01: Created spec for The Riverroad
 // - 2026-02-05: Fixed to use clickMenu for card actions
+// - 2026-02-28: Refactored to use selectIcon helper
 
 describe('The Riverroad', function () {
     integration(function () {
@@ -47,7 +48,7 @@ describe('The Riverroad', function () {
 
                 describe('when an icon is selected', function () {
                     beforeEach(function () {
-                        this.player1.clickPrompt('Military');
+                        this.player1.selectIcon('military');
                     });
 
                     it('should sacrifice The Riverroad', function () {

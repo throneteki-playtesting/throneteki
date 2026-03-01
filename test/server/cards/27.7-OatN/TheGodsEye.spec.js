@@ -17,7 +17,6 @@ describe("The God's Eye", function () {
             this.keepStartingHands();
 
             this.godsEye = this.player1.findCardByName("The God's Eye", 'hand');
-            this.hedgeKnight = this.player1.findCardByName('Hedge Knight', 'hand');
             this.opponentKnight = this.player2.findCardByName('Hedge Knight', 'hand');
 
             this.player1.setupCards(this.godsEye);
