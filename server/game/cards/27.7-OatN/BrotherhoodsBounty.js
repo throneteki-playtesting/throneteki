@@ -1,8 +1,9 @@
 // Generated with Claude Code - claude-opus-4-5-20250101
 // - 2026-02-01: Created implementation for Brotherhood's Bounty
+// - 2026-02-28: Refactored to use message: and GameActions
 
 import DrawCard from '../../drawcard.js';
-import TextHelper from '../../TextHelper.js';
+import GameActions from '../../GameActions/index.js';
 
 class BrotherhoodsBounty extends DrawCard {
     setupCardAbilities(ability) {
@@ -13,18 +14,15 @@ class BrotherhoodsBounty extends DrawCard {
                     (card) => card.getType() === 'character' && card.isLoyal()
                 ),
             max: ability.limit.perRound(1),
-            handler: (context) => {
-                let claim = context.player.getClaim();
-                let gold = this.game.addGold(context.player, claim);
-                let cards = context.player.drawCardsToHand(claim).length;
-                this.game.addMessage(
-                    '{0} plays {1} to gain {2} gold and draw {3}',
-                    context.player,
-                    this,
-                    gold,
-                    TextHelper.count(cards, 'card')
-                );
-            }
+            message:
+                '{player} uses {source} to gain gold and draw cards equal to their claim value',
+            gameAction: GameActions.simultaneously((context) => {
+                const claim = context.player.getClaim();
+                return [
+                    GameActions.gainGold({ player: context.player, amount: claim }),
+                    GameActions.drawCards({ player: context.player, amount: claim })
+                ];
+            })
         });
     }
 }

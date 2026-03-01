@@ -1,5 +1,6 @@
 // Generated with Claude Code - claude-opus-4-5-20250101
 // - 2026-02-01: Created implementation for Hot Pie
+// - 2026-02-28: Refactored to use message:
 
 import DrawCard from '../../drawcard.js';
 
@@ -15,15 +16,11 @@ class HotPie extends DrawCard {
                     card.getType() === 'character' &&
                     (!card.isLoyal() || card.name === 'Arya Stark')
             },
+            message: {
+                format: '{player} uses {source} to give {target} +{keywords} STR until the end of the phase',
+                args: { keywords: (context) => context.target.getKeywords().length }
+            },
             handler: (context) => {
-                let keywordCount = context.target.getKeywords().length;
-                this.game.addMessage(
-                    '{0} uses {1} to give {2} +{3} STR until the end of the phase',
-                    context.player,
-                    this,
-                    context.target,
-                    keywordCount
-                );
                 this.untilEndOfPhase((ability) => ({
                     match: context.target,
                     effect: ability.effects.dynamicStrength((card) => card.getKeywords().length)

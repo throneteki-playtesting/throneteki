@@ -1,5 +1,6 @@
 // Generated with Claude Code - claude-opus-4-5-20250101
 // - 2026-02-01: Created implementation for Toll Enforcers
+// - 2026-02-28: Refactored to use message: on reaction
 
 import DrawCard from '../../drawcard.js';
 import { Tokens } from '../../Constants/index.js';
@@ -22,6 +23,10 @@ class TollEnforcers extends DrawCard {
                 activePromptTitle: 'Select a card to receive the gold',
                 cardCondition: (card) =>
                     card.location === 'play area' && card.controller === this.controller
+            },
+            message: {
+                format: '{player} uses {source} to force {attacker} to move 1 gold to {target} or end the challenge',
+                args: { attacker: (context) => context.event.challenge.attackingPlayer }
             },
             handler: (context) => {
                 let attacker = context.event.challenge.attackingPlayer;
@@ -46,14 +51,6 @@ class TollEnforcers extends DrawCard {
                     },
                     waitingPromptTitle: 'Waiting for opponent to choose'
                 });
-
-                this.game.addMessage(
-                    '{0} uses {1} to force {2} to move 1 gold to {3} or end the challenge',
-                    context.player,
-                    this,
-                    attacker,
-                    context.target
-                );
             }
         });
     }

@@ -1,7 +1,9 @@
 // Generated with Claude Code - claude-opus-4-5-20250101
 // - 2026-02-01: Created implementation for Alert Sentry
+// - 2026-02-28: Refactored to use message: and GameActions
 
 import DrawCard from '../../drawcard.js';
+import GameActions from '../../GameActions/index.js';
 
 class AlertSentry extends DrawCard {
     setupCardAbilities(ability) {
@@ -12,18 +14,13 @@ class AlertSentry extends DrawCard {
             },
             location: 'hand',
             max: ability.limit.perChallenge(1),
-            handler: (context) => {
-                this.game.addMessage(
-                    '{0} uses {1} to put {1} into play as a defender after {2} was bypassed by stealth',
-                    context.player,
-                    this,
-                    context.event.target
-                );
-                context.player.putIntoPlay(this, 'play', { kneeled: false });
-                if (this.game.currentChallenge) {
-                    this.game.currentChallenge.addDefender(this);
-                }
-            }
+            message: {
+                format: '{player} uses {source} to put {source} into play as a defender after {bypassed} was bypassed by stealth',
+                args: { bypassed: (context) => context.event.target }
+            },
+            gameAction: GameActions.putIntoPlay({ card: this, kneeled: false }).then({
+                gameAction: GameActions.addToChallenge({ card: this })
+            })
         });
     }
 }
