@@ -1,3 +1,6 @@
+// Generated with Claude Code - claude-opus-4-6-20250605
+// - 2026-02-28: Refactored to use semantic helpers (handSize, activePlot)
+
 describe('Searching the Archives', function () {
     integration(function () {
         beforeEach(function () {
@@ -21,7 +24,7 @@ describe('Searching the Archives', function () {
 
         describe('when using the action', function () {
             beforeEach(function () {
-                this.initialHandSize = this.player1Object.hand.length;
+                this.initialHandSize = this.player1.handSize;
                 this.player1.clickMenu('Searching the Archives', 'Place a card under your agenda');
             });
 
@@ -41,7 +44,7 @@ describe('Searching the Archives', function () {
                 it('should draw 1 card', function () {
                     // Started with X cards, placed 1 under agenda, drew 1
                     // Net change: same number of cards in hand
-                    expect(this.player1Object.hand.length).toBe(this.initialHandSize);
+                    expect(this.player1.handSize).toBe(this.initialHandSize);
                 });
             });
         });
@@ -66,7 +69,7 @@ describe('Searching the Archives', function () {
             });
 
             it('should not allow using the ability', function () {
-                let plot = this.player1Object.activePlot;
+                let plot = this.player1.activePlot;
                 expect(this.player1).not.toAllowTriggerAction(
                     plot,
                     'Place a card under your agenda'

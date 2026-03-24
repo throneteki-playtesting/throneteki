@@ -1,5 +1,8 @@
 // Generated with Claude Code - claude-opus-4-5-20251101
 // - 2026-02-01: Updated to use new test helpers (setupCards)
+// - 2026-02-28: Refactored to use semantic helpers (placeTokenOnCard, gold)
+
+import { Tokens } from '../../../../server/game/Constants/Tokens.js';
 
 describe('Raising Taxes', function () {
     integration(function () {
@@ -24,8 +27,8 @@ describe('Raising Taxes', function () {
         describe('when characters have gold', function () {
             beforeEach(function () {
                 // Give gold to characters via bestow
-                this.tyrion.modifyGold(2);
-                this.alayaya.modifyGold(3);
+                this.player1.placeTokenOnCard(this.tyrion, Tokens.gold, 2);
+                this.player2.placeTokenOnCard(this.alayaya, Tokens.gold, 3);
 
                 this.selectFirstPlayer(this.player1);
             });
@@ -39,7 +42,7 @@ describe('Raising Taxes', function () {
 
             it('should give gold only to the revealing player', function () {
                 // Tyrion's 2 gold goes to player 1
-                expect(this.player1Object.gold).toBeGreaterThan(0);
+                expect(this.player1.gold).toBeGreaterThan(0);
             });
         });
 

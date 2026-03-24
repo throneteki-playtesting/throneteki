@@ -1,5 +1,6 @@
 // Generated with Claude Code - claude-opus-4-5-20251101
 // - 2026-02-01: Updated to use new test helpers (initiateChallenge, declareDefenders, applyClaim, selectClaimTarget, setupCards)
+// - 2026-02-28: Refactored to use gold property
 
 describe('Battle of the Bells', function () {
     integration(function () {
@@ -39,7 +40,7 @@ describe('Battle of the Bells', function () {
             describe('when a card enters play', function () {
                 beforeEach(function () {
                     // Marshal the Arbor Knight to trigger enters play abilities
-                    this.player2Object.gold = 5;
+                    this.player2.gold = 5;
                     this.player2.clickCard(this.arborKnight);
                 });
 
