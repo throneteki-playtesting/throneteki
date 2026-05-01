@@ -1,30 +1,51 @@
 import DrawCard from '../../drawcard.js';
+import GameActions from '../../GameActions/index.js';
 
 class PaxterRedwyne extends DrawCard {
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.reaction({
             when: {
-                onCardOutOfShadows: (event) => event.card.controller === this.controller
+                afterChallenge: (event) =>
+                    event.challenge.winner === this.controller && this.isParticipating()
             },
             target: {
-                cardCondition: (card) =>
-                    card.getType() === 'character' &&
-                    card.location === 'play area' &&
-                    card.isFaction('tyrell')
+                cardCondition: {
+                    location: 'play area',
+                    type: 'location',
+                    controller: 'current'
+                }
             },
-            limit: ability.limit.perRound(3),
-            message: '{player} uses {source} to give {target} +2 STR until the end of the phase',
             handler: (context) => {
-                this.untilEndOfPhase((ability) => ({
-                    match: context.target,
-                    effect: ability.effects.modifyStrength(2)
-                }));
+                this.game.resolveGameAction(
+                    GameActions.ifCondition({
+                        condition: (context) => !context.target.hasTrait('Warship'),
+                        thenAction: {
+                            message: '{player} uses {source} to {gameAction}',
+                            gameAction: GameActions.returnCardToHand((context) => ({
+                                card: context.target
+                            }))
+                        },
+                        elseAction: GameActions.choose({
+                            title: 'Place location in shadows?',
+                            message: '{player} uses {source} to {gameAction}',
+                            choices: {
+                                'Return to hand': GameActions.returnCardToHand((context) => ({
+                                    card: context.target
+                                })),
+                                'Put in shadows': GameActions.putIntoShadows((context) => ({
+                                    card: context.target
+                                }))
+                            }
+                        })
+                    }),
+                    context
+                );
             }
         });
     }
 }
 
 PaxterRedwyne.code = '27585';
-PaxterRedwyne.version = '1.0.0';
+PaxterRedwyne.version = '1.1.0';
 
 export default PaxterRedwyne;
