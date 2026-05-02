@@ -5,7 +5,7 @@ class StannisBaratheon extends DrawCard {
         this.persistentEffect({
             match: (card) => card.getType() === 'character',
             condition: () => this.game.anyPlotHasTrait('Winter'),
-            targetController: 'any',
+            targetController: 'opponent',
             effect: [
                 ability.effects.cannotIncreaseStrength(
                     (context) => context.resolutionStage === 'effect'
@@ -16,6 +16,6 @@ class StannisBaratheon extends DrawCard {
 }
 
 StannisBaratheon.code = '27501';
-StannisBaratheon.version = '1.0.0';
+StannisBaratheon.version = '1.0.1';
 
 export default StannisBaratheon;

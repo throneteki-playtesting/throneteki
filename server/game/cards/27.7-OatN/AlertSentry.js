@@ -1,7 +1,3 @@
-// Generated with Claude Code - claude-opus-4-5-20250101
-// - 2026-02-01: Created implementation for Alert Sentry
-// - 2026-02-28: Refactored to use message: and GameActions
-
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
@@ -9,8 +5,7 @@ class AlertSentry extends DrawCard {
     setupCardAbilities(ability) {
         this.reaction({
             when: {
-                onBypassedByStealth: (event) =>
-                    event.target.controller === this.controller && this.controller.canPutIntoPlay(this)
+                onBypassedByStealth: (event) => event.target.controller === this.controller
             },
             location: 'hand',
             max: ability.limit.perChallenge(1),

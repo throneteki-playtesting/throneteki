@@ -2,11 +2,12 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class DoreaSand extends DrawCard {
-    setupCardAbilities() {
+    setupCardAbilities(ability) {
         this.action({
             title: 'Return to hand',
             message: '{player} uses {source} to return {source} to their hand',
             phase: 'challenge',
+            max: ability.limit.perRound(1),
             gameAction: GameActions.returnCardToHand({ card: this }).then(() => ({
                 condition: (context) => {
                     const playerCharacterCount = context.player.getNumberOfCardsInPlay({
@@ -41,6 +42,6 @@ class DoreaSand extends DrawCard {
 }
 
 DoreaSand.code = '27539';
-DoreaSand.version = '1.0.0';
+DoreaSand.version = '1.0.1';
 
 export default DoreaSand;

@@ -817,6 +817,31 @@ const Effects = {
             }
         };
     },
+    returnToShadowsIfStillInPlay: function (allowSave = false, duration = 'phase') {
+        return {
+            apply: function (card, context) {
+                context.returnToShadowsIfStillInPlay = context.returnToShadowsIfStillInPlay || [];
+                context.returnToShadowsIfStillInPlay.push(card);
+            },
+            unapply: function (card, context) {
+                if (
+                    ['play area', 'duplicate'].includes(card.location) &&
+                    context.returnToShadowsIfStillInPlay.includes(card)
+                ) {
+                    context.returnToShadowsIfStillInPlay =
+                        context.returnToShadowsIfStillInPlay.filter((c) => c !== card);
+                    card.controller.putIntoShadows(card, allowSave);
+                    context.game.addMessage(
+                        '{0} returns {1} to shadows at the end of the {2} because of {3}',
+                        context.source.controller,
+                        card,
+                        duration,
+                        context.source
+                    );
+                }
+            }
+        };
+    },
     returnToHandIfStillInPlayAndNotAttachedToCardByTitle: function (
         parentCardTitle,
         allowSave = false,
