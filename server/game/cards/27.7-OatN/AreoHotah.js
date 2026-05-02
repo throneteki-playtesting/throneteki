@@ -1,3 +1,4 @@
+import Claim from '../../Claim.js';
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
@@ -12,7 +13,7 @@ class AreoHotah extends DrawCard {
             message:
                 '{player} uses {source} and kneels their faction card to satisfy claim as if they were the attacking player',
             gameAction: GameActions.applyClaim((context) => {
-                const claim = context.event.claim.clone();
+                const claim = Claim.createFromChallenge(context.event.challenge);
                 return { player: context.player, claim, game: this.game };
             })
         });

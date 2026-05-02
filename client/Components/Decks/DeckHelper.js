@@ -1,3 +1,4 @@
+import { Constants } from '../../constants';
 import { lookupCardByName } from './DeckParser';
 
 export function deckStatusLabel(status) {
@@ -18,17 +19,6 @@ export function deckStatusLabel(status) {
     }
 
     return 'Regular Legal';
-}
-
-export function cardSetLabel(cardSet) {
-    switch (cardSet) {
-        case 'redesign':
-            return 'Standard';
-        case 'original':
-            return 'Valyrian';
-    }
-
-    return 'Unknown';
 }
 
 const parseCardLine = (packs, cards, line) => {
@@ -58,27 +48,55 @@ const parseCardCount = (line) => {
     return { count: count, name: match[2] };
 };
 
-const addCard = (list, card, number) => {
-    let existingCard = list.find((item) => item.card === card);
+const addCard = (list, card, number, isDraftpool = false) => {
+    let existingCard = list.find((item) => item.cardcode === card.code);
     if (existingCard) {
         existingCard.count += number;
-        existingCard.count = Math.min(existingCard.count, card.deckLimit);
+        existingCard.count = isDraftpool
+            ? existingCard.count
+            : Math.min(existingCard.count, card.deckLimit);
     } else {
-        const count = Math.min(number, card.deckLimit);
-        list.push({ count: count, card: card });
+        const count = isDraftpool ? number : Math.min(number, card.deckLimit);
+        list.push({ cardcode: card.code, count: count });
     }
 };
 
-export const processDeckText = (factions, packs, cards, deckText) => {
+export const processDeckText = (
+    factions,
+    packs,
+    cards,
+    deckText,
+    gameFormat,
+    gameVariant,
+    isDraftpool = false
+) => {
     return (
-        processThronesDbDeckText(factions, packs, cards, deckText) ??
-        processPlainDeckText(factions, packs, cards, deckText)
+        processThronesDbDeckText(
+            factions,
+            packs,
+            cards,
+            deckText,
+            gameFormat,
+            gameVariant,
+            isDraftpool
+        ) ??
+        processPlainDeckText(factions, packs, cards, deckText, gameFormat, gameVariant, isDraftpool)
     );
 };
 
-const processThronesDbDeckText = (factions, packs, cards, deckText) => {
+const processThronesDbDeckText = (
+    factions,
+    packs,
+    cards,
+    deckText,
+    gameFormat,
+    gameVariant,
+    isDraftpool = false
+) => {
     let split = deckText.split('\n');
     let deckName, faction, agenda, bannerCards;
+
+    const pool = isDraftpool ? [] : undefined;
 
     const headerMark = split.findIndex((line) => line.match(/^Packs:/));
     if (headerMark >= 0) {
@@ -120,7 +138,10 @@ const processThronesDbDeckText = (factions, packs, cards, deckText) => {
                     packs: packs
                 });
                 if (newAgenda) {
-                    agenda = newAgenda;
+                    agenda = newAgenda.code;
+                    if (isDraftpool) {
+                        addCard(pool, newAgenda, 1, isDraftpool);
+                    }
                 }
 
                 if (rawBanners) {
@@ -132,7 +153,10 @@ const processThronesDbDeckText = (factions, packs, cards, deckText) => {
                             packs: packs
                         });
                         if (banner) {
-                            banners.push(banner);
+                            banners.push(banner.code);
+                            if (isDraftpool) {
+                                addCard(pool, banner, 1, isDraftpool);
+                            }
                         }
                     }
 
@@ -150,7 +174,10 @@ const processThronesDbDeckText = (factions, packs, cards, deckText) => {
     for (const line of split) {
         const { card, count } = parseCardLine(packs, cards, line);
         if (card) {
-            addCard(card.type === 'plot' ? plotCards : drawCards, card, count);
+            addCard(card.type === 'plot' ? plotCards : drawCards, card, count, isDraftpool);
+            if (isDraftpool) {
+                addCard(pool, card, count, isDraftpool);
+            }
         }
     }
 
@@ -162,9 +189,12 @@ const processThronesDbDeckText = (factions, packs, cards, deckText) => {
         name: deckName,
         faction: faction,
         agenda: agenda,
-        bannerCards: bannerCards,
+        bannerCards: bannerCards ?? [],
         plotCards: plotCards,
-        drawCards: drawCards
+        drawCards: drawCards,
+        format: gameFormat,
+        variant: gameVariant,
+        pool: pool
     };
 };
 
