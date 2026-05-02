@@ -10,7 +10,7 @@ describe("Brotherhood's Bounty", function () {
                 const deck1 = this.buildDeck('stark', [
                     'Sneak Attack',
                     "Brotherhood's Bounty",
-                    { name: 'Hedge Knight', count: 10 }
+                    'Hedge Knight'
                 ]);
                 const deck2 = this.buildDeck('lannister', ['A Noble Cause', 'Hedge Knight']);
                 this.player1.selectDeck(deck1);
