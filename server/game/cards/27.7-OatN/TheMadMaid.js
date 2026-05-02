@@ -32,26 +32,37 @@ class TheMadMaid extends DrawCard {
     }
 
     chooseAndRevealForCardtype(cardType) {
-        this.game.promptForSelect(this.controller, {
-            activePrompt: 'Select a card',
-            cardCondition: (card) => card.location === 'shadows',
-            onSelect: (player, card) => {
-                const gameActions = [GameActions.revealCards({ cards: [card] })];
+        return (context) => {
+            this.game.promptForSelect(context.player, {
+                activePrompt: 'Select a card',
+                cardCondition: (card) => card.location === 'shadows',
+                onSelect: (player, card) => {
+                    const gameActions = [GameActions.revealCards({ cards: [card] })];
 
-                if (card.getType() === cardType) {
-                    gameActions.push([GameActions.discardCard({ card })]);
-                    this.game.addMessage('{0} reveals and discards {1} from shadows', player, card);
-                } else {
-                    this.game.addMessage('{0} reveals {1} from shadows', player, card);
+                    if (card.getType() === cardType) {
+                        gameActions.push([GameActions.discardCard({ card })]);
+                        this.game.addMessage(
+                            '{0} reveals and discards {1} from shadows',
+                            player,
+                            card
+                        );
+                    } else {
+                        this.game.addMessage('{0} reveals {1} from shadows', player, card);
+                    }
+                    this.game.resolveGameAction(GameActions.simultaneously(gameActions));
+                    return true;
+                },
+                onCancel: (player) => {
+                    this.game.addAlert(
+                        'danger',
+                        '{0} does not select any cards for {1}',
+                        player,
+                        this
+                    );
+                    return true;
                 }
-                this.game.resolveGameAction(GameActions.simultaneously(gameActions));
-                return true;
-            },
-            onCancel: (player) => {
-                this.game.addAlert('danger', '{0} does not select any cards for {1}', player, this);
-                return true;
-            }
-        });
+            });
+        };
     }
 }
 
