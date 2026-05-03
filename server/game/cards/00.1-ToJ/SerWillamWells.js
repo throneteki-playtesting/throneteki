@@ -25,6 +25,6 @@ class SerWillamWells extends DrawCard {
     }
 }
 
-SerWillamWells.code = '00181';
+SerWillamWells.code = '00185';
 
 export default SerWillamWells;

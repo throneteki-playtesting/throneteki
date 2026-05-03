@@ -32,6 +32,6 @@ class Sandstone extends DrawCard {
     }
 }
 
-Sandstone.code = '00182';
+Sandstone.code = '00186';
 
 export default Sandstone;

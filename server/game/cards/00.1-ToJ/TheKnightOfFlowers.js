@@ -37,6 +37,6 @@ class TheKnightOfFlowers extends DrawCard {
     }
 }
 
-TheKnightOfFlowers.code = '00266';
+TheKnightOfFlowers.code = '00273';
 
 export default TheKnightOfFlowers;

@@ -35,6 +35,6 @@ class KarstarkLancer extends DrawCard {
     }
 }
 
-KarstarkLancer.code = '00236';
+KarstarkLancer.code = '00242';
 
 export default KarstarkLancer;

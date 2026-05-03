@@ -46,6 +46,6 @@ class TheKnight extends DrawCard {
     }
 }
 
-TheKnight.code = '00131';
+TheKnight.code = '00133';
 
 export default TheKnight;

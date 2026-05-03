@@ -37,6 +37,6 @@ class TheCrag extends DrawCard {
     }
 }
 
-TheCrag.code = '00221';
+TheCrag.code = '00226';
 
 export default TheCrag;

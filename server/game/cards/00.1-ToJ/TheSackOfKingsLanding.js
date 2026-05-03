@@ -44,6 +44,6 @@ class TheSackOfKingsLanding extends PlotCard {
     }
 }
 
-TheSackOfKingsLanding.code = '00327';
+TheSackOfKingsLanding.code = '00156';
 
 export default TheSackOfKingsLanding;

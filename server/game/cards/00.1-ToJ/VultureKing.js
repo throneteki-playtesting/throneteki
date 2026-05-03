@@ -41,6 +41,6 @@ class VultureKing extends DrawCard {
     }
 }
 
-VultureKing.code = '00184';
+VultureKing.code = '00188';
 
 export default VultureKing;

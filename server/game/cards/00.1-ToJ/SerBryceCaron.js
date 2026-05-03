@@ -12,6 +12,6 @@ class SerBryceCaron extends DrawCard {
     }
 }
 
-SerBryceCaron.code = '00270';
+SerBryceCaron.code = '00278';
 
 export default SerBryceCaron;

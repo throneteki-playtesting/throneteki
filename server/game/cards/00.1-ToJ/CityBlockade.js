@@ -15,6 +15,6 @@ class CityBlockade extends PlotCard {
     }
 }
 
-CityBlockade.code = '00339';
+CityBlockade.code = '00330';
 
 export default CityBlockade;

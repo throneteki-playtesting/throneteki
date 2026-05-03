@@ -19,6 +19,6 @@ class FormerChampion extends DrawCard {
     }
 }
 
-FormerChampion.code = '00289';
+FormerChampion.code = '00297';
 
 export default FormerChampion;

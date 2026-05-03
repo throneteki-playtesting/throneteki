@@ -37,6 +37,6 @@ class MargaeryTyrell extends DrawCard {
     }
 }
 
-MargaeryTyrell.code = '00263';
+MargaeryTyrell.code = '00270';
 
 export default MargaeryTyrell;

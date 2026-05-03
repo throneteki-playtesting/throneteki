@@ -23,6 +23,6 @@ class BranTheBuilder extends PlotCard {
     }
 }
 
-BranTheBuilder.code = '00337';
+BranTheBuilder.code = '00303';
 
 export default BranTheBuilder;

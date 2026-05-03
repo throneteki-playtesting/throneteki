@@ -30,6 +30,6 @@ class NaughtButAshes extends DrawCard {
     }
 }
 
-NaughtButAshes.code = '00261';
+NaughtButAshes.code = '00268';
 
 export default NaughtButAshes;

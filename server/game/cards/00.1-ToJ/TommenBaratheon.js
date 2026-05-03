@@ -29,6 +29,6 @@ class TommenBaratheon extends DrawCard {
     }
 }
 
-TommenBaratheon.code = '00151';
+TommenBaratheon.code = '00153';
 
 export default TommenBaratheon;

@@ -44,6 +44,6 @@ class AThousandEyesAndOne extends DrawCard {
     }
 }
 
-AThousandEyesAndOne.code = '00323';
+AThousandEyesAndOne.code = '00359';
 
 export default AThousandEyesAndOne;

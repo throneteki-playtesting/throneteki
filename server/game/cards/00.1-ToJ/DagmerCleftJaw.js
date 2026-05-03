@@ -13,6 +13,6 @@ class DagmerCleftjaw extends DrawCard {
     }
 }
 
-DagmerCleftjaw.code = '00132';
+DagmerCleftjaw.code = '00134';
 
 export default DagmerCleftjaw;

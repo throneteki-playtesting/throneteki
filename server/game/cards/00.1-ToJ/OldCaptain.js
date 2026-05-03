@@ -10,6 +10,6 @@ class OldCaptain extends DrawCard {
     }
 }
 
-OldCaptain.code = '00143';
+OldCaptain.code = '00145';
 
 export default OldCaptain;

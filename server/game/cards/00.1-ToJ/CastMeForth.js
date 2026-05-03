@@ -9,8 +9,7 @@ class CastMeForth extends PlotCard {
                     card.controller === this.controller &&
                     card.location === 'dead pile' &&
                     card.getType() === 'character' &&
-                    (card.hasTrait('Drowned God') || card.hasTrait('Raider')) &&
-                    !card.isUnique()
+                    (card.hasTrait('Drowned God') || card.hasTrait('Raider'))
             )
         });
         this.persistentEffect({
@@ -21,6 +20,6 @@ class CastMeForth extends PlotCard {
     }
 }
 
-CastMeForth.code = '00326';
+CastMeForth.code = '00132';
 
 export default CastMeForth;

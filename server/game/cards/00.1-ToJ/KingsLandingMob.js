@@ -17,6 +17,6 @@ class KingsLandingMob extends DrawCard {
     }
 }
 
-KingsLandingMob.code = '00310';
+KingsLandingMob.code = '00347';
 
 export default KingsLandingMob;

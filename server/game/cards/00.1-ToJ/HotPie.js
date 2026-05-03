@@ -5,10 +5,9 @@ import { Tokens } from '../../Constants/index.js';
 class HotPie extends DrawCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
-            match: (card) => card.getType() === 'character',
-            effect: ability.effects.dynamicStrength((card) => card.tokens[Tokens.pie])
+            match: this,
+            effect: ability.effects.immuneTo((card) => card.hasTrait('Omen'))
         });
-
         this.action({
             title: 'Bake a Pie',
             cost: ability.costs.kneelSelf(),
@@ -23,11 +22,17 @@ class HotPie extends DrawCard {
                     GameActions.placeToken(() => ({ card: context.target, token: Tokens.pie })),
                     context
                 );
+                this.lastingEffect((ability) => ({
+                    targetLocation: 'play area',
+                    targetController: 'any',
+                    match: context.target,
+                    effect: ability.effects.modifyStrength(1)
+                }));
             }
         });
     }
 }
 
-HotPie.code = '00357';
+HotPie.code = '00361';
 
 export default HotPie;

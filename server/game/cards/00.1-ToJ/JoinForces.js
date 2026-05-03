@@ -67,6 +67,6 @@ class JoinForces extends AgendaCard {
     }
 }
 
-JoinForces.code = '00362';
+JoinForces.code = '00366';
 
 export default JoinForces;

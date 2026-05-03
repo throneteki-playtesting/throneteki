@@ -23,6 +23,6 @@ class Silence extends DrawCard {
     }
 }
 
-Silence.code = '00137';
+Silence.code = '00139';
 
 export default Silence;

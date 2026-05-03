@@ -45,6 +45,6 @@ class JonArryn extends DrawCard {
     }
 }
 
-JonArryn.code = '00111';
+JonArryn.code = '00112';
 
 export default JonArryn;

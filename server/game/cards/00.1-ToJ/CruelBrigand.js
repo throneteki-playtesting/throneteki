@@ -1,40 +1,37 @@
+import { ChallengeTracker } from '../../EventTrackers/ChallengeTracker.js';
 import DrawCard from '../../drawcard.js';
 
 class CruelBrigand extends DrawCard {
     setupCardAbilities(ability) {
-        this.action({
-            title: 'Put character into play',
-            limit: ability.limit.perPhase(1),
-            cost: ability.costs.discardGold(),
+        this.tracker = ChallengeTracker.forRound(this.game);
+
+        this.reaction({
+            when: {
+                onCardEntersPlay: (event) =>
+                    this === event.card &&
+                    this.tracker.some({ winner: this.controller, challengeType: 'intrigue' })
+            },
+            cost: ability.costs.kneelFactionCard(),
             target: {
-                cardCondition: (card, context) =>
-                    card.controller === context.player &&
-                    card.location === 'hand' &&
+                cardCondition: (card) =>
+                    card.location === 'play area' &&
                     card.getType() === 'character' &&
-                    card.getPrintedCost() <= 4 &&
-                    context.player.canPutIntoPlay(card)
+                    card.getStrength() <= 3
             },
             handler: (context) => {
-                context.player.putIntoPlay(context.target);
-
-                this.atEndOfPhase((ability) => ({
-                    match: context.target,
-                    condition: () => ['play area', 'duplicate'].includes(context.target.location),
-                    targetLocation: 'any',
-                    effect: ability.effects.discardIfStillInPlay(true)
-                }));
-
+                context.target.owner.returnCardToHand(context.target);
                 this.game.addMessage(
-                    '{0} discards 1 gold from {1} to put {2} into play from their hand',
-                    context.player,
+                    "{0} uses {1} to return {2} to {3}'s hand",
+                    this.controller,
                     this,
-                    context.target
+                    context.target,
+                    context.target.controller
                 );
             }
         });
     }
 }
 
-CruelBrigand.code = '00164';
+CruelBrigand.code = '00169';
 
 export default CruelBrigand;

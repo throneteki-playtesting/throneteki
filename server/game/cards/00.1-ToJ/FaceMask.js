@@ -44,6 +44,6 @@ class FaceMask extends DrawCard {
     }
 }
 
-FaceMask.code = '00321';
+FaceMask.code = '00357';
 
 export default FaceMask;

@@ -32,6 +32,6 @@ class TheHourOfTheWolf extends PlotCard {
     }
 }
 
-TheHourOfTheWolf.code = '00330';
+TheHourOfTheWolf.code = '00228';
 
 export default TheHourOfTheWolf;

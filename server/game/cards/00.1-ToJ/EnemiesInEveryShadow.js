@@ -46,6 +46,6 @@ class EnemiesInEveryShadow extends PlotCard {
     }
 }
 
-EnemiesInEveryShadow.code = '00342';
+EnemiesInEveryShadow.code = '00334';
 
 export default EnemiesInEveryShadow;

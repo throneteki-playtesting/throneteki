@@ -19,6 +19,6 @@ class GarthGreenhand extends DrawCard {
     }
 }
 
-GarthGreenhand.code = '00268';
+GarthGreenhand.code = '00275';
 
 export default GarthGreenhand;

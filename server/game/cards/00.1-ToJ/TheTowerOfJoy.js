@@ -8,13 +8,16 @@ class TheTowerOfJoy extends DrawCard {
                     match: (challenge) => challenge.hasSingleParticipant(this.controller)
                 }),
             match: (card) =>
-                card.isUnique() && card.getType() === 'character' && card.isParticipating(),
+                card.isUnique() &&
+                card.getType() === 'character' &&
+                card.isParticipating() &&
+                !this.kneeled,
             effect: ability.effects.modifyStrength(2)
         });
 
         this.reaction({
             when: {
-                onCardLeftPlay: (event) =>
+                onCharacterKilled: (event) =>
                     event.card.getType() === 'character' &&
                     event.card.isUnique() &&
                     this.allowGameAction('gainPower')
@@ -22,7 +25,7 @@ class TheTowerOfJoy extends DrawCard {
             limit: ability.limit.perPhase(1),
             handler: () => {
                 this.game.addMessage(
-                    '{0} gains 1 power from a unique character leaving play',
+                    '{0} gains 1 power from a unique character being killed',
                     this.controller
                 );
 
@@ -32,6 +35,6 @@ class TheTowerOfJoy extends DrawCard {
     }
 }
 
-TheTowerOfJoy.code = '00292';
+TheTowerOfJoy.code = '00300';
 
 export default TheTowerOfJoy;

@@ -32,6 +32,6 @@ class TheStranger extends PlotCard {
     }
 }
 
-TheStranger.code = '00354';
+TheStranger.code = '00307';
 
 export default TheStranger;

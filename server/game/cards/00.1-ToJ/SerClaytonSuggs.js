@@ -40,6 +40,6 @@ class SerClaytonSuggs extends DrawCard {
     }
 }
 
-SerClaytonSuggs.code = '00112';
+SerClaytonSuggs.code = '00113';
 
 export default SerClaytonSuggs;

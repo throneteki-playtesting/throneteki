@@ -37,6 +37,6 @@ class SerAddamMarbrand extends DrawCard {
     }
 }
 
-SerAddamMarbrand.code = '00154';
+SerAddamMarbrand.code = '00157';
 
 export default SerAddamMarbrand;

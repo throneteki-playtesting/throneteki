@@ -24,6 +24,6 @@ class SchemingSnake extends DrawCard {
     }
 }
 
-SchemingSnake.code = '00187';
+SchemingSnake.code = '00191';
 
 export default SchemingSnake;

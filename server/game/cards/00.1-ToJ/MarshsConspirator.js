@@ -22,6 +22,6 @@ class MarshsConspirator extends DrawCard {
     }
 }
 
-MarshsConspirator.code = '00210';
+MarshsConspirator.code = '00215';
 
 export default MarshsConspirator;

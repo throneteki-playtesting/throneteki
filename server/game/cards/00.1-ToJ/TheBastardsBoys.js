@@ -29,6 +29,6 @@ class TheBastardsBoys extends DrawCard {
     }
 }
 
-TheBastardsBoys.code = '00231';
+TheBastardsBoys.code = '00237';
 
 export default TheBastardsBoys;

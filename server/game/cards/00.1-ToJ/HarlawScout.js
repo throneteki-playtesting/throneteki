@@ -20,6 +20,6 @@ class HarlawScout extends DrawCard {
     }
 }
 
-HarlawScout.code = '00142';
+HarlawScout.code = '00144';
 
 export default HarlawScout;

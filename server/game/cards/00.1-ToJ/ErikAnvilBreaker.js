@@ -10,6 +10,6 @@ class ErikAnvilBreaker extends DrawCard {
     }
 }
 
-ErikAnvilBreaker.code = '00128';
+ErikAnvilBreaker.code = '00129';
 
 export default ErikAnvilBreaker;

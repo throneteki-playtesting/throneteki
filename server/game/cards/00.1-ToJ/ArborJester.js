@@ -5,7 +5,7 @@ class ArborJester extends DrawCard {
     setupCardAbilities() {
         this.reaction({
             when: {
-                onCardOutOfShadows: (event) => event.card === this
+                onCardEntersPlay: (event) => event.card === this
             },
             target: {
                 cardCondition: (card) =>
@@ -79,6 +79,6 @@ class ArborJester extends DrawCard {
     }
 }
 
-ArborJester.code = '00280';
+ArborJester.code = '00288';
 
 export default ArborJester;

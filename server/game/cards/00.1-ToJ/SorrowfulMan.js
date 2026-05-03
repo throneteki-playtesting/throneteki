@@ -61,6 +61,6 @@ class SorrowfulMan extends DrawCard {
     }
 }
 
-SorrowfulMan.code = '00256';
+SorrowfulMan.code = '00263';
 
 export default SorrowfulMan;

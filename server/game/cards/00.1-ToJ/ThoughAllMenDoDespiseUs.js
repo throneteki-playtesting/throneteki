@@ -33,6 +33,6 @@ class ThoughAllMenDoDespiseUs extends DrawCard {
     }
 }
 
-ThoughAllMenDoDespiseUs.code = '00146';
+ThoughAllMenDoDespiseUs.code = '00148';
 
 export default ThoughAllMenDoDespiseUs;

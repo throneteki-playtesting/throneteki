@@ -1,6 +1,6 @@
 import DrawCard from '../../drawcard.js';
 
-class KingStannisHost extends DrawCard {
+class KingStannissHost extends DrawCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
             match: (card) => card.name === 'Stannis Baratheon',
@@ -16,6 +16,6 @@ class KingStannisHost extends DrawCard {
     }
 }
 
-KingStannisHost.code = '00101';
+KingStannissHost.code = '00101';
 
-export default KingStannisHost;
+export default KingStannissHost;

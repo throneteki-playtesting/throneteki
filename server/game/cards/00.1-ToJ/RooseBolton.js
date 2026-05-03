@@ -22,6 +22,6 @@ class RooseBolton extends DrawCard {
     }
 }
 
-RooseBolton.code = '00217';
+RooseBolton.code = '00222';
 
 export default RooseBolton;

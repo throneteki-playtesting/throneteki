@@ -54,6 +54,6 @@ class GilbertOfTheVines extends DrawCard {
     }
 }
 
-GilbertOfTheVines.code = '00276';
+GilbertOfTheVines.code = '00284';
 
 export default GilbertOfTheVines;

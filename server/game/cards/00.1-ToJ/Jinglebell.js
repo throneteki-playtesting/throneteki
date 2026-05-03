@@ -24,6 +24,6 @@ class Jinglebell extends DrawCard {
     }
 }
 
-Jinglebell.code = '00302';
+Jinglebell.code = '00318';
 
 export default Jinglebell;

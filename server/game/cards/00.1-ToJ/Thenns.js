@@ -16,6 +16,6 @@ class Thenns extends DrawCard {
     }
 }
 
-Thenns.code = '00313';
+Thenns.code = '00350';
 
 export default Thenns;

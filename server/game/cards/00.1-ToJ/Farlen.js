@@ -28,6 +28,6 @@ class Farlen extends DrawCard {
     }
 }
 
-Farlen.code = '00226';
+Farlen.code = '00232';
 
 export default Farlen;

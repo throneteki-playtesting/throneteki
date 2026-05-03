@@ -47,6 +47,6 @@ class LongLances extends DrawCard {
     }
 }
 
-LongLances.code = '00255';
+LongLances.code = '00262';
 
 export default LongLances;

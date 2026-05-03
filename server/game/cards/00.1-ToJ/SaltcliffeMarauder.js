@@ -35,6 +35,6 @@ class SaltcliffeMarauder extends DrawCard {
     }
 }
 
-SaltcliffeMarauder.code = '00141';
+SaltcliffeMarauder.code = '00143';
 
 export default SaltcliffeMarauder;

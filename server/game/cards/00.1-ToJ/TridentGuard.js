@@ -13,6 +13,6 @@ class TridentGuard extends DrawCard {
     }
 }
 
-TridentGuard.code = '00234';
+TridentGuard.code = '00240';
 
 export default TridentGuard;
