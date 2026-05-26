@@ -1,11 +1,9 @@
-// Generated with Claude Code - claude-opus-4-5-20251101
-// - 2026-01-25: Created plot card that prevents triggering abilities on non-shadow cards
-
 import PlotCard from '../../plotcard.js';
 
 class BeneathTheRedKeep extends PlotCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
+            condition: () => this.game.currentPhase === 'challenge',
             targetController: 'any',
             effect: ability.effects.cannotTriggerCardAbilities(
                 (ability) =>
@@ -17,6 +15,6 @@ class BeneathTheRedKeep extends PlotCard {
 }
 
 BeneathTheRedKeep.code = '27614';
-BeneathTheRedKeep.version = '1.0.0';
+BeneathTheRedKeep.version = '1.0.1';
 
 export default BeneathTheRedKeep;

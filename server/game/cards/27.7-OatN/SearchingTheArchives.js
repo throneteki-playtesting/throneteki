@@ -1,29 +1,45 @@
-// Generated with Claude Code - claude-opus-4-5-20251101
-// - 2026-01-25: Created plot card with action to place card under agenda to draw
-// - 2026-01-31: Refactored to use cost for placement and gameAction for drawing
-
 import GameActions from '../../GameActions/index.js';
 import PlotCard from '../../plotcard.js';
 
 class SearchingTheArchives extends PlotCard {
-    setupCardAbilities(ability) {
-        this.action({
-            title: 'Place a card under your agenda',
-            cost: ability.costs
-                .placeCardUnderneath((context) => context.player.agenda)
-                .select((card) => card.location === 'hand'),
-            limit: ability.limit.perPhase(1),
-            message:
-                '{player} uses {source} to place a card from their hand under their agenda and draw 1 card',
-            gameAction: GameActions.drawCards((context) => ({
-                player: context.player,
-                amount: 1
-            }))
+    setupCardAbilities() {
+        this.whenRevealed({
+            target: {
+                numCards: 3,
+                activePromptTitle: 'Select up to 3 cards',
+                cardCondition: (card, context) =>
+                    context.player === card.controller && card.location === 'hand'
+            },
+            message: {
+                format: '{player} uses {source} to place {amount} cards facedown under their agenda',
+                args: { amount: (context) => context.target.length }
+            },
+            handler: (context) => {
+                this.game.resolveGameAction(
+                    GameActions.simultaneously(
+                        context.target.map((card) =>
+                            GameActions.placeCardUnderneath({
+                                card,
+                                parentCard: context.player.agenda
+                            })
+                        )
+                    ).then({
+                        message: {
+                            format: 'Then, {player} draws {amount} cards',
+                            args: { amount: (context) => context.parentContext.target.length }
+                        },
+                        gameAction: GameActions.drawCards((context) => ({
+                            player: context.player,
+                            amount: context.parentContext.target.length
+                        }))
+                    })
+                );
+            }
         });
     }
 }
 
 SearchingTheArchives.code = '27613';
-SearchingTheArchives.version = '1.0.0';
+SearchingTheArchives.version = '1.0.1';
 
 export default SearchingTheArchives;

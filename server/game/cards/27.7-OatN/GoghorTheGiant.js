@@ -10,12 +10,12 @@ class GoghorTheGiant extends DrawCard {
                         card.hasTrait('Weapon')
                 ),
             match: this,
-            effect: [ability.effects.modifyStrength(2), ability.effects.addKeyword('intimidate')]
+            effect: ability.effects.addKeyword('intimidate')
         });
     }
 }
 
 GoghorTheGiant.code = '27575';
-GoghorTheGiant.version = '1.0.0';
+GoghorTheGiant.version = '1.0.1';
 
 export default GoghorTheGiant;

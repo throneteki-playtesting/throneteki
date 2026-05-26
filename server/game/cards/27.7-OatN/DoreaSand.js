@@ -7,7 +7,7 @@ class DoreaSand extends DrawCard {
             title: 'Return to hand',
             message: '{player} uses {source} to return {source} to their hand',
             phase: 'challenge',
-            max: ability.limit.perRound(1),
+            limit: ability.limit.perRound(1),
             gameAction: GameActions.returnCardToHand({ card: this }).then(() => ({
                 condition: (context) => {
                     const playerCharacterCount = context.player.getNumberOfCardsInPlay({
@@ -42,6 +42,6 @@ class DoreaSand extends DrawCard {
 }
 
 DoreaSand.code = '27539';
-DoreaSand.version = '1.0.1';
+DoreaSand.version = '1.0.2';
 
 export default DoreaSand;
