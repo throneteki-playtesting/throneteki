@@ -4,10 +4,8 @@ import GameActions from '../../GameActions/index.js';
 class StreetsOfKingsLanding extends AgendaCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
-            condition: () =>
-                !this.controller.anyCardsInPlay({ trait: "King's Landing", type: 'location' }),
-            match: (card) => card === this.controller.activePlot,
-            effect: ability.effects.modifyGold(-1)
+            targetController: 'current',
+            effect: ability.effects.cannotGainChallengeBonus()
         });
 
         this.reaction({
@@ -34,6 +32,6 @@ class StreetsOfKingsLanding extends AgendaCard {
 }
 
 StreetsOfKingsLanding.code = '27620';
-StreetsOfKingsLanding.version = '1.0.0';
+StreetsOfKingsLanding.version = '1.0.1';
 
 export default StreetsOfKingsLanding;

@@ -1,41 +1,43 @@
-// Generated with Claude Code - claude-opus-4-5-20250101
-// - 2026-02-01: Created implementation for Sigorn
-
 import DrawCard from '../../drawcard.js';
+import GameActions from '../../GameActions/index.js';
 
 class Sigorn extends DrawCard {
-    setupCardAbilities(ability) {
-        this.persistentEffect({
-            condition: () => this.controlsLadyCharacter(),
-            match: this,
-            effect: [ability.effects.addTrait("R'hllor"), ability.effects.addKeyword('renown')]
+    setupCardAbilities() {
+        this.reaction({
+            when: {
+                afterChallenge: (event) =>
+                    this.controller === event.challenge.winner &&
+                    event.challenge.challengeType === 'military' &&
+                    this.isParticipating()
+            },
+            target: {
+                cardCondition: {
+                    type: 'character',
+                    location: 'play area',
+                    controller: 'current',
+                    trait: 'Wildling',
+                    condition: (card) => card !== this && GameActions.standCard({ card }).allow()
+                }
+            },
+            message: '{player} uses {source} to stand {target}',
+            handler: (context) => {
+                this.game
+                    .resolveGameAction(GameActions.standCard({ card: context.target }))
+                    .thenExecute(() => {
+                        if (
+                            context.target.name === 'Alys Karstark' &&
+                            GameActions.standCard({ card: this }).allow()
+                        ) {
+                            this.game.resolveGameAction(GameActions.standCard({ card: this }));
+                            this.game.addMessage('Then, {0} stands {1}', context.player, this);
+                        }
+                    });
+            }
         });
-
-        this.persistentEffect({
-            condition: () => !this.kneeled && this.hasOtherAttackingWildling(),
-            match: this,
-            effect: ability.effects.consideredToBeAttacking()
-        });
-    }
-
-    controlsLadyCharacter() {
-        return this.controller.anyCardsInPlay(
-            (card) => card.getType() === 'character' && card.hasTrait('Lady')
-        );
-    }
-
-    hasOtherAttackingWildling() {
-        return this.controller.anyCardsInPlay(
-            (card) =>
-                card.isAttacking() &&
-                card.hasTrait('Wildling') &&
-                card.getType() === 'character' &&
-                card !== this
-        );
     }
 }
 
 Sigorn.code = '27598';
-Sigorn.version = '1.0.0';
+Sigorn.version = '1.1.0';
 
 export default Sigorn;

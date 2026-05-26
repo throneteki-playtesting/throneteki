@@ -1,7 +1,3 @@
-// Generated with Claude Code - claude-opus-4-5-20250101
-// - 2026-02-01: Created implementation for The God's Eye
-// - 2026-02-28: Refactored to use message:
-
 import DrawCard from '../../drawcard.js';
 
 class TheGodsEye extends DrawCard {
@@ -10,13 +6,15 @@ class TheGodsEye extends DrawCard {
             title: 'Reduce ambush/shadow cost for out-of-faction card',
             cost: ability.costs.kneelSelf(),
             message:
-                '{player} kneels {source} to reduce the cost of the next out-of-faction card they ambush or bring out of shadows this phase by 3',
+                '{player} kneels {source} to reduce the cost of the next neutral or out-of-faction card they ambush or bring out of shadows this phase by 3',
             handler: (context) => {
                 this.untilEndOfPhase((ability) => ({
                     targetController: 'current',
                     effect: ability.effects.reduceNextAmbushedOrOutOfShadowsCardCost(
                         3,
-                        (card) => !card.isFaction(context.player.faction.getPrintedFaction())
+                        (card) =>
+                            card.isFaction('neutral') ||
+                            !card.isFaction(context.player.faction.getPrintedFaction())
                     )
                 }));
             }
@@ -25,6 +23,6 @@ class TheGodsEye extends DrawCard {
 }
 
 TheGodsEye.code = '27605';
-TheGodsEye.version = '1.0.0';
+TheGodsEye.version = '1.0.1';
 
 export default TheGodsEye;

@@ -3,8 +3,14 @@ import GameActions from '../../GameActions/index.js';
 import TextHelper from '../../TextHelper.js';
 
 class JeweledTiara extends DrawCard {
-    setupCardAbilities() {
+    setupCardAbilities(ability) {
         this.attachmentRestriction({ trait: 'Lady' });
+
+        this.whileAttached({
+            match: (card) => card.name === 'Cersei Lannister',
+            effect: ability.effects.modifyStrength(2)
+        });
+
         this.reaction({
             when: {
                 afterChallenge: (event) =>
@@ -12,6 +18,7 @@ class JeweledTiara extends DrawCard {
                     event.challenge.attackingPlayer === this.controller &&
                     event.challenge.challengeType === 'intrigue'
             },
+            cost: ability.costs.kneelSelf(),
             message: {
                 format: "{player} uses {source} to discard {amount} from {opponent}'s hand",
                 args: {
@@ -27,11 +34,11 @@ class JeweledTiara extends DrawCard {
     }
 
     getAmount() {
-        this.parent.name === 'Cersei Lannister' ? 2 : 1;
+        return Math.trunc(this.game.currentChallenge.strengthDifference / 5);
     }
 }
 
 JeweledTiara.code = '27531';
-JeweledTiara.version = '1.0.0';
+JeweledTiara.version = '1.1.0';
 
 export default JeweledTiara;

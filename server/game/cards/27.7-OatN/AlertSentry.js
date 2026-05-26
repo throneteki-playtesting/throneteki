@@ -21,6 +21,6 @@ class AlertSentry extends DrawCard {
 }
 
 AlertSentry.code = '27602';
-AlertSentry.version = '1.0.0';
+AlertSentry.version = '1.0.1';
 
 export default AlertSentry;

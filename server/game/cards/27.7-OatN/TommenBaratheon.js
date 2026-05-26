@@ -6,21 +6,21 @@ class TommenBaratheon extends DrawCard {
             condition: () =>
                 this.game.isDuringChallenge({ challengeType: 'military' }) &&
                 this.game.anyPlotHasTrait('Noble'),
-            match: this.getMatch,
+            match: (card) => this.getMatch(card),
             effect: ability.effects.modifyStrength(2)
         });
         this.persistentEffect({
             condition: () =>
                 this.game.isDuringChallenge({ challengeType: 'intrigue' }) &&
                 this.game.anyPlotHasTrait('Edict'),
-            match: this.getMatch,
+            match: (card) => this.getMatch(card),
             effect: ability.effects.modifyStrength(2)
         });
         this.persistentEffect({
             condition: () =>
                 this.game.isDuringChallenge({ challengeType: 'power' }) &&
                 this.game.anyPlotHasTrait('Kingdom'),
-            match: this.getMatch,
+            match: (card) => this.getMatch(card),
             effect: ability.effects.modifyStrength(2)
         });
     }

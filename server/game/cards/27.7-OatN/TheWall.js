@@ -4,15 +4,15 @@ import GameActions from '../../GameActions/index.js';
 class TheWall extends DrawCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
-            condition: () =>
-                this.game.getPlayers().some((player) => player.activePlot.hasTrait('Winter')),
+            condition: () => this.moreWinterThanSummerPlotsRevealed(),
             match: (card) => card.getType() === 'character',
-            targetController: 'opponent',
+            targetController: 'any',
             effect: ability.effects.modifyStrength(-1)
         });
         this.reaction({
             when: {
-                onPhaseStarted: (event) => event.phase === 'standing'
+                onPhaseStarted: (event) =>
+                    event.phase === 'standing' && this.getCharactersWithLowestStr().length > 0
             },
             cost: ability.costs.kneelSelf(),
             message: {
@@ -28,7 +28,16 @@ class TheWall extends DrawCard {
             })
         });
     }
+    moreWinterThanSummerPlotsRevealed() {
+        let winterPlots = this.game
+            .getPlayers()
+            .filter((player) => player.activePlot && player.activePlot.hasTrait('Winter'));
+        let summerPlots = this.game
+            .getPlayers()
+            .filter((player) => player.activePlot && player.activePlot.hasTrait('Summer'));
 
+        return winterPlots.length > summerPlots.length;
+    }
     getCharactersWithLowestStr() {
         const lowestStrCharacters = this.game
             .filterCardsInPlay((card) => card.getType() === 'character')
@@ -40,12 +49,13 @@ class TheWall extends DrawCard {
                     lowest = [card];
                 }
                 return lowest;
-            }, []);
+            }, [])
+            .filter((card) => card.controller !== this.controller);
         return lowestStrCharacters;
     }
 }
 
 TheWall.code = '27510';
-TheWall.version = '1.0.0';
+TheWall.version = '1.0.1';
 
 export default TheWall;

@@ -16,5 +16,6 @@ class KingswoodAmbush extends PlotCard {
 }
 
 KingswoodAmbush.code = '27612';
+KingswoodAmbush.version = '1.0.1';
 
 export default KingswoodAmbush;

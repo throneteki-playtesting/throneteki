@@ -5,7 +5,8 @@ class SightOfTheThreeEyedCrow extends AgendaCard {
     setupCardAbilities(ability) {
         this.reaction({
             when: {
-                onCardEntersPlay: (event, context) => context.player == event.card.controller,
+                onCardEntersPlay: (event, context) =>
+                    context.player == event.card.controller && event.card.getType() !== 'plot',
                 onCardPlayed: (event, context) => context.player == event.player
             },
             gameAction: GameActions.search({
@@ -13,7 +14,7 @@ class SightOfTheThreeEyedCrow extends AgendaCard {
                 match: {
                     condition: (card, context) =>
                         card.getType() === context.event.card.getType() &&
-                        card.getPrintedCost() === context.event.card.getPrintedCost()
+                        card.getPrintedCost() <= context.event.card.getPrintedCost()
                 },
                 message: '{player} {gameAction}',
                 gameAction: GameActions.addToHand((context) => ({
@@ -26,6 +27,6 @@ class SightOfTheThreeEyedCrow extends AgendaCard {
 }
 
 SightOfTheThreeEyedCrow.code = '27618';
-SightOfTheThreeEyedCrow.version = '1.0.0';
+SightOfTheThreeEyedCrow.version = '1.0.1';
 
 export default SightOfTheThreeEyedCrow;

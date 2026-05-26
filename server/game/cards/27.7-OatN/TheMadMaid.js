@@ -4,10 +4,7 @@ import GameActions from '../../GameActions/index.js';
 class TheMadMaid extends DrawCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
-            condition: () =>
-                !this.game
-                    .getOpponents(this.controller)
-                    .some((opponent) => opponent.shadows.length > 0),
+            condition: () => !this.game.getPlayers().some((player) => player.shadows.length > 0),
             match: this,
             effect: ability.effects.addKeyword('insight')
         });
@@ -15,17 +12,19 @@ class TheMadMaid extends DrawCard {
         this.reaction({
             when: {
                 onCardKneeled: (event) =>
-                    event.card.hasTrait('House Hightower') && event.card.getType() === 'character'
+                    event.card.hasTrait('House Hightower') &&
+                    event.card.getType() === 'character' &&
+                    this.game.getPlayers().some((player) => player.shadows.length > 0)
             },
             message: '{player} uses {source} to name a card type',
             gameAction: GameActions.choose({
                 title: 'Select a card type',
                 message: '{choosingPlayer} names the {choice} cardtype',
                 choices: {
-                    Character: this.chooseAndRevealForCardtype('Character'),
-                    Location: this.chooseAndRevealForCardtype('Location'),
-                    Attachment: this.chooseAndRevealForCardtype('Attachment'),
-                    Event: this.chooseAndRevealForCardtype('Event')
+                    Character: this.chooseAndRevealForCardtype('character'),
+                    Location: this.chooseAndRevealForCardtype('location'),
+                    Attachment: this.chooseAndRevealForCardtype('attachment'),
+                    Event: this.chooseAndRevealForCardtype('event')
                 }
             })
         });
@@ -34,13 +33,15 @@ class TheMadMaid extends DrawCard {
     chooseAndRevealForCardtype(cardType) {
         return (context) => {
             this.game.promptForSelect(context.player, {
-                activePrompt: 'Select a card',
+                activePromptTitle: 'Select a card',
                 cardCondition: (card) => card.location === 'shadows',
                 onSelect: (player, card) => {
-                    const gameActions = [GameActions.revealCards({ cards: [card] })];
+                    const gameActions = [
+                        GameActions.revealCards({ cards: [card], revealWithMessage: false })
+                    ];
 
                     if (card.getType() === cardType) {
-                        gameActions.push([GameActions.discardCard({ card })]);
+                        gameActions.push(GameActions.discardCard({ card }));
                         this.game.addMessage(
                             '{0} reveals and discards {1} from shadows',
                             player,
@@ -49,7 +50,7 @@ class TheMadMaid extends DrawCard {
                     } else {
                         this.game.addMessage('{0} reveals {1} from shadows', player, card);
                     }
-                    this.game.resolveGameAction(GameActions.simultaneously(gameActions));
+                    this.game.resolveGameAction(GameActions.simultaneously(gameActions), context);
                     return true;
                 },
                 onCancel: (player) => {
