@@ -15,7 +15,7 @@ class KhalDrogo extends DrawCard {
                 cardCondition: (card) =>
                     card.location === 'play area' &&
                     card.getType() === 'character' &&
-                    (card.hasTrait('Army') || card.hasTrait('Dothraki'))
+                    card.hasTrait('Dothraki')
             },
             limit: ability.limit.perPhase(2),
             message: '{player} uses {source} to stand {target}',
@@ -30,6 +30,6 @@ class KhalDrogo extends DrawCard {
 }
 
 KhalDrogo.code = '27573';
-KhalDrogo.version = '1.0.0';
+KhalDrogo.version = '1.0.1';
 
 export default KhalDrogo;

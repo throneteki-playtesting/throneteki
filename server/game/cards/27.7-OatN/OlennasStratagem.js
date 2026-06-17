@@ -2,9 +2,22 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class OlennasStratagem extends DrawCard {
-    setupCardAbilities() {
-        this.action({
-            title: 'Place card in shadows',
+    setupCardAbilities(ability) {
+        this.persistentEffect({
+            condition: () =>
+                this.controller.anyCardsInPlay((card) => card.name === 'The Queen of Thorns'),
+            match: this,
+            targetController: 'current',
+            effect: ability.effects.reduceSelfCost('play', 2)
+        });
+
+        this.reaction({
+            when: {
+                afterChallenge: (event) =>
+                    event.challenge.winner === this.controller &&
+                    event.challenge.challengeType === 'intrigue'
+            },
+            max: ability.limit.perChallenge(1),
             target: {
                 activePromptTitle: 'Select a card',
                 cardCondition: (card) =>
@@ -13,21 +26,23 @@ class OlennasStratagem extends DrawCard {
                     card.getType() !== 'event'
             },
             message:
-                '{player} uses {source} to place {target} into shadows from their discard pile',
+                '{player} plays {source} to place {target} into shadows from their discard pile',
             handler: (context) => {
                 this.game.resolveGameAction(
-                    GameActions.putIntoShadows((context) => ({ card: context.target })).then(
-                        () => ({
-                            condition: (context) =>
-                                context.player.anyCardsInPlay(
-                                    (card) => card.name === 'The Queen of Thorns'
-                                ),
-                            message: 'Then, {player} draws 1 card',
-                            gameAction: GameActions.drawCards((context) => ({
-                                player: context.player,
-                                amount: 1
-                            }))
-                        })
+                    GameActions.putIntoShadows((context) => ({ card: context.target })).thenExecute(
+                        (event) => {
+                            const shadowCost = event.card.getCost();
+                            this.lastingEffect((ability) => ({
+                                until: {
+                                    onCardOutOfShadows: (e) => e.card === event.card,
+                                    onCardDiscarded: (e) => e.card === event.card,
+                                    onCardLeftPlay: (e) => e.card === event.card
+                                },
+                                match: event.card,
+                                targetLocation: 'shadows',
+                                effect: ability.effects.addKeyword(`shadow (${shadowCost})`)
+                            }));
+                        }
                     ),
                     context
                 );
@@ -37,6 +52,6 @@ class OlennasStratagem extends DrawCard {
 }
 
 OlennasStratagem.code = '27595';
-OlennasStratagem.version = '1.1.0';
+OlennasStratagem.version = '1.1.1';
 
 export default OlennasStratagem;

@@ -1,5 +1,4 @@
 import DrawCard from '../../drawcard.js';
-import GameActions from '../../GameActions/index.js';
 
 class DragonglassMine extends DrawCard {
     setupCardAbilities(ability) {
@@ -9,15 +8,15 @@ class DragonglassMine extends DrawCard {
             phase: 'challenge',
             condition: (context) => context.player.faction.power >= 5,
             target: {
-                cardCondition: {
-                    type: 'character',
-                    participating: true
-                }
+                cardCondition: (card) =>
+                    card.location === 'play area' &&
+                    card.getType() === 'character' &&
+                    card.controller === this.controller
             },
             message:
-                '{player} kneels {costs.kneel} to grant {target} immunity to opponents character abilities until the end of the challenge',
+                '{player} kneels {costs.kneel} to grant {target} immunity to opponents character abilities until the end of the phase',
             handler: (context) => {
-                this.untilEndOfChallenge((ability) => ({
+                this.untilEndOfPhase((ability) => ({
                     match: context.target,
                     effect: ability.effects.immuneTo(
                         (card) =>
@@ -30,6 +29,6 @@ class DragonglassMine extends DrawCard {
 }
 
 DragonglassMine.code = '27509';
-DragonglassMine.version = '1.0.0';
+DragonglassMine.version = '1.0.1';
 
 export default DragonglassMine;

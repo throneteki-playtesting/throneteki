@@ -1,30 +1,24 @@
+// Claude: reaction stands+removes attached character after winning by 5+ STR; no STR bonus
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class Morningstar extends DrawCard {
-    setupCardAbilities(ability) {
-        this.whileAttached({
-            effect: ability.effects.modifyStrength(2)
-        });
+    setupCardAbilities() {
         this.reaction({
             when: {
-                onRemovedFromChallenge: () => this.parent.isParticipating()
+                afterChallenge: (event) =>
+                    event.challenge.winner === this.controller &&
+                    event.challenge.strengthDifference >= 5 &&
+                    this.parent &&
+                    this.parent.isParticipating()
             },
-            cost: ability.costs.kneelSelf(),
-            target: {
-                cardCondition: {
-                    type: 'character',
-                    participating: true
-                }
-            },
-            message:
-                '{player} kneels {costs.kneel} to stand and remove {target} from the challenge',
+            message: '{player} uses {source} to stand {target} and remove them from the challenge',
             handler: (context) => {
                 this.game.resolveGameAction(
-                    GameActions.simultaneously(
-                        GameActions.standCard((context) => ({ card: context.target })),
-                        GameActions.removeFromChallenge((context) => ({ card: context.target }))
-                    ),
+                    GameActions.simultaneously([
+                        GameActions.standCard({ card: this.parent }),
+                        GameActions.removeFromChallenge({ card: this.parent })
+                    ]),
                     context
                 );
             }
@@ -33,6 +27,6 @@ class Morningstar extends DrawCard {
 }
 
 Morningstar.code = '27592';
-Morningstar.version = '1.0.0';
+Morningstar.version = '1.1.0';
 
 export default Morningstar;
