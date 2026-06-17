@@ -8,7 +8,7 @@ class DeepwoodSteward extends DrawCard {
                 onCardEntersPlay: (event) => event.card === this
             },
             message:
-                '{player} uses {source} to search the top 10 cards of their deck for a location',
+                '{player} uses {source} to search the top 10 cards of their deck for a The North or out-of-faction location',
             gameAction: GameActions.search({
                 title: 'Select a location',
                 topCards: 10,
@@ -26,6 +26,6 @@ class DeepwoodSteward extends DrawCard {
 }
 
 DeepwoodSteward.code = '27506';
-DeepwoodSteward.version = '1.0.0';
+DeepwoodSteward.version = '1.0.1';
 
 export default DeepwoodSteward;

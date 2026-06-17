@@ -8,21 +8,34 @@ class GalazzaGalare extends DrawCard {
 
         this.interrupt({
             when: {
-                onPhaseEnded: (event) =>
-                    event.phase === 'challenge' &&
+                onPhaseEnded: (event) => event.phase === 'challenge'
+            },
+            condition: () => this.getPlayersWithoutMilitaryClaim().length > 0,
+            message: {
+                format: '{player} uses {source} to gain {amount} power for their faction',
+                args: { amount: () => this.getPlayersWithoutMilitaryClaim().length }
+            },
+            gameAction: GameActions.gainPower((context) => ({
+                card: context.player.faction,
+                amount: this.getPlayersWithoutMilitaryClaim().length
+            }))
+        });
+    }
+
+    getPlayersWithoutMilitaryClaim() {
+        return this.game
+            .getPlayers()
+            .filter(
+                (player) =>
                     !this.tracker.some(
                         (event) =>
-                            event.player === this.controller &&
-                            event.claim.challengeType === 'military'
+                            event.player === player && event.claim.challengeType === 'military'
                     )
-            },
-            message: '{player} uses {source} to gain 2 power for their faction',
-            gameAction: GameActions.gainPower((context) => ({ card: context.player.faction }))
-        });
+            );
     }
 }
 
 GalazzaGalare.code = '27574';
-GalazzaGalare.version = '1.0.0';
+GalazzaGalare.version = '1.0.1';
 
 export default GalazzaGalare;

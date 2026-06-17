@@ -5,32 +5,44 @@ class DaemonMarbrand extends DrawCard {
     setupCardAbilities(ability) {
         this.reaction({
             when: {
-                onCardReturnedToHand: (event) => this.returnConditions(event)
+                onCardDiscarded: (event) =>
+                    event.card.getType() === 'character' &&
+                    event.cardStateWhenDiscarded.controller !== this.controller &&
+                    event.cardStateWhenDiscarded.location === 'hand'
             },
             limit: ability.limit.perPhase(2),
             message: {
-                format: "{player} uses {source} to discard a card at random from {opponent}'s hand",
-                args: { opponent: (context) => context.event.card.controller }
+                format: '{player} uses {source} to force {opponent} to return a character to their hand',
+                args: { opponent: (context) => context.event.cardStateWhenDiscarded.controller }
             },
-            gameAction: GameActions.discardAtRandom((context) => ({
-                player: context.card.controller,
-                amount: 1
-            }))
+            handler: (context) => {
+                const opponent = context.event.cardStateWhenDiscarded.controller;
+                const eligibleCards = this.game.filterCardsInPlay(
+                    (card) => card.getType() === 'character' && card.controller === opponent
+                );
+                if (eligibleCards.length === 0) {
+                    return;
+                }
+                this.game.promptForSelect(opponent, {
+                    activePromptTitle: 'Select a character to return to hand',
+                    source: this,
+                    cardCondition: (card) =>
+                        card.location === 'play area' &&
+                        card.getType() === 'character' &&
+                        card.controller === opponent,
+                    onSelect: (player, card) => {
+                        this.game.resolveGameAction(GameActions.returnCardToHand({ card }));
+                        this.game.addMessage('{0} returns {1} to their hand', player, card);
+                        return true;
+                    },
+                    onCancel: () => true
+                });
+            }
         });
-    }
-
-    returnConditions(event) {
-        // Can only react if the card is returned/placed from a location which his controller can see (play area, discard pile, dead pile)
-        return (
-            event.card !== this &&
-            event.card.controller !== this.controller &&
-            event.card.getType() === 'character' &&
-            ['play area', 'discard pile', 'dead pile'].includes(event.card.location)
-        );
     }
 }
 
 DaemonMarbrand.code = '27525';
-DaemonMarbrand.version = '1.0.0';
+DaemonMarbrand.version = '1.0.1';
 
 export default DaemonMarbrand;

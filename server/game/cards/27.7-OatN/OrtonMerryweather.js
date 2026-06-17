@@ -8,12 +8,11 @@ class OrtonMerryweather extends DrawCard {
 
         this.persistentEffect({
             match: this,
-            effect: ability.effects.dynamicDominanceStrength(() => 2 * this.controller.gold)
+            effect: ability.effects.dynamicDominanceStrength(() => this.controller.gold)
         });
         this.interrupt({
             when: {
-                onPhaseEnded: (event) =>
-                    event.phase === 'challenge' &&
+                onDominanceDetermined: () =>
                     !this.tracker.some({ loser: this.controller, challengeType: 'intrigue' })
             },
             message: '{player} uses {source} to gain 2 gold',
@@ -23,6 +22,6 @@ class OrtonMerryweather extends DrawCard {
 }
 
 OrtonMerryweather.code = '27526';
-OrtonMerryweather.version = '1.0.0';
+OrtonMerryweather.version = '1.0.1';
 
 export default OrtonMerryweather;
