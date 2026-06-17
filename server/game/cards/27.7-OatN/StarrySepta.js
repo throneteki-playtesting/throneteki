@@ -6,21 +6,14 @@ class StarrySepta extends DrawCard {
         this.interrupt({
             canCancel: true,
             when: {
-                //Restrict triggering on own character abilities to forced triggered abilities
                 onCardAbilityInitiated: (event) =>
                     event.source.getType() === 'character' &&
                     event.ability.isTriggeredAbility() &&
                     (event.ability.isForcedAbility() || event.source.controller !== this.controller)
             },
-            cost: ability.costs.revealCards(
-                3,
-                (card) =>
-                    card.getType() === 'character' &&
-                    card.isFaction('tyrell') &&
-                    card.location === 'hand'
-            ),
+            cost: ability.costs.discardPowerFromSelf(1),
             message: {
-                format: '{player} uses {source} and reveals {costs.reveal} to cancel {character}',
+                format: '{player} uses {source} and discards 1 power from {source} to cancel {character}',
                 args: { character: (context) => context.event.source }
             },
             limit: ability.limit.perRound(1),
@@ -32,6 +25,6 @@ class StarrySepta extends DrawCard {
 }
 
 StarrySepta.code = '27590';
-StarrySepta.version = '1.0.0';
+StarrySepta.version = '1.0.1';
 
 export default StarrySepta;

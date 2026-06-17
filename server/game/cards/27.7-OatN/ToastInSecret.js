@@ -1,43 +1,61 @@
+// Claude: added location:'hand' so the action is accessible from hand during challenges (actions default to play area)
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class ToastInSecret extends DrawCard {
-    setupCardAbilities() {
+    setupCardAbilities(ability) {
         this.action({
-            title: 'Put character into play',
+            title: 'Buff participating Lord or Lady',
+            location: 'hand',
+            condition: () => this.game.isDuringChallenge({ challengeType: 'power' }),
+            max: ability.limit.perPhase(1),
             target: {
                 cardCondition: (card) =>
-                    card.location === 'hand' &&
-                    card.controller === this.controller &&
+                    card.location === 'play area' &&
                     card.getType() === 'character' &&
-                    (card.hasTrait('Lord') || card.hasTrait('Lady')) &&
-                    GameActions.putIntoPlay({ card }).allow()
+                    card.isParticipating() &&
+                    (card.hasTrait('Lord') || card.hasTrait('Lady'))
             },
-            message: '{player} plays {source} to put {target} into play from their hand',
+            message: {
+                format: '{player} plays {source} to give {target} +{amount} STR until the end of the challenge',
+                args: { amount: () => this.controller.shadows.length }
+            },
             handler: (context) => {
-                this.game.resolveGameAction(
-                    GameActions.simultaneously(
-                        GameActions.revealCards((context) => ({ card: context.target })),
-                        GameActions.putIntoPlay((context) => ({
-                            card: context.target
-                        })).thenExecute((event) => {
-                            this.atEndOfPhase((ability) => ({
-                                match: event.card,
-                                condition: () =>
-                                    ['play area', 'duplicate'].includes(event.card.location),
-                                targetLocation: 'any',
-                                effect: ability.effects.returnToShadowsIfStillInPlay(true)
-                            }));
-                        })
-                    ),
-                    context
-                );
+                const target = context.target;
+                const player = context.player;
+                const amount = player.shadows.length;
+
+                this.untilEndOfChallenge((ability) => ({
+                    match: target,
+                    effect: ability.effects.modifyStrength(amount)
+                }));
+
+                this.game.once('afterChallenge', (event) => {
+                    if (
+                        event.challenge.winner === player &&
+                        event.challenge.strengthDifference >= 5 &&
+                        target.location === 'play area'
+                    ) {
+                        this.game.resolveGameAction(
+                            GameActions.simultaneously([
+                                GameActions.standCard({ card: target }),
+                                GameActions.gainPower({ card: target, amount: 2 })
+                            ])
+                        );
+                        this.game.addMessage(
+                            '{0} uses {1} to stand {2} and have them gain 2 power',
+                            player,
+                            this,
+                            target
+                        );
+                    }
+                });
             }
         });
     }
 }
 
 ToastInSecret.code = '27584';
-ToastInSecret.version = '1.0.0';
+ToastInSecret.version = '1.1.0';
 
 export default ToastInSecret;

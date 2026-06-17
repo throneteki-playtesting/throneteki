@@ -1,9 +1,9 @@
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
-class IllyriosBarge extends DrawCard {
+class CheesemongersGalley extends DrawCard {
     setupCardAbilities(ability) {
-        this.reaction({
+        this.interrupt({
             when: {
                 onIncomeCollected: (event) => event.player === this.controller
             },
@@ -14,7 +14,7 @@ class IllyriosBarge extends DrawCard {
     }
 }
 
-IllyriosBarge.code = '27582';
-IllyriosBarge.version = '1.0.0';
+CheesemongersGalley.code = '27582';
+CheesemongersGalley.version = '1.0.1';
 
-export default IllyriosBarge;
+export default CheesemongersGalley;

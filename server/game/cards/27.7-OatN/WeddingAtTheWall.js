@@ -2,32 +2,39 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class WeddingAtTheWall extends DrawCard {
-    setupCardAbilities(ability) {
-        this.action({
-            title: 'Stand characters',
-            phase: 'marshal',
-            cost: ability.costs.discardFromShadows(),
-            message: {
-                format: '{player} plays {source} and discards {costs.discardFromShadows} from shadows to stand {characters}',
-                args: { characters: () => this.getStandingCharacters() }
+    setupCardAbilities(_ability) {
+        this.reaction({
+            when: {
+                onChallengeInitiated: (event) =>
+                    event.challenge.challengeType === 'power' && this.controller.shadows.length > 0
             },
-            gameAction: GameActions.simultaneously(() =>
-                this.getStandingCharacters().map((card) => GameActions.standCard({ card }))
-            )
+            message: {
+                format: "{player} uses {source} to reveal their shadow area and have their R'hllor and Wildling characters gain the R'hllor and Wildling traits until the end of the phase",
+                args: {}
+            },
+            handler: (context) => {
+                this.game.resolveGameAction(
+                    GameActions.revealCards((context) => ({
+                        cards: context.player.shadows.slice()
+                    })),
+                    context
+                );
+                this.untilEndOfPhase((ability) => ({
+                    match: (card) =>
+                        card.getType() === 'character' &&
+                        card.controller === this.controller &&
+                        (card.hasTrait("R'hllor") || card.hasTrait('Wildling')),
+                    effect: [
+                        ability.effects.addTrait("R'hllor"),
+                        ability.effects.addTrait('Wildling')
+                    ]
+                }));
+            }
         });
-    }
-
-    getStandingCharacters() {
-        return this.game.filterCardsInPlay(
-            (card) =>
-                card.getType() === 'character' &&
-                (card.hasTrait("R'hllor") || card.hasTrait('Wildling')) &&
-                GameActions.standCard({ card }).allow()
-        );
     }
 }
 
 WeddingAtTheWall.code = '27512';
-WeddingAtTheWall.version = '1.0.0';
+WeddingAtTheWall.version = '1.1.0';
 
 export default WeddingAtTheWall;
