@@ -41,6 +41,6 @@ class BitterAccusation extends PlotCard {
     }
 }
 
-BitterAccusation.code = '00372';
+BitterAccusation.code = '00377';
 
 export default BitterAccusation;

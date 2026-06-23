@@ -65,6 +65,6 @@ class Saltcliffe extends DrawCard {
     }
 }
 
-Saltcliffe.code = '00138';
+Saltcliffe.code = '00140';
 
 export default Saltcliffe;

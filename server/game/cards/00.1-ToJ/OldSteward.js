@@ -8,6 +8,6 @@ class OldSteward extends DrawCard {
     }
 }
 
-OldSteward.code = '00211';
+OldSteward.code = '00216';
 
 export default OldSteward;

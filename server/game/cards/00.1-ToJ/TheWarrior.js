@@ -16,6 +16,6 @@ class TheWarrior extends PlotCard {
     }
 }
 
-TheWarrior.code = '00355';
+TheWarrior.code = '00308';
 
 export default TheWarrior;

@@ -30,6 +30,6 @@ class Cragorn extends DrawCard {
     }
 }
 
-Cragorn.code = '00136';
+Cragorn.code = '00138';
 
 export default Cragorn;

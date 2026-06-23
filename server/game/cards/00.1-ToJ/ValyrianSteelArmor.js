@@ -19,6 +19,6 @@ class ValyrianSteelArmor extends DrawCard {
     }
 }
 
-ValyrianSteelArmor.code = '00130';
+ValyrianSteelArmor.code = '00131';
 
 export default ValyrianSteelArmor;

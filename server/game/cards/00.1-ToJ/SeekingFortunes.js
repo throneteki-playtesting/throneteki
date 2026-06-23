@@ -26,12 +26,13 @@ class SeekingFortunes extends AgendaCard {
     reduceCost() {
         this.untilEndOfPhase((ability) => ({
             targetController: 'current',
-            effect: ability.effects.reduceNextMarshalledOrPlayedCardCost(1, (card) =>
-                card.isBestow()
+            effect: ability.effects.reduceNextMarshalledOrPlayedCardCost(
+                1,
+                (card) => card.isBestow() || card.getType() === 'location'
             )
         }));
         this.game.addMessage(
-            '{0} uses {1} to kneel their faction card and reduce the cost of the next bestow card by 1',
+            '{0} uses {1} to kneel their faction card and reduce the cost of the next bestow card or location by 1',
             this.controller,
             this
         );
@@ -43,7 +44,7 @@ class SeekingFortunes extends AgendaCard {
         this.game.promptForSelect(this.controller, {
             activePromptTitle: 'Select a card',
             source: this,
-            cardCondition: (card) => 
+            cardCondition: (card) =>
                 card.location === 'play area' &&
                 card.controller === this.controller &&
                 this.controller.gold >= 1 &&
@@ -73,6 +74,6 @@ class SeekingFortunes extends AgendaCard {
     }
 }
 
-SeekingFortunes.code = '00361';
+SeekingFortunes.code = '00365';
 
 export default SeekingFortunes;

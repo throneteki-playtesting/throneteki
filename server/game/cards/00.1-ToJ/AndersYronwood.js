@@ -18,6 +18,6 @@ class AndersYronwood extends DrawCard {
     }
 }
 
-AndersYronwood.code = '00170';
+AndersYronwood.code = '00174';
 
 export default AndersYronwood;

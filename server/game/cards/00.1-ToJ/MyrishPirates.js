@@ -102,6 +102,6 @@ class MyrishPirates extends DrawCard {
     }
 }
 
-MyrishPirates.code = '00116';
+MyrishPirates.code = '00117';
 
 export default MyrishPirates;

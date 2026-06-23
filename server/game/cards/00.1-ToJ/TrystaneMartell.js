@@ -27,6 +27,6 @@ class TrystaneMartell extends DrawCard {
     }
 }
 
-TrystaneMartell.code = '00179';
+TrystaneMartell.code = '00183';
 
 export default TrystaneMartell;

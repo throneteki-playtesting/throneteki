@@ -24,6 +24,6 @@ class QuillAndParchment extends DrawCard {
     }
 }
 
-QuillAndParchment.code = '00320';
+QuillAndParchment.code = '00356';
 
 export default QuillAndParchment;

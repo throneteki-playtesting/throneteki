@@ -13,6 +13,6 @@ class AcolyteOfTheShadow extends DrawCard {
     }
 }
 
-AcolyteOfTheShadow.code = '00119';
+AcolyteOfTheShadow.code = '00120';
 
 export default AcolyteOfTheShadow;

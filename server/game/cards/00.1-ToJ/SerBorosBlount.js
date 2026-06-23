@@ -36,6 +36,6 @@ class SerBorosBlount extends DrawCard {
     }
 }
 
-SerBorosBlount.code = '00158';
+SerBorosBlount.code = '00161';
 
 export default SerBorosBlount;

@@ -15,6 +15,6 @@ class GreyWormsSpear extends DrawCard {
     }
 }
 
-GreyWormsSpear.code = '00251';
+GreyWormsSpear.code = '00258';
 
 export default GreyWormsSpear;

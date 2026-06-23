@@ -28,6 +28,6 @@ class RobertsRebellion extends PlotCard {
     }
 }
 
-RobertsRebellion.code = '00325';
+RobertsRebellion.code = '00108';
 
 export default RobertsRebellion;

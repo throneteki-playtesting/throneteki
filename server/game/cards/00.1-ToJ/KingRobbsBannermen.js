@@ -13,6 +13,6 @@ class KingRobbsBannermen extends DrawCard {
     }
 }
 
-KingRobbsBannermen.code = '00223';
+KingRobbsBannermen.code = '00229';
 
 export default KingRobbsBannermen;

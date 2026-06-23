@@ -19,6 +19,6 @@ class BryndensOutriders extends DrawCard {
     }
 }
 
-BryndensOutriders.code = '00235';
+BryndensOutriders.code = '00241';
 
 export default BryndensOutriders;

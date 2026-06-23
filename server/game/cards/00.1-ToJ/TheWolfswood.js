@@ -28,6 +28,6 @@ class TheWolfswood extends DrawCard {
     }
 }
 
-TheWolfswood.code = '00237';
+TheWolfswood.code = '00243';
 
 export default TheWolfswood;

@@ -1,6 +1,6 @@
 import DrawCard from '../../drawcard.js';
 
-class SwordoftheMorning extends DrawCard {
+class SwordOfTheMorning extends DrawCard {
     setupCardAbilities(ability) {
         this.attachmentRestriction({ unique: true }, { trait: 'House Dayne' });
         this.whileAttached({
@@ -41,6 +41,6 @@ class SwordoftheMorning extends DrawCard {
     }
 }
 
-SwordoftheMorning.code = '00176';
+SwordOfTheMorning.code = '00179';
 
-export default SwordoftheMorning;
+export default SwordOfTheMorning;

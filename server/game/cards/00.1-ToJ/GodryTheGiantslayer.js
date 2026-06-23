@@ -31,6 +31,6 @@ class GodryTheGiantslayer extends DrawCard {
     }
 }
 
-GodryTheGiantslayer.code = '00113';
+GodryTheGiantslayer.code = '00114';
 
 export default GodryTheGiantslayer;

@@ -20,6 +20,6 @@ class Bloodraven extends DrawCard {
     }
 }
 
-Bloodraven.code = '00297';
+Bloodraven.code = '00313';
 
 export default Bloodraven;

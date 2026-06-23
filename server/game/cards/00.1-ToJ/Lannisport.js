@@ -65,6 +65,6 @@ class Lannisport extends DrawCard {
     }
 }
 
-Lannisport.code = '00153';
+Lannisport.code = '00155';
 
 export default Lannisport;

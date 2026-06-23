@@ -17,6 +17,6 @@ class StrikingAtDawn extends PlotCard {
     }
 }
 
-StrikingAtDawn.code = '0345';
+StrikingAtDawn.code = '00339';
 
 export default StrikingAtDawn;

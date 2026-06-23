@@ -7,7 +7,7 @@ class OpenRevolt extends PlotCard {
         this.tracker = ChallengeTracker.forPhase(this.game);
 
         const amountToGain = (context) =>
-            context.player.getNumberOfUsedPlotsByTrait('Scheme') >= 2 ? 4 : 2;
+            context.player.getNumberOfUsedPlotsByTrait('Scheme') >= 3 ? 4 : 2;
         this.interrupt({
             when: {
                 onPhaseEnded: (event) =>
@@ -26,6 +26,6 @@ class OpenRevolt extends PlotCard {
     }
 }
 
-OpenRevolt.code = '00344';
+OpenRevolt.code = '00337';
 
 export default OpenRevolt;

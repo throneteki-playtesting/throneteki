@@ -45,6 +45,6 @@ class TheDornishWars extends PlotCard {
     }
 }
 
-TheDornishWars.code = '00328';
+TheDornishWars.code = '00180';
 
 export default TheDornishWars;

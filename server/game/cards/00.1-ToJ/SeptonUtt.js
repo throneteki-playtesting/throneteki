@@ -11,6 +11,6 @@ class SeptonUtt extends DrawCard {
     }
 }
 
-SeptonUtt.code = '00296';
+SeptonUtt.code = '00312';
 
 export default SeptonUtt;

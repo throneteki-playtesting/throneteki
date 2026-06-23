@@ -38,6 +38,6 @@ class KnightsOfTheVale extends DrawCard {
     }
 }
 
-KnightsOfTheVale.code = '00293';
+KnightsOfTheVale.code = '00309';
 
 export default KnightsOfTheVale;

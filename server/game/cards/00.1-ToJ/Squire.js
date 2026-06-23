@@ -29,6 +29,6 @@ class Squire extends DrawCard {
     }
 }
 
-Squire.code = '00316';
+Squire.code = '00353';
 
 export default Squire;

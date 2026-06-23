@@ -20,6 +20,6 @@ class VengefulLordling extends DrawCard {
     }
 }
 
-VengefulLordling.code = '00190';
+VengefulLordling.code = '00194';
 
 export default VengefulLordling;

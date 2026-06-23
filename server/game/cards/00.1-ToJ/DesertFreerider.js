@@ -50,6 +50,6 @@ class DesertFreerider extends DrawCard {
     }
 }
 
-DesertFreerider.code = '00189';
+DesertFreerider.code = '00193';
 
 export default DesertFreerider;

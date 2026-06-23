@@ -32,6 +32,6 @@ class Melisandre extends DrawCard {
     }
 }
 
-Melisandre.code = '00194';
+Melisandre.code = '00198';
 
 export default Melisandre;

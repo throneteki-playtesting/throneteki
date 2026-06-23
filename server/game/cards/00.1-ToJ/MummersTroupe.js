@@ -38,6 +38,6 @@ class MummersTroupe extends DrawCard {
     }
 }
 
-MummersTroupe.code = '00311';
+MummersTroupe.code = '00348';
 
 export default MummersTroupe;

@@ -54,6 +54,6 @@ class Bronn extends DrawCard {
     }
 }
 
-Bronn.code = '00156';
+Bronn.code = '00159';
 
 export default Bronn;

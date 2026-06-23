@@ -18,6 +18,6 @@ class TheMaiden extends PlotCard {
     }
 }
 
-TheMaiden.code = '00350';
+TheMaiden.code = '00306';
 
 export default TheMaiden;

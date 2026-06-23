@@ -43,6 +43,6 @@ class BenjenStark extends DrawCard {
     }
 }
 
-BenjenStark.code = '00195';
+BenjenStark.code = '00199';
 
 export default BenjenStark;

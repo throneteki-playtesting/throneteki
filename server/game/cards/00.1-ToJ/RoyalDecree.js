@@ -8,6 +8,6 @@ class RoyalDecree extends PlotCard {
     }
 }
 
-RoyalDecree.code = '00373';
+RoyalDecree.code = '00378';
 
 export default RoyalDecree;

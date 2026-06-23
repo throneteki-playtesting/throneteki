@@ -26,6 +26,6 @@ class OurWordIsGoodAsGold extends DrawCard {
     }
 }
 
-OurWordIsGoodAsGold.code = '00252';
+OurWordIsGoodAsGold.code = '00259';
 
 export default OurWordIsGoodAsGold;

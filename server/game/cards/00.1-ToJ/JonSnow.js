@@ -39,6 +39,6 @@ class JonSnow extends DrawCard {
     }
 }
 
-JonSnow.code = '00225';
+JonSnow.code = '00231';
 
 export default JonSnow;

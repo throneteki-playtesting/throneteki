@@ -26,6 +26,6 @@ class TheHighroad extends DrawCard {
     }
 }
 
-TheHighroad.code = '00319';
+TheHighroad.code = '00355';
 
 export default TheHighroad;

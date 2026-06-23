@@ -31,6 +31,6 @@ class YouthfulAcolyte extends DrawCard {
     }
 }
 
-YouthfulAcolyte.code = '00281';
+YouthfulAcolyte.code = '00289';
 
 export default YouthfulAcolyte;

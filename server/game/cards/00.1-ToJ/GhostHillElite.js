@@ -60,6 +60,6 @@ class GhostHillElite extends DrawCard {
     }
 }
 
-GhostHillElite.code = '00185';
+GhostHillElite.code = '00189';
 
 export default GhostHillElite;

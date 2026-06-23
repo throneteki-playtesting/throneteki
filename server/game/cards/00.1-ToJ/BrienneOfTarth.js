@@ -16,6 +16,6 @@ class BrienneOfTarth extends DrawCard {
     }
 }
 
-BrienneOfTarth.code = '00287';
+BrienneOfTarth.code = '00295';
 
 export default BrienneOfTarth;

@@ -27,6 +27,6 @@ class SeptaLemore extends DrawCard {
     }
 }
 
-SeptaLemore.code = '00250';
+SeptaLemore.code = '00257';
 
 export default SeptaLemore;

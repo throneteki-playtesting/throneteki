@@ -17,6 +17,6 @@ class Gared extends DrawCard {
     }
 }
 
-Gared.code = '00203';
+Gared.code = '00208';
 
 export default Gared;

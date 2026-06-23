@@ -78,6 +78,6 @@ class SecretsOfOldtown extends PlotCard {
     }
 }
 
-SecretsOfOldtown.code = '00376';
+SecretsOfOldtown.code = '00381';
 
 export default SecretsOfOldtown;

@@ -13,6 +13,6 @@ class LadyWhiskers extends DrawCard {
     }
 }
 
-LadyWhiskers.code = '00160';
+LadyWhiskers.code = '00163';
 
 export default LadyWhiskers;

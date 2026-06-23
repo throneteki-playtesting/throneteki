@@ -47,6 +47,6 @@ class BowenMarsh extends DrawCard {
     }
 }
 
-BowenMarsh.code = '00197';
+BowenMarsh.code = '00201';
 
 export default BowenMarsh;

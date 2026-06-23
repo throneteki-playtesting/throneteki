@@ -24,6 +24,6 @@ class FreeBrothers extends DrawCard {
     }
 }
 
-FreeBrothers.code = '00258';
+FreeBrothers.code = '00265';
 
 export default FreeBrothers;
