@@ -4,28 +4,31 @@ class SerAlliserThorne extends DrawCard {
     setupCardAbilities(ability) {
         this.reaction({
             when: {
-                onCardOutOfShadows: (event) => event.card.controller === this.controller
+                onCardOutOfShadows: (event) =>
+                    event.card.controller === this.controller &&
+                    this.game.isDuringChallenge({ challengeType: 'military' })
             },
             target: {
                 cardCondition: (card) =>
                     card.getType() === 'character' &&
                     card.location === 'play area' &&
                     card.controller === this.controller &&
-                    card.isFaction('thenightswatch')
+                    card.isFaction('thenightswatch') &&
+                    !card.isParticipating()
             },
-            message: '{player} uses {source} to give {target} stealth until the end of the phase',
+            message: '{player} uses {source} to have {target} participate in the challenge',
             handler: (context) => {
-                this.untilEndOfPhase((ability) => ({
-                    match: context.target,
-                    effect: ability.effects.addKeyword('stealth')
-                }));
+                this.game.currentChallenge.addParticipantToSide(
+                    context.target.controller,
+                    context.target
+                );
             },
-            limit: ability.limit.perRound(2)
+            limit: ability.limit.perPhase(1)
         });
     }
 }
 
 SerAlliserThorne.code = '27549';
-SerAlliserThorne.version = '1.0.0';
+SerAlliserThorne.version = '1.1.0';
 
 export default SerAlliserThorne;

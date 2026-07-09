@@ -2,15 +2,19 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class DeepwoodMotte extends DrawCard {
-    setupCardAbilities() {
+    setupCardAbilities(ability) {
+        this.plotModifiers({ initiative: -2 });
         this.reaction({
             when: {
                 onCardKneeled: (event) =>
-                    event.source.controller === this.controller && event.reason === 'assault'
+                    event.reason === 'assault' &&
+                    event.card.getType() === 'location' &&
+                    event.source.controller === this.controller
             },
+            cost: ability.costs.kneelSelf(),
             target: {
                 type: 'select',
-                activePromptTitle: 'Select a card',
+                activePromptTitle: 'Select a character to stand',
                 cardCondition: (card) =>
                     card.location === 'play area' &&
                     card.kneeled &&
@@ -30,6 +34,6 @@ class DeepwoodMotte extends DrawCard {
 }
 
 DeepwoodMotte.code = '27521';
-DeepwoodMotte.version = '1.0.0';
+DeepwoodMotte.version = '1.0.1';
 
 export default DeepwoodMotte;

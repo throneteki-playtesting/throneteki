@@ -1,30 +1,46 @@
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
+import { Tokens } from '../../Constants/index.js';
 
 class StarrySepta extends DrawCard {
     setupCardAbilities(ability) {
-        this.interrupt({
-            canCancel: true,
-            when: {
-                onCardAbilityInitiated: (event) =>
-                    event.source.getType() === 'character' &&
-                    event.ability.isTriggeredAbility() &&
-                    (event.ability.isForcedAbility() || event.source.controller !== this.controller)
+        this.action({
+            title: 'Stand and remove participating character',
+            phase: 'challenge',
+            condition: () =>
+                this.game.filterCardsInPlay(
+                    (card) =>
+                        card.getType() === 'character' &&
+                        card.isParticipating() &&
+                        (card.getPower() > 0 || card.hasToken(Tokens.gold))
+                ).length > 0,
+            cost: ability.costs.kneelSelf(),
+            target: {
+                cardCondition: (card) =>
+                    card.location === 'play area' &&
+                    card.getType() === 'character' &&
+                    card.isParticipating() &&
+                    (card.getPower() > 0 || card.hasToken(Tokens.gold))
             },
-            cost: ability.costs.discardPowerFromSelf(1),
-            message: {
-                format: '{player} uses {source} and discards 1 power from {source} to cancel {character}',
-                args: { character: (context) => context.event.source }
-            },
-            limit: ability.limit.perRound(1),
-            gameAction: GameActions.genericHandler((context) => {
-                context.event.cancel();
-            })
+            message:
+                '{player} kneels {costs.kneel} to stand {target} and remove it from the challenge',
+            handler: (context) => {
+                this.game.resolveGameAction(
+                    GameActions.simultaneously([
+                        GameActions.standCard((context) => ({ card: context.target })),
+                        GameActions.removeFromChallenge((context) => ({
+                            card: context.target,
+                            reason: 'effect'
+                        }))
+                    ]),
+                    context
+                );
+            }
         });
     }
 }
 
 StarrySepta.code = '27590';
-StarrySepta.version = '1.0.1';
+StarrySepta.version = '1.1.0';
 
 export default StarrySepta;

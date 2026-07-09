@@ -4,13 +4,16 @@ class ManticoreVenom extends DrawCard {
     setupCardAbilities(ability) {
         this.attachmentRestriction({ controller: 'opponent' });
         this.whileAttached({
-            match: (card) => card.getNumberOfIcons() === 0,
-            effect: ability.effects.blankExcludingTraits
+            effect: [
+                ability.effects.removeIcon('military'),
+                ability.effects.removeIcon('intrigue'),
+                ability.effects.removeIcon('power')
+            ]
         });
     }
 }
 
 ManticoreVenom.code = '27544';
-ManticoreVenom.version = '1.0.0';
+ManticoreVenom.version = '1.1.0';
 
 export default ManticoreVenom;
