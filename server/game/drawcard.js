@@ -282,6 +282,11 @@ class DrawCard extends BaseCard {
         this.game.raiseEvent('onCardStrengthChanged', params, () => {
             if (this.isBurning && this.getStrength() <= 0) {
                 this.game.killCharacter(this, { allowSave: false, isBurn: true });
+            } else if (this.isShadowBurning && this.getStrength() <= 0) {
+                this.game.addMessage('{0} is 0 STR and placed in shadows', this);
+                this.game.resolveGameAction(
+                    GameActions.putIntoShadows({ allowSave: false, card: this, isBurn: true })
+                );
             }
         });
     }

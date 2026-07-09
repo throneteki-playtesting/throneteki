@@ -14,6 +14,7 @@ class KnightOfTheSeven extends DrawCard {
                     this.isParticipating() &&
                     this.getStrength() >= 7
             },
+            limit: ability.limit.perPhase(1),
             message: '{player} uses {source} to stand {source}',
             gameAction: GameActions.standCard({ card: this })
         });
