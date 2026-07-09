@@ -5,7 +5,7 @@ describe('Jade Compendium', function () {
                 'Fealty',
                 'A Noble Cause',
                 'Jade Compendium (OatN)',
-                'Samwell Tarly (Core)',
+                'Maester Harmune',
                 { name: 'Hedge Knight', count: 10 }
             ]);
             const deck2 = this.buildDeck('lannister', ['A Noble Cause', 'Cersei Lannister (Core)']);
@@ -15,28 +15,28 @@ describe('Jade Compendium', function () {
             this.keepStartingHands();
 
             this.compendium = this.player1.findCardByName('Jade Compendium');
-            this.sam = this.player1.findCardByName('Samwell Tarly');
+            this.harmune = this.player1.findCardByName('Maester Harmune');
             this.player1.dragCard(this.compendium, 'hand');
-            this.player1.dragCard(this.sam, 'hand');
+            this.player1.dragCard(this.harmune, 'hand');
 
-            this.player1.clickCard(this.sam);
+            this.player1.clickCard(this.harmune);
             this.completeSetup();
             this.selectFirstPlayer(this.player1);
             this.player1Object.gold = 10;
             this.player1.clickCard(this.compendium);
-            this.player1.clickCard(this.sam);
+            this.player1.clickCard(this.harmune);
             this.completeMarshalPhase();
         });
 
-        it('should enter play attached to Sam', function () {
+        it('should enter play attached to Maester Harmune', function () {
             expect(this.compendium.location).toBe('play area');
-            expect(this.compendium.parent).toBe(this.sam);
+            expect(this.compendium.parent).toBe(this.harmune);
         });
 
-        describe('when player1 wins an intrigue challenge with Sam participating', function () {
+        describe('when player1 wins an intrigue challenge with Maester Harmune participating', function () {
             beforeEach(function () {
                 this.player1.clickPrompt('Intrigue');
-                this.player1.clickCard(this.sam);
+                this.player1.clickCard(this.harmune);
                 this.player1.clickPrompt('Done');
                 this.skipActionWindow();
                 this.player2.clickPrompt('Done');
