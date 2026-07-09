@@ -13,7 +13,7 @@ class HornHill extends DrawCard {
     }
 }
 
-HornHill.code = '27510';
+HornHill.code = '27593';
 HornHill.version = '1.0.0';
 
 export default HornHill;

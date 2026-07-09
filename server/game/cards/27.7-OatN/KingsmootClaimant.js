@@ -3,23 +3,19 @@ import DrawCard from '../../drawcard.js';
 class KingsmootClaimant extends DrawCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
-            condition: () => this.isAttacking() && this.defendingPlayerHasNoKings(),
+            condition: () =>
+                this.isAttacking() &&
+                !this.controller.anyCardsInPlay(
+                    (card) =>
+                        card.getType() === 'character' && card.hasTrait('King') && card !== this
+                ),
             match: this,
             effect: [ability.effects.addTrait('King'), ability.effects.addKeyword('Renown')]
         });
     }
-
-    defendingPlayerHasNoKings() {
-        if (!this.game.currentChallenge) {
-            return false;
-        }
-        return !this.game.currentChallenge.defender.anyCardsInPlay(
-            (card) => card.getType() === 'character' && card.hasTrait('King')
-        );
-    }
 }
 
 KingsmootClaimant.code = '27517';
-KingsmootClaimant.version = '1.0.0';
+KingsmootClaimant.version = '1.0.1';
 
 export default KingsmootClaimant;

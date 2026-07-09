@@ -39,6 +39,6 @@ class ScreamingHorde extends DrawCard {
 }
 
 ScreamingHorde.code = '27576';
-ScreamingHorde.version = '2.0.0';
+ScreamingHorde.version = '2.0.1';
 
 export default ScreamingHorde;

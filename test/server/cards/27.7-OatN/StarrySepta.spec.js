@@ -1,79 +1,83 @@
-// Claude: redesigned using TtB Hound's forcedReaction instead of non-existent Core Hound action
 describe('Starry Septa', function () {
     integration(function () {
         beforeEach(function () {
             const deck1 = this.buildDeck('tyrell', [
                 'A Noble Cause',
                 'Starry Septa (OatN)',
-                'Hedge Knight'
+                'Hedge Knight',
+                'Margaery Tyrell (Core)'
             ]);
-            const deck2 = this.buildDeck('lannister', [
-                'A Noble Cause',
-                'The Hound (TtB)',
-                'Hedge Knight'
-            ]);
+            const deck2 = this.buildDeck('lannister', ['A Noble Cause', 'Cersei Lannister (Core)']);
             this.player1.selectDeck(deck1);
             this.player2.selectDeck(deck2);
             this.startGame();
             this.keepStartingHands();
 
             this.septa = this.player1.findCardByName('Starry Septa', 'hand');
-            this.hound = this.player2.findCardByName('The Hound', 'hand');
+            this.cersei = this.player2.findCardByName('Cersei Lannister', 'hand');
+            this.margaery = this.player1.findCardByName('Margaery Tyrell', 'hand');
 
             this.player1.clickCard(this.septa);
-            this.player2.clickCard(this.hound);
+            this.player2.clickCard(this.cersei);
             this.completeSetup();
-
-            this.septa.modifyPower(3);
-            this.selectFirstPlayer(this.player1);
+            this.selectFirstPlayer(this.player2);
+            this.player2Object.gold = 10;
             this.completeMarshalPhase();
         });
 
-        describe('when an opponent wins a challenge with a forced reaction character', function () {
+        describe('when a character with power is participating', function () {
             beforeEach(function () {
-                this.player1.clickPrompt('Done');
-                this.player2.clickPrompt('Military');
-                this.player2.clickCard(this.hound);
+                // Give Cersei some power for the action condition
+                this.cersei.modifyPower(2);
+                this.player2.clickPrompt('Power');
+                this.player2.clickCard(this.cersei);
                 this.player2.clickPrompt('Done');
                 this.skipActionWindow();
+                this.player1.clickCard(this.margaery);
                 this.player1.clickPrompt('Done');
-                this.skipActionWindow();
-                // afterChallenge → The Hound's forced reaction fires → onCardAbilityInitiated → Septa interrupt window
             });
 
-            it('should allow cancelling by discarding 1 power from Starry Septa', function () {
-                expect(this.player1).toAllowAbilityTrigger('Starry Septa');
+            it('should allow the action to stand and remove Cersei', function () {
+                expect(this.player1).toAllowTriggerAction(
+                    this.septa,
+                    'Stand and remove participating character'
+                );
             });
 
-            describe('when the interrupt triggers', function () {
+            describe('when the action is used', function () {
                 beforeEach(function () {
-                    this.player1.triggerAbility(this.septa);
+                    this.player1.clickMenu(this.septa, 'Stand and remove participating character');
+                    this.player1.clickCard(this.cersei);
                 });
 
-                it('should discard 1 power from Starry Septa', function () {
-                    expect(this.septa.getPower()).toBe(2);
+                it('should stand Cersei', function () {
+                    expect(this.cersei.kneeled).toBe(false);
                 });
 
-                it('should cancel the hound ability', function () {
-                    expect(this.hound.location).toBe('play area');
+                it('should remove Cersei from the challenge', function () {
+                    expect(this.cersei.isParticipating()).toBe(false);
+                });
+
+                it('should kneel the Septa as cost', function () {
+                    expect(this.septa.kneeled).toBe(true);
                 });
             });
         });
 
-        describe('when Starry Septa has no power', function () {
+        describe('when a participating character has no power or gold tokens', function () {
             beforeEach(function () {
-                this.septa.modifyPower(-3);
-                this.player1.clickPrompt('Done');
-                this.player2.clickPrompt('Military');
-                this.player2.clickCard(this.hound);
+                this.player2.clickPrompt('Power');
+                this.player2.clickCard(this.cersei);
                 this.player2.clickPrompt('Done');
                 this.skipActionWindow();
                 this.player1.clickPrompt('Done');
-                this.skipActionWindow();
             });
 
-            it('should not allow the interrupt', function () {
-                expect(this.player1).not.toAllowAbilityTrigger('Starry Septa');
+            it('should not allow the action when target has no power or gold', function () {
+                expect(this.player1).not.toAllowTriggerAction(
+                    this.septa,
+                    'Stand and remove participating character'
+                );
             });
         });
     });

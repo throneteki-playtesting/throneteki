@@ -2,16 +2,13 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class CastleBlackWormways extends DrawCard {
-    setupCardAbilities() {
-        this.plotModifiers({
-            reserve: 1
-        });
+    setupCardAbilities(ability) {
+        this.plotModifiers({ reserve: 1 });
         this.reaction({
             when: {
                 onCardOutOfShadows: (event) => event.card === this
             },
-            condition: () =>
-                this.game.getPlayers().some((player) => player.activePlot.hasTrait('Winter')),
+            cost: ability.costs.kneelSelf(),
             target: {
                 cardCondition: {
                     type: 'character',
@@ -21,8 +18,8 @@ class CastleBlackWormways extends DrawCard {
             },
             message: '{player} uses {source} to return {target} to shadows',
             handler: (context) => {
-                this.game.resolveGameActions(
-                    GameActions.putIntoShadows(context({ card: context.target })),
+                this.game.resolveGameAction(
+                    GameActions.putIntoShadows({ card: context.target }),
                     context
                 );
             }
@@ -31,6 +28,6 @@ class CastleBlackWormways extends DrawCard {
 }
 
 CastleBlackWormways.code = '27558';
-CastleBlackWormways.version = '1.0.0';
+CastleBlackWormways.version = '1.0.1';
 
 export default CastleBlackWormways;

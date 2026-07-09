@@ -22,7 +22,7 @@ class SerAxelFlorent extends DrawCard {
         const kings = this.game.filterCardsInPlay(
             (card) => card.hasTrait('King') && card.getType() === 'character'
         );
-        if (kings.length === 0 && kings[0].controller === player) {
+        if (kings.length === 1 && kings[0].controller === player) {
             return kings[0];
         }
         return undefined;
@@ -30,6 +30,6 @@ class SerAxelFlorent extends DrawCard {
 }
 
 SerAxelFlorent.code = '27502';
-SerAxelFlorent.version = '1.0.0';
+SerAxelFlorent.version = '1.0.1';
 
 export default SerAxelFlorent;

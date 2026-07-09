@@ -1,31 +1,30 @@
 import DrawCard from '../../drawcard.js';
-import GameActions from '../../GameActions/index.js';
 
 class PurpleGraces extends DrawCard {
     setupCardAbilities(ability) {
-        this.interrupt({
-            canCancel: true,
+        this.reaction({
             when: {
-                //Restrict triggering on own character abilities to forced triggered abilities
-                onCardAbilityInitiated: (event) =>
-                    event.source.getType() === 'character' &&
-                    event.ability.isTriggeredAbility() &&
-                    (event.ability.isForcedAbility() || event.source.controller !== this.controller)
+                onChallengeInitiated: (event) => event.challenge.challengeType === 'military'
             },
-            cost: ability.costs.kneel({ trait: 'Grace', condition: (card) => card !== this }),
-            message: {
-                format: '{player} uses {source} and kneels {costs.kneel} to cancel {character}',
-                args: { character: (context) => context.event.source }
+            cost: ability.costs.kneelSelf(),
+            target: {
+                cardCondition: (card) =>
+                    card.location === 'play area' &&
+                    card.getType() === 'character' &&
+                    card.isAttacking()
             },
-            limit: ability.limit.perRound(1),
-            gameAction: GameActions.genericHandler((context) => {
-                context.event.cancel();
-            })
+            message: '{player} kneels {costs.kneel} to give {target} -2 STR until end of phase',
+            handler: (context) => {
+                this.untilEndOfPhase((ability) => ({
+                    match: context.target,
+                    effect: ability.effects.modifyStrength(-2)
+                }));
+            }
         });
     }
 }
 
 PurpleGraces.code = '27577';
-PurpleGraces.version = '1.0.0';
+PurpleGraces.version = '1.1.0';
 
 export default PurpleGraces;
