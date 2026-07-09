@@ -10,6 +10,7 @@ class TheodanTheTrue extends DrawCard {
             },
             target: {
                 cardCondition: {
+                    location: 'play area',
                     type: 'character',
                     trait: 'The Seven'
                 }
@@ -17,9 +18,9 @@ class TheodanTheTrue extends DrawCard {
             message: '{player} uses {source} to give {target} renown or insight',
             limit: ability.limit.perPhase(2),
             handler: (context) => {
-                this.resolveGameAction(
+                this.game.resolveGameAction(
                     GameActions.choose({
-                        title: (context) => `Choose keyword for ${context.source.name}`,
+                        title: (context) => `Choose keyword for ${context.target.name}`,
                         message: {
                             format: '{player} chooses to have {target} gain {keyword} until the end of the phase',
                             args: {
@@ -28,10 +29,16 @@ class TheodanTheTrue extends DrawCard {
                         },
                         choices: {
                             Renown: GameActions.genericHandler((context) =>
-                                this.gainKeyword(context.selectedChoice.text.toLowerCase())
+                                this.gainKeyword(
+                                    context.target,
+                                    context.selectedChoice.text.toLowerCase()
+                                )
                             ),
                             Insight: GameActions.genericHandler((context) =>
-                                this.gainKeyword(context.selectedChoice.text.toLowerCase())
+                                this.gainKeyword(
+                                    context.target,
+                                    context.selectedChoice.text.toLowerCase()
+                                )
                             )
                         }
                     }),
@@ -41,9 +48,9 @@ class TheodanTheTrue extends DrawCard {
         });
     }
 
-    gainKeyword(keyword) {
-        this.untilEndOfChallenge((ability) => ({
-            match: this,
+    gainKeyword(card, keyword) {
+        this.untilEndOfPhase((ability) => ({
+            match: card,
             effect: ability.effects.addKeyword(keyword)
         }));
         return true;

@@ -10,19 +10,21 @@ class EarlHarlaw extends DrawCard {
                         controller: event.cardStateWhenDiscarded.controller,
                         source: event.source
                     }),
-                    condition: (aggregate) => aggregate.source === 'reserve'
+                    condition: (aggregate) =>
+                        aggregate.source === 'reserve' &&
+                        aggregate.controller !== this.controller
                 }
             },
             message: {
                 format: "{player} uses {source} to discard {amount} cards from {opponent}'s deck",
                 args: {
-                    amount: (context) => context.aggregate.events.length,
+                    amount: (context) => context.events.length,
                     opponent: (context) => context.aggregate.controller
                 }
             },
             gameAction: GameActions.discardTopCards((context) => ({
                 player: context.aggregate.controller,
-                amount: context.aggregate.events.length
+                amount: context.events.length
             }))
         });
     }

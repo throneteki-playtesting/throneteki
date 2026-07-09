@@ -3,29 +3,32 @@ import GameActions from '../../GameActions/index.js';
 
 class PriestOnTheDocks extends DrawCard {
     setupCardAbilities(ability) {
-        this.interrupt({
-            canCancel: true,
+        this.reaction({
             when: {
-                //Restrict triggering on own character abilities to forced triggered abilities
-                onCardAbilityInitiated: (event) =>
-                    event.source.getType() === 'character' &&
-                    event.ability.isTriggeredAbility() &&
-                    (event.ability.isForcedAbility() || event.source.controller !== this.controller)
+                onDominanceDetermined: (event) => event.winner === this.controller
             },
             cost: ability.costs.killSelf(),
-            message: {
-                format: '{player} kills {cost.kill} to cancel {character}',
-                args: { character: (context) => context.event.source }
+            target: {
+                cardCondition: (card) =>
+                    card.location === 'play area' &&
+                    (card.getType() === 'location' || card.getType() === 'attachment') &&
+                    card.controller !== this.controller &&
+                    !card.hasKeyword('limited') &&
+                    card.getPrintedCost() <= 3 &&
+                    GameActions.discardCard({ card }).allow()
             },
-            max: ability.limit.perRound(1),
-            gameAction: GameActions.genericHandler((context) => {
-                context.event.cancel();
-            })
+            message: '{player} kills {costs.kill} to discard {target}',
+            handler: (context) => {
+                this.game.resolveGameAction(
+                    GameActions.discardCard((context) => ({ card: context.target })),
+                    context
+                );
+            }
         });
     }
 }
 
 PriestOnTheDocks.code = '27518';
-PriestOnTheDocks.version = '1.0.0';
+PriestOnTheDocks.version = '1.1.0';
 
 export default PriestOnTheDocks;

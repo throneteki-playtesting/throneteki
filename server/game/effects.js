@@ -532,6 +532,7 @@ const Effects = {
             }
         };
     },
+    consideredOutOfFaction: losesAspectEffect(Flags.card.consideredOutOfFaction),
     losesAllFactions: losesAspectEffect(Flags.losesAspect.allFactions),
     losesAllKeywords: losesAspectEffect(Flags.losesAspect.keywords),
     losesAllTraits: losesAspectEffect(Flags.losesAspect.traits),

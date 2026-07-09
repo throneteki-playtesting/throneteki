@@ -403,6 +403,10 @@ class BaseCard {
     isFaction(faction) {
         let normalizedFaction = faction.toLowerCase();
 
+        if (this.hasFlag(Flags.card.consideredOutOfFaction)) {
+            return false;
+        }
+
         if (this.hasFlag(Flags.losesAspect.allFactions)) {
             return normalizedFaction === 'neutral';
         }

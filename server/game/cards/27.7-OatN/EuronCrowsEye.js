@@ -1,5 +1,4 @@
 import DrawCard from '../../drawcard.js';
-import GameActions from '../../GameActions/index.js';
 
 class EuronCrowsEye extends DrawCard {
     setupCardAbilities(ability) {
@@ -7,31 +6,58 @@ class EuronCrowsEye extends DrawCard {
             when: {
                 onCardOutOfShadows: (event) => event.card.controller === this.controller
             },
-            chooseOpponent: true,
-            message: {
-                format: "{player} uses {source} to discard the top card of {opponent}'s deck",
-                args: { opponent: (context) => context.opponent }
+            choices: {
+                'Gain Assault': () => {
+                    this.untilEndOfPhase((ability) => ({
+                        match: this,
+                        effect: ability.effects.addKeyword('assault')
+                    }));
+                    this.game.addMessage(
+                        '{0} uses {1} to gain Assault until end of phase',
+                        this.controller,
+                        this
+                    );
+                },
+                'Gain Insight': () => {
+                    this.untilEndOfPhase((ability) => ({
+                        match: this,
+                        effect: ability.effects.addKeyword('insight')
+                    }));
+                    this.game.addMessage(
+                        '{0} uses {1} to gain Insight until end of phase',
+                        this.controller,
+                        this
+                    );
+                },
+                'Gain Renown': () => {
+                    this.untilEndOfPhase((ability) => ({
+                        match: this,
+                        effect: ability.effects.addKeyword('renown')
+                    }));
+                    this.game.addMessage(
+                        '{0} uses {1} to gain Renown until end of phase',
+                        this.controller,
+                        this
+                    );
+                },
+                'Gain Stealth': () => {
+                    this.untilEndOfPhase((ability) => ({
+                        match: this,
+                        effect: ability.effects.addKeyword('stealth')
+                    }));
+                    this.game.addMessage(
+                        '{0} uses {1} to gain Stealth until end of phase',
+                        this.controller,
+                        this
+                    );
+                }
             },
-            handler: (context) => {
-                this.game.resolveGameAction(
-                    GameActions.discardTopCards((context) => ({
-                        player: context.opponent,
-                        amount: 1
-                    })).then({
-                        condition: (context) =>
-                            context.event.topCards.some((card) => card.getType() === 'event'),
-                        message: 'Then, {player} stands {source}',
-                        gameAction: GameActions.standCard({ card: this })
-                    }),
-                    context
-                );
-            },
-            limit: ability.limit.perRound(2)
+            limit: ability.limit.perPhase(1)
         });
     }
 }
 
 EuronCrowsEye.code = '27513';
-EuronCrowsEye.version = '1.0.0';
+EuronCrowsEye.version = '1.1.0';
 
 export default EuronCrowsEye;

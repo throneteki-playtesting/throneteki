@@ -12,7 +12,7 @@ class Hornvale extends DrawCard {
         this.reaction({
             when: {
                 afterChallenge: (event) =>
-                    event.challenge.attackingPlayer === this.controller &&
+                    event.challenge.challengeType === 'intrigue' &&
                     event.challenge.winner === this.controller
             },
             cost: ability.costs.kneelSelf(),
@@ -22,10 +22,16 @@ class Hornvale extends DrawCard {
                 activePromptTitle: 'Select a card',
                 cardCondition: { location: 'hand', controller: 'choosingPlayer' }
             },
+            message: {
+                format: '{player} kneels {source} to have {loser} place a card from their hand facedown under {source}',
+                args: {
+                    loser: (context) => context.event.challenge.loser
+                }
+            },
             handler: (context) => {
                 this.game.resolveGameAction(
                     GameActions.placeCardUnderneath({
-                        card: event.card,
+                        card: context.target,
                         parentCard: this,
                         facedown: true
                     }),

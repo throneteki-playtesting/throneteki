@@ -1,62 +1,61 @@
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
+import { ChallengeTracker } from '../../EventTrackers/index.js';
 
 class RiverrunBesiegers extends DrawCard {
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
+        this.tracker = ChallengeTracker.forPhase(this.game);
+
         this.reaction({
             when: {
-                onCardPowerGained: (event) =>
-                    event.card.getType() === 'character' && event.card.controller.faction.power > 0
+                onCardKneeled: (event) =>
+                    event.reason === 'assault' &&
+                    event.card.getType() === 'location' &&
+                    event.source.controller === this.controller &&
+                    this.isParticipating() &&
+                    this.isAttacking() &&
+                    this.tracker.count({ attackingPlayer: this.controller }) === 3
             },
-            limit: ability.limit.perRound(2),
             handler: (context) => {
-                this.context = context;
-                const player = context.event.card.controller;
-                if (player.hand.length < 1) {
-                    this.discardPowerFromFaction();
-                    return;
-                }
+                const location = context.event.card;
+                const freyAttackers = this.game.currentChallenge
+                    ? this.game.currentChallenge.attackers.filter((card) =>
+                          card.hasTrait('House Frey')
+                      ).length
+                    : 0;
 
-                this.game.promptWithMenu(player, this, {
-                    activePrompt: {
-                        menuTitle: `Discard a card for ${context.source.name}?`,
-                        buttons: [
-                            { text: 'Yes', method: 'promptToDiscard' },
-                            { text: 'No', method: 'discardPowerFromFaction' }
-                        ]
-                    },
-                    source: this
-                });
+                if (freyAttackers >= 2) {
+                    this.game.addMessage(
+                        '{0} uses {1} to take control of {2}',
+                        this.controller,
+                        this,
+                        location
+                    );
+                    this.game.resolveGameAction(
+                        GameActions.takeControl(() => ({
+                            card: location,
+                            player: this.controller
+                        })),
+                        context
+                    );
+                } else {
+                    this.game.addMessage(
+                        '{0} uses {1} to discard {2}',
+                        this.controller,
+                        this,
+                        location
+                    );
+                    this.game.resolveGameAction(
+                        GameActions.discardCard({ card: location }),
+                        context
+                    );
+                }
             }
         });
-    }
-
-    promptToDiscard(player) {
-        this.game.promptForSelect(player, {
-            activePrompt: 'Select a card',
-            cardCondition: (card) => card.controller === player && card.location === 'hand',
-            onSelect: (player, card) => this.discardSelectedCards(player, card),
-            onCancel: () => this.discardPowerFromFaction(),
-            source: this
-        });
-        return true;
-    }
-
-    discardSelectedCards(player, card) {
-        this.game.addMessage('{0} discards {1} from their hand', player, card);
-        this.game.resolveGameAction(GameActions.discardCard({ card }));
-        return true;
-    }
-
-    discardPowerFromFaction() {
-        const player = this.context.event.card.controller;
-        this.game.resolveGameAction(GameActions.discardPower({ card: player.faction, amount: 1 }));
-        this.game.addMessage('{0} discards 1 power from their faction card', player);
-        return true;
     }
 }
 
 RiverrunBesiegers.code = '27528';
-RiverrunBesiegers.version = '1.0.0';
+RiverrunBesiegers.version = '1.1.0';
 
 export default RiverrunBesiegers;

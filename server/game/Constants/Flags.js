@@ -4,6 +4,7 @@ export const Flags = Object.freeze({
         full: Symbol('blanks.full')
     }),
     card: Object.freeze({
+        consideredOutOfFaction: Symbol('card.consideredOutOfFaction'),
         entersPlayKneeled: Symbol('card.entersPlayKneeled'),
         notConsideredToBeInPlotDeck: Symbol('card.notConsideredToBeInPlotDeck')
     }),

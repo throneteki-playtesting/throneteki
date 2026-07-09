@@ -1,4 +1,3 @@
-// Claude: added location:'hand', expendEvent() cost, fixed modifyStrength(-1) (was invalid effect name putInShadowsByStrength)
 import DrawCard from '../../drawcard.js';
 
 class FireyTalons extends DrawCard {
@@ -20,11 +19,11 @@ class FireyTalons extends DrawCard {
                     card.isParticipating()
             },
             message:
-                '{player} kneels {costs.kneel} to give {target} -1 STR until the end of the phase',
+                '{player} kneels {costs.kneel} to give {target} -1 STR until the end of the phase, placing it in shadows if its STR is 0',
             handler: (context) => {
                 this.untilEndOfPhase((ability) => ({
                     match: context.target,
-                    effect: ability.effects.modifyStrength(-1)
+                    effect: ability.effects.putInShadowsByStrength(-1)
                 }));
             }
         });

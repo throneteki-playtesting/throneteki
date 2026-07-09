@@ -6,17 +6,16 @@ class KingsLandingSepton extends DrawCard {
         this.interrupt({
             canCancel: true,
             when: {
-                //Restrict triggering on own character abilities to forced triggered abilities
                 onCardAbilityInitiated: (event) =>
-                    event.source.getType() === 'character' &&
+                    event.source.controller !== this.controller &&
                     event.ability.isTriggeredAbility() &&
-                    (event.ability.isForcedAbility() || event.source.controller !== this.controller)
+                    (event.source.getType() === 'character' ||
+                        event.source.getType() === 'location' ||
+                        event.source.getType() === 'attachment')
             },
-            cost: ability.costs.returnToHand(
-                (card) => card.getType() === 'character' && card.hasTrait('The Seven')
-            ),
+            cost: ability.costs.returnSelfToHand(),
             message: {
-                format: '{player} uses {source} and returns {costs.returnToHand} to their hand to cancel {character}',
+                format: "{player} uses {source} and returns {source} to their hand to cancel {character}'s ability",
                 args: { character: (context) => context.event.source }
             },
             limit: ability.limit.perRound(1),
@@ -28,6 +27,6 @@ class KingsLandingSepton extends DrawCard {
 }
 
 KingsLandingSepton.code = '27530';
-KingsLandingSepton.version = '1.0.0';
+KingsLandingSepton.version = '1.0.1';
 
 export default KingsLandingSepton;

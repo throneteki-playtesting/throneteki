@@ -37,7 +37,7 @@ class ANecessarySacrifice extends DrawCard {
         });
     }
 }
-ANecessarySacrifice.code = '27547';
+ANecessarySacrifice.code = '27571';
 ANecessarySacrifice.version = '1.0.0';
 
 export default ANecessarySacrifice;

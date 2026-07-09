@@ -1,17 +1,17 @@
 import DrawCard from '../../drawcard.js';
 
-class CamouflagedNorthmen extends DrawCard {
+class LiddleScout extends DrawCard {
     setupCardAbilities(ability) {
         this.persistentEffect({
             condition: () => this.isAttacking(),
-            targetController: 'any',
             match: (card) => card.getType() === 'character' && card.isShadow(),
+            targetController: 'any',
             effect: ability.effects.cannotBeDeclaredAsDefender()
         });
     }
 }
 
-CamouflagedNorthmen.code = '27565';
-CamouflagedNorthmen.version = '1.0.0';
+LiddleScout.code = '27565';
+LiddleScout.version = '1.0.1';
 
-export default CamouflagedNorthmen;
+export default LiddleScout;
