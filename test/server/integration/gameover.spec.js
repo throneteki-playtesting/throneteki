@@ -380,7 +380,7 @@ describe('Game Over', function () {
                 beforeEach(function () {
                     const deck = this.buildDeck('stark', [
                         'A Noble Cause',
-                        { name: 'Oldtown', count: 10 }
+                        { name: 'Oldtown (JtO)', count: 10 }
                     ]);
                     this.player1.selectDeck(deck);
                     this.player2.selectDeck(deck);
