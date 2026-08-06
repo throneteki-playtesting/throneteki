@@ -6,7 +6,7 @@ describe('Jade Compendium', function () {
                 'A Noble Cause',
                 'Jade Compendium (OatN)',
                 'Maester Harmune',
-                { name: 'Hedge Knight', count: 10 }
+                { name: 'Hedge Knight', count: 30 }
             ]);
             const deck2 = this.buildDeck('lannister', ['A Noble Cause', 'Cersei Lannister (Core)']);
             this.player1.selectDeck(deck1);
