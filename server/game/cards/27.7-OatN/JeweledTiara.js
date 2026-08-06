@@ -7,38 +7,40 @@ class JeweledTiara extends DrawCard {
         this.attachmentRestriction({ trait: 'Lady' });
 
         this.whileAttached({
-            match: (card) => card.name === 'Cersei Lannister',
-            effect: ability.effects.modifyStrength(2)
+            effect: ability.effects.addTrait('Queen')
         });
 
         this.reaction({
             when: {
                 afterChallenge: (event) =>
-                    event.challenge.winner === this.controller &&
-                    event.challenge.attackingPlayer === this.controller &&
-                    event.challenge.challengeType === 'intrigue'
+                    event.challenge.isMatch({
+                        challengeType: 'intrigue',
+                        winner: this.controller
+                    }) &&
+                    !!this.parent &&
+                    this.parent.isParticipating()
             },
             cost: ability.costs.kneelSelf(),
             message: {
-                format: "{player} uses {source} to discard {amount} from {opponent}'s hand",
+                format: "{player} uses {source} to discard {amount} at random from {loser}'s hand",
                 args: {
-                    amount: () => TextHelper.count(this.getAmount(), 'card'),
-                    opponent: (context) => context.event.challenge.loser
+                    amount: (context) => TextHelper.count(this.getAmount(context), 'card'),
+                    loser: (context) => context.event.challenge.loser
                 }
             },
             gameAction: GameActions.discardAtRandom((context) => ({
                 player: context.event.challenge.loser,
-                amount: this.getAmount()
+                amount: this.getAmount(context)
             }))
         });
     }
 
-    getAmount() {
-        return Math.trunc(this.game.currentChallenge.strengthDifference / 5);
+    getAmount(context) {
+        return context.event.challenge.strengthDifference >= 10 ? 3 : 1;
     }
 }
 
 JeweledTiara.code = '27531';
-JeweledTiara.version = '1.1.0';
+JeweledTiara.version = '1.1.1';
 
 export default JeweledTiara;

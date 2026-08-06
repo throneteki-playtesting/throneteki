@@ -12,6 +12,6 @@ class SkirlingPass extends DrawCard {
 }
 
 SkirlingPass.code = '27557';
-SkirlingPass.version = '1.0.0';
+SkirlingPass.version = '1.0.1';
 
 export default SkirlingPass;

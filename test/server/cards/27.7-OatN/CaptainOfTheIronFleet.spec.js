@@ -7,7 +7,11 @@ describe('Captain of the Iron Fleet', function () {
                 'Victarion Greyjoy (R)',
                 'The Balerion (AHaH)'
             ]);
-            const deck2 = this.buildDeck('greyjoy', ['A Noble Cause', 'Hedge Knight']);
+            const deck2 = this.buildDeck('greyjoy', [
+                'A Noble Cause',
+                'Hedge Knight',
+                'Northern Refugee (TC)'
+            ]);
             this.player1.selectDeck(deck1);
             this.player2.selectDeck(deck2);
             this.startGame();
@@ -17,15 +21,14 @@ describe('Captain of the Iron Fleet', function () {
             this.victarion = this.player1.findCardByName('Victarion Greyjoy', 'hand');
             this.balerion = this.player1.findCardByName('The Balerion', 'hand');
             this.p2knight = this.player2.findCardByName('Hedge Knight', 'hand');
+            this.p2refugee = this.player2.findCardByName('Northern Refugee', 'hand');
 
-            this.player1.clickCard(this.victarion);
-            this.player1.clickCard(this.balerion);
-            this.player2.clickCard(this.p2knight);
+            this.player1.setupCards([this.victarion, this.balerion]);
+            this.player2.setupCards([this.p2knight, this.p2refugee]);
             this.completeSetup();
             this.selectFirstPlayer(this.player1);
             this.player1Object.gold = 10;
-            this.player1.clickCard(this.captain);
-            this.player1.clickCard(this.victarion);
+            this.player1.attachCard(this.captain, this.victarion);
             this.completeMarshalPhase();
         });
 
@@ -35,21 +38,22 @@ describe('Captain of the Iron Fleet', function () {
 
         describe('during a military challenge', function () {
             beforeEach(function () {
-                this.player1.clickPrompt('Done');
-                this.player2.clickPrompt('Military');
-                this.player2.clickCard(this.p2knight);
-                this.player2.clickPrompt('Done');
+                this.player1.passChallenge();
+                this.player2.initiateChallenge({ type: 'military', attackers: this.p2knight });
                 this.skipActionWindow();
-                this.player1.clickPrompt('Done');
+                this.player1.declareDefenders([]);
             });
 
-            it('should allow triggering the action to add Victarion', function () {
-                expect(this.player1).toAllowTriggerAction(this.captain, 'Participate in challenge');
+            it('should allow triggering the action', function () {
+                expect(this.player1).toAllowTriggerAction(
+                    this.captain,
+                    'Contribute STR to challenge'
+                );
             });
 
             describe('when the action is used', function () {
                 beforeEach(function () {
-                    this.player1.clickMenu(this.captain, 'Participate in challenge');
+                    this.player1.clickMenu(this.captain, 'Contribute STR to challenge');
                     this.player1.clickCard(this.balerion);
                 });
 
@@ -58,9 +62,29 @@ describe('Captain of the Iron Fleet', function () {
                     expect(this.balerion.kneeled).toBe(true);
                 });
 
-                it('should add Victarion to the challenge', function () {
-                    expect(this.victarion.isParticipating()).toBe(true);
+                it('should not add Victarion to the challenge', function () {
+                    expect(this.victarion.isParticipating()).toBe(false);
                 });
+
+                it("should contribute Victarion's STR to player1's side", function () {
+                    expect(this.game.currentChallenge.defenderStrength).toBe(
+                        this.victarion.getStrength()
+                    );
+                });
+            });
+        });
+
+        describe('during an intrigue challenge', function () {
+            beforeEach(function () {
+                this.player1.passChallenge();
+                this.player2.initiateChallenge({ type: 'intrigue', attackers: this.p2refugee });
+            });
+
+            it('should not allow triggering the action', function () {
+                expect(this.player1).not.toAllowTriggerAction(
+                    this.captain,
+                    'Contribute STR to challenge'
+                );
             });
         });
     });

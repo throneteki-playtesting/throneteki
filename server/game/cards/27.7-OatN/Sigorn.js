@@ -6,9 +6,10 @@ class Sigorn extends DrawCard {
         this.reaction({
             when: {
                 afterChallenge: (event) =>
-                    this.controller === event.challenge.winner &&
-                    event.challenge.challengeType === 'military' &&
-                    this.isParticipating()
+                    event.challenge.isMatch({
+                        challengeType: 'military',
+                        winner: this.controller
+                    }) && this.isAttacking()
             },
             target: {
                 cardCondition: {
@@ -38,6 +39,6 @@ class Sigorn extends DrawCard {
 }
 
 Sigorn.code = '27598';
-Sigorn.version = '1.1.0';
+Sigorn.version = '1.1.1';
 
 export default Sigorn;
