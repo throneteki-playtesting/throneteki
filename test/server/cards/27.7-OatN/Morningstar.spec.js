@@ -1,12 +1,10 @@
-// Claude: attachment no longer gives +2 STR; use QoT (6 STR) + Margaery (3 STR) for 5+ diff in Intrigue
 describe('Morningstar', function () {
     integration(function () {
         beforeEach(function () {
             const deck1 = this.buildDeck('tyrell', [
                 'A Noble Cause',
                 'Morningstar (OatN)',
-                'Margaery Tyrell (Core)',
-                'The Queen of Thorns (Core)',
+                'Ser Colen of Greenpools (AtSK)',
                 'Hedge Knight'
             ]);
             const deck2 = this.buildDeck('tyrell', ['A Noble Cause', 'Hedge Knight']);
@@ -16,36 +14,28 @@ describe('Morningstar', function () {
             this.keepStartingHands();
 
             this.morningstar = this.player1.findCardByName('Morningstar', 'hand');
-            this.margaery = this.player1.findCardByName('Margaery Tyrell', 'hand');
-            this.qot = this.player1.findCardByName('The Queen of Thorns', 'hand');
+            this.colen = this.player1.findCardByName('Ser Colen of Greenpools', 'hand');
+            this.knight = this.player1.findCardByName('Hedge Knight', 'hand');
             this.p2knight = this.player2.findCardByName('Hedge Knight', 'hand');
 
-            this.player1.clickCard(this.margaery);
-            this.player1.clickCard(this.morningstar);
-            this.player2.clickCard(this.p2knight);
+            this.player1.setupCards([this.colen, this.knight]);
+            this.player2.setupCards([this.p2knight]);
             this.completeSetup();
-            this.player1.clickCard(this.morningstar);
-            this.player1.clickCard(this.margaery);
             this.selectFirstPlayer(this.player1);
 
-            this.player1.clickCard(this.qot);
+            this.player1.attachCard(this.morningstar, this.colen);
             this.completeMarshalPhase();
         });
 
-        describe('after winning an Intrigue challenge by 5+ STR with the attached character', function () {
+        describe('after winning a military challenge with the attached character', function () {
             beforeEach(function () {
-                // Margaery (3) + QoT (6) vs no defenders → diff = 9 ≥ 5
-                this.player1.clickPrompt('Intrigue');
-                this.player1.clickCard(this.margaery);
-                this.player1.clickCard(this.qot);
-                this.player1.clickPrompt('Done');
+                this.player1.initiateChallenge({ type: 'military', attackers: [this.colen] });
                 this.skipActionWindow();
-                this.player2.clickPrompt('Done');
+                this.player2.declareDefenders([]);
                 this.skipActionWindow();
-                // afterChallenge → Morningstar reaction available
             });
 
-            it('should allow standing and removing the attached character from the challenge', function () {
+            it('should allow triggering the reaction', function () {
                 expect(this.player1).toAllowAbilityTrigger('Morningstar');
             });
 
@@ -54,25 +44,42 @@ describe('Morningstar', function () {
                     this.player1.triggerAbility(this.morningstar);
                 });
 
-                it('should stand Margaery', function () {
-                    expect(this.margaery.kneeled).toBe(false);
+                it('should kneel Morningstar', function () {
+                    expect(this.morningstar.kneeled).toBe(true);
                 });
 
-                it('should remove Margaery from the challenge', function () {
-                    expect(this.margaery.isParticipating()).toBe(false);
+                it('should stand the attached character', function () {
+                    expect(this.colen.kneeled).toBe(false);
+                });
+
+                it('should remove the attached character from the challenge', function () {
+                    expect(this.colen.isParticipating()).toBe(false);
                 });
             });
         });
 
-        describe('when the challenge is won by less than 5 STR', function () {
+        describe('after winning a power challenge with the attached character', function () {
+            beforeEach(function () {
+                this.player1.initiateChallenge({ type: 'power', attackers: [this.colen] });
+                this.skipActionWindow();
+                this.player2.declareDefenders([]);
+                this.skipActionWindow();
+            });
+
             it('should not allow the reaction', function () {
-                // Margaery (3) vs no defenders → diff = 3 < 5
-                this.player1.clickPrompt('Intrigue');
-                this.player1.clickCard(this.margaery);
-                this.player1.clickPrompt('Done');
+                expect(this.player1).not.toAllowAbilityTrigger('Morningstar');
+            });
+        });
+
+        describe('when the attached character is not participating', function () {
+            beforeEach(function () {
+                this.player1.initiateChallenge({ type: 'military', attackers: [this.knight] });
                 this.skipActionWindow();
-                this.player2.clickPrompt('Done');
+                this.player2.declareDefenders([]);
                 this.skipActionWindow();
+            });
+
+            it('should not allow the reaction', function () {
                 expect(this.player1).not.toAllowAbilityTrigger('Morningstar');
             });
         });

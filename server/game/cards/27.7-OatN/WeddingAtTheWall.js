@@ -2,39 +2,41 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class WeddingAtTheWall extends DrawCard {
-    setupCardAbilities(_ability) {
+    setupCardAbilities() {
         this.reaction({
             when: {
-                onChallengeInitiated: (event) =>
-                    event.challenge.challengeType === 'power' && this.controller.shadows.length > 0
+                afterChallenge: (event) =>
+                    event.challenge.isMatch({
+                        challengeType: 'power',
+                        winner: this.controller,
+                        attackingPlayer: this.controller
+                    })
             },
-            message: {
-                format: "{player} uses {source} to reveal their shadow area and have their R'hllor and Wildling characters gain the R'hllor and Wildling traits until the end of the phase",
-                args: {}
+            target: {
+                mode: 'exactly',
+                numCards: 2,
+                activePromptTitle: 'Select 2 characters',
+                cardCondition: (card, context) =>
+                    card.location === 'play area' &&
+                    card.getType() === 'character' &&
+                    card.controller === context.player &&
+                    (card.hasTrait("R'hllor") || card.hasTrait('Wildling')) &&
+                    GameActions.standCard({ card }).allow()
             },
+            message: '{player} plays {source} to stand {target}',
             handler: (context) => {
                 this.game.resolveGameAction(
-                    GameActions.revealCards((context) => ({
-                        cards: context.player.shadows.slice()
-                    })),
+                    GameActions.simultaneously(
+                        context.target.map((card) => GameActions.standCard({ card }))
+                    ),
                     context
                 );
-                this.untilEndOfPhase((ability) => ({
-                    match: (card) =>
-                        card.getType() === 'character' &&
-                        card.controller === this.controller &&
-                        (card.hasTrait("R'hllor") || card.hasTrait('Wildling')),
-                    effect: [
-                        ability.effects.addTrait("R'hllor"),
-                        ability.effects.addTrait('Wildling')
-                    ]
-                }));
             }
         });
     }
 }
 
 WeddingAtTheWall.code = '27512';
-WeddingAtTheWall.version = '1.1.0';
+WeddingAtTheWall.version = '1.2.0';
 
 export default WeddingAtTheWall;

@@ -1,23 +1,31 @@
-// Claude: reaction stands+removes attached character after winning by 5+ STR; no STR bonus
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class Morningstar extends DrawCard {
-    setupCardAbilities() {
+    setupCardAbilities(ability) {
+        this.attachmentRestriction({ controller: 'current' });
+
         this.reaction({
             when: {
                 afterChallenge: (event) =>
-                    event.challenge.winner === this.controller &&
-                    event.challenge.strengthDifference >= 5 &&
-                    this.parent &&
+                    event.challenge.isMatch({
+                        challengeType: 'military',
+                        winner: this.controller
+                    }) &&
+                    !!this.parent &&
                     this.parent.isParticipating()
             },
-            message: '{player} uses {source} to stand {target} and remove them from the challenge',
+            cost: ability.costs.kneelSelf(),
+            message: {
+                format: '{player} kneels {source} to stand {parent} and remove them from the challenge',
+                args: { parent: () => this.parent }
+            },
             handler: (context) => {
+                const parent = this.parent;
                 this.game.resolveGameAction(
                     GameActions.simultaneously([
-                        GameActions.standCard({ card: this.parent }),
-                        GameActions.removeFromChallenge({ card: this.parent })
+                        GameActions.standCard({ card: parent }),
+                        GameActions.removeFromChallenge({ card: parent })
                     ]),
                     context
                 );
@@ -27,6 +35,6 @@ class Morningstar extends DrawCard {
 }
 
 Morningstar.code = '27592';
-Morningstar.version = '1.1.0';
+Morningstar.version = '1.1.1';
 
 export default Morningstar;

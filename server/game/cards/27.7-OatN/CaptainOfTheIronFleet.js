@@ -7,27 +7,30 @@ class CaptainOfTheIronFleet extends DrawCard {
             effect: ability.effects.addTrait('Captain')
         });
         this.action({
-            title: 'Participate in challenge',
-            condition: () => this.game.isDuringChallenge({ challengeType: ['military', 'power'] }),
+            title: 'Contribute STR to challenge',
+            condition: () =>
+                !!this.parent &&
+                this.game.isDuringChallenge({ challengeType: ['military', 'power'] }),
             cost: [
                 ability.costs.kneelSelf(),
                 ability.costs.kneel({ type: 'location', trait: 'Warship' })
             ],
             message: {
-                format: '{player} kneels {costs.kneel} to add {parent} to the challenge',
-                args: { parent: () => this.parent }
+                format: "{player} kneels {source} and {costs.kneel} to have {parent} contribute its STR (currently {str}) to {player}'s side of the challenge",
+                args: { parent: () => this.parent, str: () => this.parent.getStrength() }
             },
             handler: () => {
-                this.game.currentChallenge.addParticipantToSide(
-                    this.parent.controller,
-                    this.parent
-                );
+                const parent = this.parent;
+                this.untilEndOfChallenge((ability) => ({
+                    targetController: 'current',
+                    effect: ability.effects.contributeCharacterStrength(parent)
+                }));
             }
         });
     }
 }
 
 CaptainOfTheIronFleet.code = '27519';
-CaptainOfTheIronFleet.version = '1.0.1';
+CaptainOfTheIronFleet.version = '1.0.2';
 
 export default CaptainOfTheIronFleet;

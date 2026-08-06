@@ -2,10 +2,10 @@ import DrawCard from '../../drawcard.js';
 
 class PurpleGraces extends DrawCard {
     setupCardAbilities(ability) {
-        this.reaction({
-            when: {
-                onChallengeInitiated: (event) => event.challenge.challengeType === 'military'
-            },
+        this.action({
+            title: 'Give an attacker -2 STR',
+            phase: 'challenge',
+            condition: () => this.game.isDuringChallenge({ challengeType: 'military' }),
             cost: ability.costs.kneelSelf(),
             target: {
                 cardCondition: (card) =>
@@ -13,7 +13,7 @@ class PurpleGraces extends DrawCard {
                     card.getType() === 'character' &&
                     card.isAttacking()
             },
-            message: '{player} kneels {costs.kneel} to give {target} -2 STR until end of phase',
+            message: '{player} kneels {source} to give {target} -2 STR until the end of the phase',
             handler: (context) => {
                 this.untilEndOfPhase((ability) => ({
                     match: context.target,
@@ -25,6 +25,6 @@ class PurpleGraces extends DrawCard {
 }
 
 PurpleGraces.code = '27577';
-PurpleGraces.version = '1.1.0';
+PurpleGraces.version = '1.1.1';
 
 export default PurpleGraces;

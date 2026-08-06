@@ -1,7 +1,3 @@
-// Generated with Claude Code - claude-opus-4-5-20251101
-// - 2026-01-25: Created plot card where each player kneels a character, highest STR gains power
-// - 2026-01-31: Rewrote using choosingPlayer: 'each' and simultaneous game actions
-
 import GameActions from '../../GameActions/index.js';
 import PlotCard from '../../plotcard.js';
 
@@ -10,66 +6,70 @@ class IntoTheLists extends PlotCard {
         this.whenRevealed({
             target: {
                 choosingPlayer: 'each',
+                optional: true,
                 ifAble: true,
                 activePromptTitle: 'Select a character to kneel',
                 cardCondition: (card, context) =>
                     card.location === 'play area' &&
-                    card.controller === context.choosingPlayer &&
                     card.getType() === 'character' &&
-                    !card.kneeled,
+                    card.controller === context.choosingPlayer &&
+                    !card.kneeled &&
+                    !card.hasTrait('Army') &&
+                    card.hasIcon('military'),
                 gameAction: 'kneel'
             },
-            message: {
-                format: '{player} uses {source} to have each player kneel a character for the lists'
-            },
+            message: '{player} uses {source} to have each player kneel a character',
             handler: (context) => {
-                const cards = context.targets.selections
-                    .map((selection) => selection.value)
-                    .filter((card) => !!card);
+                const knelt = context.targets.getTargets();
 
-                if (cards.length === 0) {
+                if (knelt.length === 0) {
                     return;
                 }
 
-                // Log each player's knelt character
-                for (const selection of context.targets.selections) {
-                    if (selection.value) {
-                        this.game.addMessage(
-                            '{0} kneels {1} for {2}',
-                            selection.choosingPlayer,
-                            selection.value,
-                            this
-                        );
-                    }
-                }
-
-                // Kneel all selected characters simultaneously, then award power to highest STR
                 this.game.resolveGameAction(
                     GameActions.simultaneously(
-                        cards.map((card) => GameActions.kneelCard({ card }))
-                    ).then(() => ({
-                        message: '{player} {gameAction}',
-                        gameAction: GameActions.simultaneously(() => {
-                            const highestStr = Math.max(...cards.map((card) => card.getStrength()));
-                            const winners = cards.filter(
-                                (card) => card.getStrength() === highestStr
-                            );
-                            return winners.map((winner) =>
-                                GameActions.gainPower({
-                                    card: winner,
-                                    amount: winner.hasTrait('Knight') ? 2 : 1
-                                })
-                            );
-                        })
-                    })),
+                        knelt.map((card) => GameActions.kneelCard({ card }))
+                    ),
                     context
                 );
+
+                this.game.queueSimpleStep(() => {
+                    const champion = this.getChampion(knelt);
+
+                    if (!champion) {
+                        return;
+                    }
+
+                    this.game.addMessage(
+                        '{0} uses {1} to have {2} gain 2 power',
+                        context.player,
+                        this,
+                        champion
+                    );
+                    this.game.resolveGameAction(
+                        GameActions.gainPower({ card: champion, amount: 2 }),
+                        context
+                    );
+                });
             }
         });
+    }
+
+    getChampion(knelt) {
+        const inPlay = knelt.filter((card) => card.location === 'play area');
+
+        if (inPlay.length === 0) {
+            return undefined;
+        }
+
+        const highestStrength = Math.max(...inPlay.map((card) => card.getStrength()));
+        const champions = inPlay.filter((card) => card.getStrength() === highestStrength);
+
+        return champions.length === 1 ? champions[0] : undefined;
     }
 }
 
 IntoTheLists.code = '27611';
-IntoTheLists.version = '1.0.0';
+IntoTheLists.version = '1.0.1';
 
 export default IntoTheLists;
