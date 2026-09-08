@@ -53,6 +53,6 @@ class ShieldsOfTheRealm extends DrawCard {
 }
 
 ShieldsOfTheRealm.code = '27560';
-ShieldsOfTheRealm.version = '1.0.0';
+ShieldsOfTheRealm.version = '1.0.1';
 
 export default ShieldsOfTheRealm;

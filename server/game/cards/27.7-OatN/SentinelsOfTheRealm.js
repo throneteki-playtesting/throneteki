@@ -17,10 +17,9 @@ class SentinelsOfTheRealm extends AgendaCard {
         };
 
         this.persistentEffect({
-            match: (card) =>
-                card.isMatch({ type: 'character', not: { trait: 'Guard' } }) &&
-                this.game.isDuringChallenge({ defendingAlone: card }),
-            effect: ability.effects.doesNotContributeStrength()
+            condition: () => !this.controller.anyCardsInPlay({ type: 'character', trait: 'Guard' }),
+            targetController: 'current',
+            effect: ability.effects.cannotPlay((card) => card.getType() === 'event')
         });
 
         this.interrupt({
@@ -40,6 +39,6 @@ class SentinelsOfTheRealm extends AgendaCard {
 }
 
 SentinelsOfTheRealm.code = '27619';
-SentinelsOfTheRealm.version = '1.0.0';
+SentinelsOfTheRealm.version = '1.0.1';
 
 export default SentinelsOfTheRealm;

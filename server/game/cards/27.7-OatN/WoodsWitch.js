@@ -16,26 +16,47 @@ class WoodsWitch extends DrawCard {
                 const opponent = context.event.cardStateWhenDiscarded.controller;
                 const cost = discardedCard.getPrintedCost();
 
-                this.game.addMessage(
-                    '{0} sacrifices {1} to force {2} to sacrifice a card of printed cost {3}',
-                    this.controller,
-                    this,
-                    opponent,
-                    cost
+                this.game.resolveGameAction(
+                    GameActions.choose({
+                        title: 'Name a card type',
+                        message: {
+                            format: '{player} sacrifices {source} to name {choice} and force {targetPlayer} to sacrifice a card of that type with printed cost {cost}',
+                            args: {
+                                targetPlayer: () => opponent,
+                                cost: () => cost
+                            }
+                        },
+                        choices: {
+                            Character: GameActions.genericHandler(() =>
+                                this.promptForType(opponent, cost, 'character')
+                            ),
+                            Location: GameActions.genericHandler(() =>
+                                this.promptForType(opponent, cost, 'location')
+                            ),
+                            Attachment: GameActions.genericHandler(() =>
+                                this.promptForType(opponent, cost, 'attachment')
+                            )
+                        }
+                    }),
+                    context
                 );
-
-                this.game.promptForSelect(opponent, {
-                    activePromptTitle: `Select a card with printed cost ${cost} to sacrifice`,
-                    cardCondition: (card) =>
-                        card.location === 'play area' &&
-                        card.controller === opponent &&
-                        card.getPrintedCost() === cost &&
-                        GameActions.sacrificeCard({ card, player: opponent }).allow(),
-                    onSelect: (player, card) => this.onSacrificeSelected(player, card),
-                    source: this
-                });
             }
         });
+    }
+
+    promptForType(opponent, cost, type) {
+        this.game.promptForSelect(opponent, {
+            activePromptTitle: `Select a ${type} with printed cost ${cost} to sacrifice`,
+            cardCondition: (card) =>
+                card.location === 'play area' &&
+                card.controller === opponent &&
+                card.getType() === type &&
+                card.getPrintedCost() === cost &&
+                GameActions.sacrificeCard({ card, player: opponent }).allow(),
+            onSelect: (player, card) => this.onSacrificeSelected(player, card),
+            source: this
+        });
+        return true;
     }
 
     onSacrificeSelected(player, card) {
@@ -46,6 +67,6 @@ class WoodsWitch extends DrawCard {
 }
 
 WoodsWitch.code = '27566';
-WoodsWitch.version = '1.1.0';
+WoodsWitch.version = '1.1.1';
 
 export default WoodsWitch;
