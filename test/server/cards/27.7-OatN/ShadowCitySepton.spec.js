@@ -16,6 +16,7 @@ describe('Shadow City Septon', function () {
             this.cersei = this.player2.findCardByName('Cersei Lannister', 'hand');
 
             this.player1.clickCard(this.septon);
+            this.player1.clickPrompt('Setup');
             this.player2.clickCard(this.cersei);
             this.completeSetup();
             this.selectFirstPlayer(this.player2);
@@ -27,22 +28,22 @@ describe('Shadow City Septon', function () {
         });
 
         describe('when player2 wins dominance with a standing character', function () {
-            it('should allow sacrificing the Septon to return a standing opponent character to hand', function () {
+            it('should allow triggering the Septon to force a standing character to be returned to hand', function () {
                 expect(this.player1).toAllowAbilityTrigger('Shadow City Septon');
             });
 
             describe('when triggered', function () {
                 beforeEach(function () {
                     this.player1.triggerAbility(this.septon);
-                    this.player1.clickCard(this.cersei);
+                    this.player2.clickCard(this.cersei);
                 });
 
                 it('should return Cersei to hand', function () {
                     expect(this.cersei.location).toBe('hand');
                 });
 
-                it('should sacrifice the Septon', function () {
-                    expect(this.septon.location).toBe('discard pile');
+                it('should not sacrifice the Septon', function () {
+                    expect(this.septon.location).toBe('play area');
                 });
             });
         });
@@ -54,7 +55,7 @@ describe('Shadow City Septon', function () {
 
             it('should not allow targeting a kneeled character', function () {
                 this.player1.triggerAbility(this.septon);
-                expect(this.player1).not.toAllowSelect(this.cersei);
+                expect(this.player2).not.toAllowSelect(this.cersei);
             });
         });
     });

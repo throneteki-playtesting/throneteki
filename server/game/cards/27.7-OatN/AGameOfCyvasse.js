@@ -1,65 +1,74 @@
 import DrawCard from '../../drawcard.js';
-import GameActions from '../../GameActions/index.js';
 
 class AGameOfCyvasse extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
-            title: 'Force players to kneel intrigue characters',
+            title: 'Restrict declared characters in next intrigue challenge',
             cost: ability.costs.playEvent(),
             phase: 'challenge',
-            condition: () =>
-                this.controller.anyCardsInPlay(
-                    (card) => card.getType() === 'character' && card.hasIcon('intrigue')
-                ),
-            max: ability.limit.perRound(1),
-            target: {
-                choosingPlayer: 'each',
-                ifAble: true,
-                cardCondition: (card, context) =>
-                    card.location === 'play area' &&
-                    card.controller === context.choosingPlayer &&
-                    card.getType() === 'character' &&
-                    card.hasIcon('intrigue') &&
-                    !card.kneeled &&
-                    GameActions.kneelCard({ card }).allow()
-            },
+            max: ability.limit.perPhase(1),
+            message:
+                "{player} plays {source} so each player cannot declare more than 1 character as an attacker or defender during {player}'s next intrigue challenge this phase",
             handler: (context) => {
-                const selections = context.targets.selections.filter((s) => !!s.value);
-                const kneeledCards = selections.map((s) => s.value);
+                const player = context.player;
+                let markedChallenge = null;
 
-                this.game.resolveGameAction(
-                    GameActions.simultaneously(
-                        kneeledCards.map((card) => GameActions.kneelCard({ card }))
-                    ),
-                    context
-                );
-                this.game.addMessage(
-                    '{0} plays {1} to kneel {2}',
-                    this.controller,
-                    this,
-                    kneeledCards
-                );
+                this.untilEndOfPhase((ability) => ({
+                    targetController: 'any',
+                    condition: () => {
+                        const challenge = this.game.currentChallenge;
+                        if (!challenge) {
+                            return false;
+                        }
 
-                if (kneeledCards.length === 0) {
-                    return;
-                }
+                        if (
+                            !markedChallenge &&
+                            challenge.attackingPlayer === player &&
+                            challenge.challengeType === 'intrigue'
+                        ) {
+                            markedChallenge = challenge;
+                        }
 
-                const lowestStr = Math.min(...kneeledCards.map((c) => c.getStrength()));
-                const lowestCards = kneeledCards.filter((c) => c.getStrength() === lowestStr);
+                        return challenge === markedChallenge;
+                    },
+                    effect: [
+                        ability.effects.setAttackerMaximum(1),
+                        ability.effects.setDefenderMaximum(1)
+                    ]
+                }));
 
-                this.game.addMessage('{0} returns {1} to their hand', this.controller, lowestCards);
-                this.game.resolveGameAction(
-                    GameActions.simultaneously(
-                        lowestCards.map((card) => GameActions.returnCardToHand({ card }))
-                    ),
-                    context
-                );
+                const challengeListener = (event) => {
+                    if (!markedChallenge || event.challenge !== markedChallenge) {
+                        return;
+                    }
+
+                    this.game.removeListener('afterChallenge', challengeListener);
+                    this.game.removeListener('onPhaseEnded', cleanupListener);
+
+                    if (event.challenge.winner === player) {
+                        this.untilEndOfPhase((ability) => ({
+                            targetController: 'any',
+                            match: (target) => target === player,
+                            effect: ability.effects.mayInitiateAdditionalChallenge('intrigue')
+                        }));
+                        this.game.addMessage(
+                            '{0} wins the challenge and may initiate an additional intrigue challenge this phase',
+                            player
+                        );
+                    }
+                };
+                const cleanupListener = () => {
+                    this.game.removeListener('afterChallenge', challengeListener);
+                };
+
+                this.game.on('afterChallenge', challengeListener);
+                this.game.once('onPhaseEnded', cleanupListener);
             }
         });
     }
 }
 
 AGameOfCyvasse.code = '27547';
-AGameOfCyvasse.version = '1.1.0';
+AGameOfCyvasse.version = '1.2.0';
 
 export default AGameOfCyvasse;

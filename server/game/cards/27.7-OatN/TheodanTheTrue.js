@@ -58,6 +58,6 @@ class TheodanTheTrue extends DrawCard {
 }
 
 TheodanTheTrue.code = '27597';
-TheodanTheTrue.version = '1.1.0';
+TheodanTheTrue.version = '1.1.1';
 
 export default TheodanTheTrue;
