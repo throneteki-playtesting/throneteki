@@ -27,6 +27,6 @@ class HarmaDogshead extends DrawCard {
     }
 }
 
-HarmaDogshead.code = '00288';
+HarmaDogshead.code = '00296';
 
 export default HarmaDogshead;

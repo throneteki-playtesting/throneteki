@@ -17,6 +17,6 @@ class AllaTyrell extends DrawCard {
     }
 }
 
-AllaTyrell.code = '00271';
+AllaTyrell.code = '00279';
 
 export default AllaTyrell;

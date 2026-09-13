@@ -14,6 +14,6 @@ class GulltownMerchant extends DrawCard {
     }
 }
 
-GulltownMerchant.code = '00318';
+GulltownMerchant.code = '00354';
 
 export default GulltownMerchant;

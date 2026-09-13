@@ -33,6 +33,6 @@ class TheFather extends PlotCard {
     }
 }
 
-TheFather.code = '00348';
+TheFather.code = '00304';
 
 export default TheFather;

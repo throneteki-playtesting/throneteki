@@ -50,6 +50,6 @@ class BraveCompanions extends DrawCard {
     }
 }
 
-BraveCompanions.code = '00294';
+BraveCompanions.code = '00310';
 
 export default BraveCompanions;

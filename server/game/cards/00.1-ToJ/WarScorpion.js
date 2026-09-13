@@ -62,6 +62,6 @@ class WarScorpion extends DrawCard {
     }
 }
 
-WarScorpion.code = '00183';
+WarScorpion.code = '00187';
 
 export default WarScorpion;

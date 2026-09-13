@@ -21,6 +21,6 @@ class Insubordination extends DrawCard {
     }
 }
 
-Insubordination.code = '00205';
+Insubordination.code = '00210';
 
 export default Insubordination;

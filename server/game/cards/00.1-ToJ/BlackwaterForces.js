@@ -22,6 +22,6 @@ class BlackwaterForces extends DrawCard {
     }
 }
 
-BlackwaterForces.code = '00277';
+BlackwaterForces.code = '00285';
 
 export default BlackwaterForces;

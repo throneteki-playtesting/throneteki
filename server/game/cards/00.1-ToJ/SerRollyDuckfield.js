@@ -30,6 +30,6 @@ class SerRollyDuckfield extends DrawCard {
     }
 }
 
-SerRollyDuckfield.code = '00247';
+SerRollyDuckfield.code = '00254';
 
 export default SerRollyDuckfield;

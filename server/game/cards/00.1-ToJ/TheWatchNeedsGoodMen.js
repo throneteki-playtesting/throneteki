@@ -20,6 +20,6 @@ class TheWatchNeedsGoodMen extends PlotCard {
     }
 }
 
-TheWatchNeedsGoodMen.code = '00329';
+TheWatchNeedsGoodMen.code = '00204';
 
 export default TheWatchNeedsGoodMen;

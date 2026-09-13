@@ -26,6 +26,6 @@ class SerJaimeLannister extends DrawCard {
     }
 }
 
-SerJaimeLannister.code = '00149';
+SerJaimeLannister.code = '00151';
 
 export default SerJaimeLannister;

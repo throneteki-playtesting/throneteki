@@ -54,6 +54,6 @@ class FacelessMan extends DrawCard {
     }
 }
 
-FacelessMan.code = '00312';
+FacelessMan.code = '00368';
 
 export default FacelessMan;

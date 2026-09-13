@@ -12,6 +12,6 @@ class ForTheRealm extends PlotCard {
     }
 }
 
-ForTheRealm.code = '00343';
+ForTheRealm.code = '00335';
 
 export default ForTheRealm;

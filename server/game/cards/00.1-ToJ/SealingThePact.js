@@ -66,7 +66,8 @@ class SealingThePact extends AgendaCard {
                 this.controller,
                 factionToAnnounce,
                 factionToAnnounce.length > 1 ? 'factions' : 'faction',
-                this);
+                this
+            );
             return;
         }
 
@@ -85,6 +86,6 @@ class SealingThePact extends AgendaCard {
     }
 }
 
-SealingThePact.code = '00358';
+SealingThePact.code = '00362';
 
 export default SealingThePact;

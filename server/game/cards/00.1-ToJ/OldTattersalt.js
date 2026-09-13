@@ -31,6 +31,6 @@ class OldTattersalt extends DrawCard {
     }
 }
 
-OldTattersalt.code = '00202';
+OldTattersalt.code = '00207';
 
 export default OldTattersalt;

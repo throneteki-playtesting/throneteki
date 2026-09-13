@@ -31,6 +31,6 @@ class StarfallServant extends DrawCard {
     }
 }
 
-StarfallServant.code = '00186';
+StarfallServant.code = '00190';
 
 export default StarfallServant;

@@ -37,6 +37,6 @@ class Harwin extends DrawCard {
     }
 }
 
-Harwin.code = '00228';
+Harwin.code = '00234';
 
 export default Harwin;

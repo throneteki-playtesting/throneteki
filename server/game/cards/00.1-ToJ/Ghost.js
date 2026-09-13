@@ -39,6 +39,6 @@ class Ghost extends DrawCard {
     }
 }
 
-Ghost.code = '00227';
+Ghost.code = '00233';
 
 export default Ghost;

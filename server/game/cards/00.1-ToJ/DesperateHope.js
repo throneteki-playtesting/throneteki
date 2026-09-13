@@ -14,6 +14,6 @@ class DesperateHope extends AgendaCard {
     }
 }
 
-DesperateHope.code = '00363';
+DesperateHope.code = '00367';
 
 export default DesperateHope;

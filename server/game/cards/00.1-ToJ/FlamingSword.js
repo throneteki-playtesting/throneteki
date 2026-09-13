@@ -25,6 +25,6 @@ class FlamingSword extends DrawCard {
     }
 }
 
-FlamingSword.code = '00123';
+FlamingSword.code = '00124';
 
 export default FlamingSword;

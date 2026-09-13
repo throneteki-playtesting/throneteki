@@ -13,6 +13,6 @@ class Shagwell extends DrawCard {
     }
 }
 
-Shagwell.code = '00301';
+Shagwell.code = '00317';
 
 export default Shagwell;

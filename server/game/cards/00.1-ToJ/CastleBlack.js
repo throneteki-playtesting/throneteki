@@ -49,6 +49,6 @@ class CastleBlack extends DrawCard {
     }
 }
 
-CastleBlack.code = '00198';
+CastleBlack.code = '00202';
 
 export default CastleBlack;

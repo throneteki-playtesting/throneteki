@@ -1,7 +1,7 @@
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
-class RaidersAxe extends DrawCard {
+class KrakensHatchet extends DrawCard {
     setupCardAbilities(ability) {
         this.whileAttached({
             effect: [ability.effects.addTrait('Raider'), ability.effects.modifyStrength(1)]
@@ -16,7 +16,7 @@ class RaidersAxe extends DrawCard {
                     this.parent.allowGameAction('stand')
             },
             cost: ability.costs.choose({
-                // TODO BD do not prompt for choosing a character to discard gold from
+                // TODO BD do not prompt for choosing a character to discard gold from?
                 'Discard 1 gold from attached character': ability.costs.discardGoldFromCard(
                     1,
                     (card) => card === this.parent
@@ -46,6 +46,6 @@ class RaidersAxe extends DrawCard {
     }
 }
 
-RaidersAxe.code = '00145';
+KrakensHatchet.code = '00147';
 
-export default RaidersAxe;
+export default KrakensHatchet;

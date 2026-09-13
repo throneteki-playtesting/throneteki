@@ -42,6 +42,6 @@ class Gendry extends DrawCard {
     }
 }
 
-Gendry.code = '00108';
+Gendry.code = '00109';
 
 export default Gendry;

@@ -31,6 +31,6 @@ class BrienneTheBlue extends DrawCard {
     }
 }
 
-BrienneTheBlue.code = '00282';
+BrienneTheBlue.code = '00290';
 
 export default BrienneTheBlue;

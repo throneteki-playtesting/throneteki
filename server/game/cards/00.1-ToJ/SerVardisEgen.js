@@ -31,6 +31,6 @@ class SerVardisEgen extends DrawCard {
     }
 }
 
-SerVardisEgen.code = '00299';
+SerVardisEgen.code = '00315';
 
 export default SerVardisEgen;

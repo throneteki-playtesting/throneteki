@@ -36,6 +36,6 @@ class SerLancelLannister extends DrawCard {
     }
 }
 
-SerLancelLannister.code = '00150';
+SerLancelLannister.code = '00152';
 
 export default SerLancelLannister;

@@ -92,6 +92,6 @@ class UnknownAndUnknowable extends AgendaCard {
     }
 }
 
-UnknownAndUnknowable.code = '00359';
+UnknownAndUnknowable.code = '00363';
 
 export default UnknownAndUnknowable;

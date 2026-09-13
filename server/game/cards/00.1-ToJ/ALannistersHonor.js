@@ -45,6 +45,6 @@ class ALannistersHonor extends DrawCard {
     }
 }
 
-ALannistersHonor.code = '00161';
+ALannistersHonor.code = '00164';
 
 export default ALannistersHonor;

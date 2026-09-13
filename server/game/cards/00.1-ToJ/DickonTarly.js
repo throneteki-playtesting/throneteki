@@ -15,6 +15,6 @@ class DickonTarly extends DrawCard {
     }
 }
 
-DickonTarly.code = '00273';
+DickonTarly.code = '00281';
 
 export default DickonTarly;

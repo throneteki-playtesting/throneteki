@@ -22,6 +22,6 @@ class BattleOnTheGreenFork extends PlotCard {
     }
 }
 
-BattleOnTheGreenFork.code = '00336';
+BattleOnTheGreenFork.code = '00302';
 
 export default BattleOnTheGreenFork;

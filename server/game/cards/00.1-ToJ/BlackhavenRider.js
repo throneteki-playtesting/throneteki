@@ -35,6 +35,6 @@ class BlackhavenRider extends DrawCard {
     }
 }
 
-BlackhavenRider.code = '00117';
+BlackhavenRider.code = '00118';
 
 export default BlackhavenRider;

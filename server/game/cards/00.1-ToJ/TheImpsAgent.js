@@ -49,6 +49,6 @@ class TheImpsAgent extends DrawCard {
     }
 }
 
-TheImpsAgent.code = '00165';
+TheImpsAgent.code = '00168';
 
 export default TheImpsAgent;

@@ -17,6 +17,6 @@ class ChivalryOfTheSouth extends PlotCard {
     }
 }
 
-ChivalryOfTheSouth.code = '00332';
+ChivalryOfTheSouth.code = '00276';
 
 export default ChivalryOfTheSouth;

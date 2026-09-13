@@ -64,6 +64,6 @@ class Littlefinger extends DrawCard {
     }
 }
 
-Littlefinger.code = '00285';
+Littlefinger.code = '00293';
 
 export default Littlefinger;

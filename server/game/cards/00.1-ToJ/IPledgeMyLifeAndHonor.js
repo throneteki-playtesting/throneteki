@@ -46,6 +46,6 @@ class IPledgeMyLifeAndHonor extends DrawCard {
     }
 }
 
-IPledgeMyLifeAndHonor.code = '00206';
+IPledgeMyLifeAndHonor.code = '00211';
 
 export default IPledgeMyLifeAndHonor;
