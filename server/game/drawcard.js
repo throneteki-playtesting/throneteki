@@ -570,17 +570,6 @@ class DrawCard extends BaseCard {
         }
         this.burnEventRegistered = shouldRegister;
     }
-    // TODO: Implement this (and probably regular burn, modernly)
-    setIsShadowBurning(burning) {
-        this.isShadowBurning = burning;
-        //register/unregister onChallengeFinished event so when the challenge is finished
-        //the burn effect gets evaluated again
-        if (burning) {
-            this.events.register(['onChallengeFinished']);
-        } else {
-            this.events.unregisterHandlerForEventName('onChallengeFinished');
-        }
-    }
 
     //evaluate the burn effects again when the challenge is finished
     onChallengeFinished() {
