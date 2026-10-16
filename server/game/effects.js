@@ -588,6 +588,12 @@ const Effects = {
             card.setIsBurning(false);
         }
     },
+    killByStrength: function (value) {
+        return [Effects.burn, Effects.modifyStrength(value)];
+    },
+    killByDynamicStrength: function (calculate) {
+        return [Effects.burn, Effects.dynamicDecreaseStrength(calculate)];
+    },
     shadowBurn: {
         apply: function (card) {
             card.setIsShadowBurning(true);
@@ -595,12 +601,6 @@ const Effects = {
         unapply: function (card) {
             card.setIsShadowBurning(false);
         }
-    },
-    killByStrength: function (value) {
-        return [Effects.burn, Effects.modifyStrength(value)];
-    },
-    killByDynamicStrength: function (calculate) {
-        return [Effects.burn, Effects.dynamicDecreaseStrength(calculate)];
     },
     putInShadowsByStrength: function (value) {
         return [Effects.shadowBurn, Effects.modifyStrength(value)];
