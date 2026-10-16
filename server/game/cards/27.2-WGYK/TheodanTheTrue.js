@@ -15,7 +15,7 @@ class TheodanTheTrue extends DrawCard {
                     trait: 'The Seven'
                 }
             },
-            message: '{player} uses {source} to give {target} renown or insight',
+            message: '{player} uses {source} to give {target} insight or renown',
             limit: ability.limit.perPhase(2),
             handler: (context) => {
                 this.game.resolveGameAction(
@@ -57,7 +57,6 @@ class TheodanTheTrue extends DrawCard {
     }
 }
 
-TheodanTheTrue.code = '27597';
-TheodanTheTrue.version = '1.1.1';
+TheodanTheTrue.code = '27037';
 
 export default TheodanTheTrue;

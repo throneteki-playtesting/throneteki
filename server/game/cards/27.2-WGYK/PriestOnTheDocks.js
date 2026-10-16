@@ -11,8 +11,7 @@ class PriestOnTheDocks extends DrawCard {
             target: {
                 cardCondition: (card) =>
                     card.location === 'play area' &&
-                    (card.getType() === 'location' || card.getType() === 'attachment') &&
-                    card.controller !== this.controller &&
+                    ['location', 'attachment'].includes(card.getType()) &&
                     !card.hasKeyword('limited') &&
                     card.getPrintedCost() <= 3 &&
                     GameActions.discardCard({ card }).allow()
@@ -28,7 +27,6 @@ class PriestOnTheDocks extends DrawCard {
     }
 }
 
-PriestOnTheDocks.code = '27518';
-PriestOnTheDocks.version = '1.1.0';
+PriestOnTheDocks.code = '27023';
 
 export default PriestOnTheDocks;

@@ -9,16 +9,13 @@ class KingsLandingSepton extends DrawCard {
                 onCardAbilityInitiated: (event) =>
                     event.source.controller !== this.controller &&
                     event.ability.isTriggeredAbility() &&
-                    (event.source.getType() === 'character' ||
-                        event.source.getType() === 'location' ||
-                        event.source.getType() === 'attachment')
+                    ['character', 'location', 'attachment'].includes(event.source.getType())
             },
             cost: ability.costs.returnSelfToHand(),
             message: {
                 format: "{player} uses {source} and returns {source} to their hand to cancel {character}'s ability",
                 args: { character: (context) => context.event.source }
             },
-            limit: ability.limit.perRound(1),
             gameAction: GameActions.genericHandler((context) => {
                 context.event.cancel();
             })
@@ -26,7 +23,6 @@ class KingsLandingSepton extends DrawCard {
     }
 }
 
-KingsLandingSepton.code = '27530';
-KingsLandingSepton.version = '1.0.1';
+KingsLandingSepton.code = '27025';
 
 export default KingsLandingSepton;

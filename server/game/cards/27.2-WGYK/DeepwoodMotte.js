@@ -9,7 +9,7 @@ class DeepwoodMotte extends DrawCard {
                 onCardKneeled: (event) =>
                     event.reason === 'assault' &&
                     event.card.getType() === 'location' &&
-                    event.source.controller === this.controller
+                    this.game.isDuringChallenge({ attackingPlayer: this.controller })
             },
             cost: ability.costs.kneelSelf(),
             target: {
@@ -19,7 +19,8 @@ class DeepwoodMotte extends DrawCard {
                     card.location === 'play area' &&
                     card.kneeled &&
                     card.getType() === 'character' &&
-                    (card.name === 'Asha Greyjoy' || card.hasTrait('Raider')),
+                    ((card.hasTrait('Raider') && card.controller === this.controller) ||
+                        card.name === 'Asha Greyjoy'),
                 gameAction: 'stand'
             },
             message: '{player} uses {source} to stand {target}',
@@ -33,7 +34,6 @@ class DeepwoodMotte extends DrawCard {
     }
 }
 
-DeepwoodMotte.code = '27521';
-DeepwoodMotte.version = '1.0.1';
+DeepwoodMotte.code = '27024';
 
 export default DeepwoodMotte;

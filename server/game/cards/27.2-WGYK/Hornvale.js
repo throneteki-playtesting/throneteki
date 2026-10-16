@@ -46,21 +46,21 @@ class Hornvale extends DrawCard {
             return;
         }
 
-        this.game.resolveGameAction(
-            GameActions.simultaneously(
-                ...this.underneath.map((card) => GameActions.returnCardToHand({ card }))
-            )
-        );
+        const cards = [...this.underneath];
 
         this.game.addMessage(
-            '{0} returns {1} to their owners hands',
+            "{0} returns {1} to their owner's hand due to {2} leaving play",
             this.controller,
-            this.underneath
+            cards,
+            this
+        );
+
+        this.game.resolveGameAction(
+            GameActions.simultaneously(cards.map((card) => GameActions.returnCardToHand({ card })))
         );
     }
 }
 
-Hornvale.code = '27533';
-Hornvale.version = '1.0.0';
+Hornvale.code = '27026';
 
 export default Hornvale;

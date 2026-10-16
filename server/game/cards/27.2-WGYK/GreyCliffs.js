@@ -11,12 +11,11 @@ class GreyCliffs extends DrawCard {
                 onSacrificed: (event) => event.card === this
             },
             message: '{player} uses {source} to draw 1 card',
-            gameAction: GameActions.drawCards({ amount: 1 })
+            gameAction: GameActions.drawCards((context) => ({ player: context.player, amount: 1 }))
         });
     }
 }
 
-GreyCliffs.code = '27570';
-GreyCliffs.version = '1.0.0';
+GreyCliffs.code = '27032';
 
 export default GreyCliffs;

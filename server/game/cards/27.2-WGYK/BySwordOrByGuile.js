@@ -27,7 +27,6 @@ class BySwordOrByGuile extends DrawCard {
     }
 }
 
-BySwordOrByGuile.code = '27583';
-BySwordOrByGuile.version = '1.0.0';
+BySwordOrByGuile.code = '27034';
 
 export default BySwordOrByGuile;

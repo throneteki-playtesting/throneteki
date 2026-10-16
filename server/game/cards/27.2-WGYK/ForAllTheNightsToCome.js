@@ -1,7 +1,7 @@
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
-class ShieldsOfTheRealm extends DrawCard {
+class ForAllTheNightsToCome extends DrawCard {
     setupCardAbilities(ability) {
         this.reaction({
             when: {
@@ -48,11 +48,13 @@ class ShieldsOfTheRealm extends DrawCard {
     }
 
     getCharactersToGainPower(context) {
-        return [context.targets.builder, context.targets.ranger, context.targets.steward];
+        // A character with multiple of the traits may fill multiple slots, but only gains 1 power
+        return [
+            ...new Set([context.targets.builder, context.targets.ranger, context.targets.steward])
+        ];
     }
 }
 
-ShieldsOfTheRealm.code = '27560';
-ShieldsOfTheRealm.version = '1.0.1';
+ForAllTheNightsToCome.code = '27030';
 
-export default ShieldsOfTheRealm;
+export default ForAllTheNightsToCome;

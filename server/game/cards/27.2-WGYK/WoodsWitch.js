@@ -66,7 +66,6 @@ class WoodsWitch extends DrawCard {
     }
 }
 
-WoodsWitch.code = '27566';
-WoodsWitch.version = '1.1.1';
+WoodsWitch.code = '27031';
 
 export default WoodsWitch;

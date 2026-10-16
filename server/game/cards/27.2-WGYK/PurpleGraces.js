@@ -24,7 +24,6 @@ class PurpleGraces extends DrawCard {
     }
 }
 
-PurpleGraces.code = '27577';
-PurpleGraces.version = '1.1.1';
+PurpleGraces.code = '27033';
 
 export default PurpleGraces;

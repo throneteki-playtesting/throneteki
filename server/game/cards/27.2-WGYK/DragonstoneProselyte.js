@@ -24,7 +24,6 @@ class DragonstoneProselyte extends DrawCard {
     }
 }
 
-DragonstoneProselyte.code = '27505';
-DragonstoneProselyte.version = '1.1.0';
+DragonstoneProselyte.code = '27021';
 
 export default DragonstoneProselyte;

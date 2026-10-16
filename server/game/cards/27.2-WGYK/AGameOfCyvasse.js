@@ -4,11 +4,10 @@ class AGameOfCyvasse extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
             title: 'Restrict declared characters in next intrigue challenge',
-            cost: ability.costs.playEvent(),
             phase: 'challenge',
             max: ability.limit.perPhase(1),
             message:
-                "{player} plays {source} so each player cannot declare more than 1 character as an attacker or defender during {player}'s next intrigue challenge this phase",
+                "{player} plays {source} so each player cannot declare more than 1 character as an attacker or defender in {player}'s next intrigue challenge this phase",
             handler: (context) => {
                 const player = context.player;
                 let markedChallenge = null;
@@ -68,7 +67,6 @@ class AGameOfCyvasse extends DrawCard {
     }
 }
 
-AGameOfCyvasse.code = '27547';
-AGameOfCyvasse.version = '1.2.0';
+AGameOfCyvasse.code = '27028';
 
 export default AGameOfCyvasse;

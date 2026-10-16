@@ -1,17 +1,12 @@
 import DrawCard from '../../drawcard.js';
 
-class FireyTalons extends DrawCard {
+class FieryTalons extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
             title: 'Give character -1 STR',
-            location: 'hand',
-            phase: 'challenge',
-            cost: [
-                ability.costs.expendEvent(),
-                ability.costs.kneel(
-                    (card) => card.hasTrait("R'hllor") && card.getType() === 'character'
-                )
-            ],
+            cost: ability.costs.kneel(
+                (card) => card.hasTrait("R'hllor") && card.getType() === 'character'
+            ),
             target: {
                 cardCondition: (card) =>
                     card.location === 'play area' &&
@@ -30,7 +25,6 @@ class FireyTalons extends DrawCard {
     }
 }
 
-FireyTalons.code = '27511';
-FireyTalons.version = '1.0.1';
+FieryTalons.code = '27022';
 
-export default FireyTalons;
+export default FieryTalons;

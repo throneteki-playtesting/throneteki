@@ -40,7 +40,6 @@ class StarrySepta extends DrawCard {
     }
 }
 
-StarrySepta.code = '27590';
-StarrySepta.version = '1.1.0';
+StarrySepta.code = '27035';
 
 export default StarrySepta;

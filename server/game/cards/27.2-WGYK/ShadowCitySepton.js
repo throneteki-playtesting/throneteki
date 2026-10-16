@@ -2,11 +2,12 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class ShadowCitySepton extends DrawCard {
-    setupCardAbilities() {
+    setupCardAbilities(ability) {
         this.reaction({
             when: {
                 onDominanceDetermined: (event) => event.winner && event.winner !== this.controller
             },
+            cost: ability.costs.putSelfIntoShadows(),
             target: {
                 choosingPlayer: (player, context) => player === context.event.winner,
                 cardCondition: (card, context) =>
@@ -16,7 +17,7 @@ class ShadowCitySepton extends DrawCard {
                     card.controller === context.event.winner
             },
             message: {
-                format: '{player} uses {source} to force {opponent} to return {target} to their hand',
+                format: "{player} returns {source} to shadows to have {opponent} return {target} to its owner's hand",
                 args: {
                     opponent: (context) => context.event.winner
                 }
@@ -31,7 +32,6 @@ class ShadowCitySepton extends DrawCard {
     }
 }
 
-ShadowCitySepton.code = '27542';
-ShadowCitySepton.version = '1.1.1';
+ShadowCitySepton.code = '27027';
 
 export default ShadowCitySepton;

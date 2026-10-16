@@ -38,7 +38,6 @@ class SentinelsOfTheRealm extends AgendaCard {
     }
 }
 
-SentinelsOfTheRealm.code = '27619';
-SentinelsOfTheRealm.version = '1.0.1';
+SentinelsOfTheRealm.code = '27040';
 
 export default SentinelsOfTheRealm;

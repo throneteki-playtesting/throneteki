@@ -1,10 +1,10 @@
-// Generated with Claude Code - claude-opus-4-5-20250101
-// - 2026-02-01: Created implementation for The Riverroad
-
 import DrawCard from '../../drawcard.js';
 
 class TheRiverroad extends DrawCard {
     setupCardAbilities(ability) {
+        this.plotModifiers({
+            gold: 1
+        });
         this.action({
             title: 'Give a character a challenge icon',
             cost: [ability.costs.kneelSelf(), ability.costs.sacrificeSelf()],
@@ -33,7 +33,6 @@ class TheRiverroad extends DrawCard {
     }
 }
 
-TheRiverroad.code = '27606';
-TheRiverroad.version = '1.0.0';
+TheRiverroad.code = '27038';
 
 export default TheRiverroad;

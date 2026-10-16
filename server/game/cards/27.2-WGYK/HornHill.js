@@ -6,14 +6,14 @@ class HornHill extends DrawCard {
             initiative: 1
         });
         this.persistentEffect({
-            condition: () => this.isAttackingDuringChallengeNumber(1),
+            condition: () =>
+                this.game.isDuringChallenge({ attackingPlayer: this.controller, number: 1 }),
             match: (card) => card === this.controller.activePlot,
             effect: ability.effects.modifyClaim(1)
         });
     }
 }
 
-HornHill.code = '27593';
-HornHill.version = '1.0.0';
+HornHill.code = '27036';
 
 export default HornHill;
