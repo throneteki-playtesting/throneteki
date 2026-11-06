@@ -30,6 +30,6 @@ class SerAxelFlorent extends DrawCard {
 }
 
 SerAxelFlorent.code = '27502';
-SerAxelFlorent.version = '1.0.1';
+SerAxelFlorent.version = '1.0.2';
 
 export default SerAxelFlorent;

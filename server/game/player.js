@@ -347,7 +347,7 @@ class Player extends Spectator {
         }
     }
 
-    discardAtRandom(number, callback = () => true) {
+    discardAtRandom(number, callback = () => true, options = {}) {
         var toDiscard = Math.min(number, this.hand.length);
         var cards = [];
 
@@ -367,7 +367,7 @@ class Player extends Spectator {
                 this.game.addMessage('{0} discards {1} at random', this, discarded);
                 callback(discarded);
             },
-            { isRandom: true }
+            { ...options, isRandom: true }
         );
     }
 

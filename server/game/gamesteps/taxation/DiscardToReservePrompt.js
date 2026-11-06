@@ -1,4 +1,5 @@
 import BaseStep from '../basestep.js';
+import { Flags } from '../../Constants/index.js';
 
 class DiscardToReservePrompt extends BaseStep {
     constructor(game, source) {
@@ -13,6 +14,12 @@ class DiscardToReservePrompt extends BaseStep {
 
             if (currentPlayer.isBelowReserve()) {
                 this.game.addMessage('{0} is already below their reserve value', currentPlayer);
+            } else if (currentPlayer.hasFlag(Flags.player.discardsReserveAtRandom)) {
+                currentPlayer.discardAtRandom(
+                    currentPlayer.getHandCount() - currentPlayer.getReserve(),
+                    () => true,
+                    { source: 'reserve' }
+                );
             } else {
                 this.promptPlayerToDiscard(currentPlayer);
                 return false;
