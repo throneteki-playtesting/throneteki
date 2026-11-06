@@ -7,17 +7,17 @@ class KhalDrogo extends DrawCard {
             when: {
                 afterChallenge: (event) =>
                     event.challenge.winner === this.controller &&
-                    event.challenge.attackingPlayer === this.controller &&
-                    event.challenge.strengthDifference >= 5
+                    event.challenge.attackingPlayer === this.controller
             },
             target: {
                 type: 'select',
                 cardCondition: (card) =>
                     card.location === 'play area' &&
                     card.getType() === 'character' &&
+                    card.isUnique() &&
                     card.hasTrait('Dothraki')
             },
-            limit: ability.limit.perPhase(2),
+            limit: ability.limit.perPhase(1),
             message: '{player} uses {source} to stand {target}',
             handler: (context) => {
                 this.game.resolveGameAction(
@@ -30,6 +30,6 @@ class KhalDrogo extends DrawCard {
 }
 
 KhalDrogo.code = '27573';
-KhalDrogo.version = '1.0.1';
+KhalDrogo.version = '1.0.2';
 
 export default KhalDrogo;

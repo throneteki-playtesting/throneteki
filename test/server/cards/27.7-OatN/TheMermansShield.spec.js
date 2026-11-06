@@ -55,9 +55,9 @@ describe("The Merman's Shield", function () {
                     expect(this.cersei.kneeled).toBe(false);
                 });
 
-                it('should give both the Shield and the target Renown until end of phase', function () {
-                    expect(this.shield.hasKeyword('renown')).toBe(true);
-                    expect(this.cersei.hasKeyword('renown')).toBe(true);
+                it('should not give Renown when the target is not defending', function () {
+                    expect(this.shield.hasKeyword('renown')).toBe(false);
+                    expect(this.cersei.hasKeyword('renown')).toBe(false);
                 });
             });
         });

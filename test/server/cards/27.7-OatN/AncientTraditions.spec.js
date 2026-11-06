@@ -31,8 +31,8 @@ describe('Ancient Traditions', function () {
                 this.completeMarshalPhase();
             });
 
-            it('should give Bran +1 STR', function () {
-                expect(this.bran.getStrength()).toBe(this.bran.cardData.strength + 1);
+            it('should not modify Bran STR', function () {
+                expect(this.bran.getStrength()).toBe(this.bran.cardData.strength);
             });
         });
 

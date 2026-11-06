@@ -9,10 +9,9 @@ class TheMermansShield extends DrawCard {
             },
             target: {
                 cardCondition: (card) =>
+                    card !== this &&
                     card.location === 'play area' &&
                     card.getType() === 'character' &&
-                    card.isParticipating() &&
-                    card.kneeled &&
                     this.getTraits().some((trait) => card.hasTrait(trait))
             },
             message: '{player} uses {source} to stand {target}',
@@ -21,22 +20,24 @@ class TheMermansShield extends DrawCard {
                     GameActions.standCard((context) => ({ card: context.target })),
                     context
                 );
-                this.game.addMessage(
-                    '{0} uses {1} to give {2} and {1} Renown until end of phase',
-                    this.controller,
-                    this,
-                    context.target
-                );
-                this.untilEndOfPhase((ability) => ({
-                    match: [this, context.target],
-                    effect: ability.effects.addKeyword('renown')
-                }));
+                if (context.target.isDefending()) {
+                    this.game.addMessage(
+                        '{0} uses {1} to give {2} Renown until end of phase',
+                        context.player,
+                        this,
+                        context.target
+                    );
+                    this.untilEndOfPhase((ability) => ({
+                        match: context.target,
+                        effect: ability.effects.addKeyword('renown')
+                    }));
+                }
             }
         });
     }
 }
 
 TheMermansShield.code = '27564';
-TheMermansShield.version = '1.1.0';
+TheMermansShield.version = '1.1.1';
 
 export default TheMermansShield;

@@ -1124,6 +1124,7 @@ const Effects = {
     },
     cannotGainChallengeBonus: modifyPlayerFlagEffect(Flags.player.cannotGainChallengeBonus),
     cannotWinGame: modifyPlayerFlagEffect(Flags.player.cannotWinGame),
+    discardsReserveAtRandom: modifyPlayerFlagEffect(Flags.player.discardsReserveAtRandom),
     cannotTriggerCardAbilities: function (restriction = () => true) {
         return {
             targetType: 'player',

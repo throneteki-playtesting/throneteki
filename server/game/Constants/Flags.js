@@ -48,6 +48,7 @@ export const Flags = Object.freeze({
         cannotRevealPlot: Symbol('player.cannotRevealPlot'),
         cannotWinChallenge: Symbol('player.cannotWinChallenge'),
         cannotWinGame: Symbol('player.cannotWinGame'),
+        discardsReserveAtRandom: Symbol('player.discardsReserveAtRandom'),
         doesNotReturnUnspentGold: Symbol('player.doesNotReturnUnspentGold')
     }),
     plotModifiers: Object.freeze({
