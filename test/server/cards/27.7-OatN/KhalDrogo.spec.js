@@ -1,11 +1,10 @@
-// Claude: Drogo only in setup (cost 7 fits limit), Honor Guard marshalled after selectFirstPlayer
 describe('Khal Drogo (OatN)', function () {
     integration(function () {
         beforeEach(function () {
             const deck1 = this.buildDeck('targaryen', [
                 'A Noble Cause',
                 'Khal Drogo (OatN)',
-                'Dothraki Honor Guard',
+                'Zollo the Fat',
                 'Hedge Knight'
             ]);
             const deck2 = this.buildDeck('targaryen', ['A Noble Cause', 'Hedge Knight']);
@@ -15,7 +14,7 @@ describe('Khal Drogo (OatN)', function () {
             this.keepStartingHands();
 
             this.drogo = this.player1.findCardByName('Khal Drogo', 'hand');
-            this.honor = this.player1.findCardByName('Dothraki Honor Guard', 'hand');
+            this.honor = this.player1.findCardByName('Zollo the Fat', 'hand');
             this.knight = this.player1.findCardByName('Hedge Knight', 'hand');
             this.p2knight = this.player2.findCardByName('Hedge Knight', 'hand');
 
@@ -29,7 +28,7 @@ describe('Khal Drogo (OatN)', function () {
             this.honor.kneeled = true;
         });
 
-        describe('after winning a challenge by 5+ STR as attacker', function () {
+        describe('after winning a challenge as attacker', function () {
             beforeEach(function () {
                 this.player1.clickPrompt('Military');
                 this.player1.clickCard(this.drogo);

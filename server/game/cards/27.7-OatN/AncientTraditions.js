@@ -3,10 +3,10 @@ import DrawCard from '../../drawcard.js';
 class AncientTraditions extends DrawCard {
     setupCardAbilities(ability) {
         this.whileAttached({
-            effect: ability.effects.modifyStrength(1)
-        });
-        this.whileAttached({
-            condition: () => this.parent && this.parent.hasTrait('Old Gods'),
+            condition: () =>
+                this.controller.anyCardsInPlay(
+                    (card) => card.getType() === 'character' && card.hasTrait('Old Gods')
+                ),
             effect: ability.effects.immuneTo(
                 (card) =>
                     card.controller !== this.controller &&
@@ -18,6 +18,6 @@ class AncientTraditions extends DrawCard {
 }
 
 AncientTraditions.code = '27567';
-AncientTraditions.version = '1.0.1';
+AncientTraditions.version = '1.0.2';
 
 export default AncientTraditions;

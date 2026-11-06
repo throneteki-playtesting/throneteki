@@ -1,7 +1,7 @@
 import GameActions from '../../GameActions/index.js';
 import DrawCard from '../../drawcard.js';
 
-class CleganeBannerman extends DrawCard {
+class CleganeBrigand extends DrawCard {
     setupCardAbilities() {
         this.reaction({
             when: {
@@ -30,7 +30,7 @@ class CleganeBannerman extends DrawCard {
     }
 }
 
-CleganeBannerman.code = '27529';
-CleganeBannerman.version = '2.0.0';
+CleganeBrigand.code = '27529';
+CleganeBrigand.version = '2.0.1';
 
-export default CleganeBannerman;
+export default CleganeBrigand;

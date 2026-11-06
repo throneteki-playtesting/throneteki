@@ -1,36 +1,15 @@
 import DrawCard from '../../drawcard.js';
-import GameActions from '../../GameActions/index.js';
 
 class EarlHarlaw extends DrawCard {
-    setupCardAbilities() {
-        this.reaction({
-            when: {
-                onCardDiscarded: {
-                    aggregateBy: (event) => ({
-                        controller: event.cardStateWhenDiscarded.controller,
-                        source: event.source
-                    }),
-                    condition: (aggregate) =>
-                        aggregate.source === 'reserve' &&
-                        aggregate.controller !== this.controller
-                }
-            },
-            message: {
-                format: "{player} uses {source} to discard {amount} cards from {opponent}'s deck",
-                args: {
-                    amount: (context) => context.events.length,
-                    opponent: (context) => context.aggregate.controller
-                }
-            },
-            gameAction: GameActions.discardTopCards((context) => ({
-                player: context.aggregate.controller,
-                amount: context.events.length
-            }))
+    setupCardAbilities(ability) {
+        this.persistentEffect({
+            targetController: 'any',
+            effect: ability.effects.discardsReserveAtRandom()
         });
     }
 }
 
 EarlHarlaw.code = '27514';
-EarlHarlaw.version = '1.0.0';
+EarlHarlaw.version = '1.1.0';
 
 export default EarlHarlaw;
