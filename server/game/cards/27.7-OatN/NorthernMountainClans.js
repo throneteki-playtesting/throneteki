@@ -1,44 +1,35 @@
 import DrawCard from '../../drawcard.js';
+import GameActions from '../../GameActions/index.js';
 import TextHelper from '../../TextHelper.js';
 
 class NorthernMountainClans extends DrawCard {
-    setupCardAbilities() {
+    // Northern Mountain Clans (27504)
+    // Ambush (6). No attachments.
+    // Reaction: After you win a challenge in which Northern Mountain Clans is attacking, choose X
+    // characters. Those characters cannot stand during the standing phase this round. X is the
+    // claim value on your revealed plot card.
+    setupCardAbilities(ability) {
         this.reaction({
             when: {
-                afterChallenge: (event) =>
-                    event.challenge.winner === this.controller && this.isAttacking()
+                afterChallenge: (event, context) =>
+                    event.challenge.winner === context.player && context.source.isAttacking()
             },
-            handler: (context) => {
-                let xValue = context.player.getClaim();
-                this.game.promptForSelect(context.player, {
-                    mode: 'exactly',
-                    numCards: xValue,
-                    activePromptTitle: `Select ${TextHelper.count(xValue, 'character')}`,
-                    source: this,
-                    cardCondition: (card) =>
-                        card.location === 'play area' &&
-                        card.getType() === 'character' &&
-                        card.kneeled,
-                    onSelect: (player, cards) => this.targetsSelected(player, cards)
-                });
-            }
+            message: '{player} uses {source} to prevent characters from standing this round',
+            gameAction: GameActions.chooseCards({
+                mode: 'exactly',
+                numCards: (context) => context.player.getClaim(),
+                title: (context) =>
+                    `Select ${TextHelper.count(context.player.getClaim(), 'character')}`,
+                cardCondition: (card) =>
+                    card.location === 'play area' && card.getType() === 'character',
+                gameAction: (card) =>
+                    GameActions.lastingEffect(() => ({
+                        duration: 'untilEndOfRound',
+                        match: card,
+                        effect: ability.effects.cannotBeStood()
+                    }))
+            })
         });
-    }
-
-    targetsSelected(player, cards) {
-        this.untilEndOfRound((ability) => ({
-            match: cards,
-            effect: ability.effects.cannotBeStood()
-        }));
-
-        this.game.addMessage(
-            '{0} uses {1} to prevent {2} from standing during the standing phase',
-            player,
-            this,
-            cards
-        );
-
-        return true;
     }
 }
 

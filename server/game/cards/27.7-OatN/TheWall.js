@@ -1,14 +1,20 @@
 import DrawCard from '../../drawcard.js';
 
 class TheWall extends DrawCard {
+    // The Wall (27510)
+    // The Wall is considered out-of-faction for all card effects.
+    // While there is a Winter plot card revealed, each participating character whose controller
+    // does not have a Winter plot card revealed gets -1 STR.
     setupCardAbilities(ability) {
         this.persistentEffect({
-            match: this,
+            match: (card, context) => card === context.source,
             effect: ability.effects.consideredOutOfFaction()
         });
         this.persistentEffect({
-            condition: () =>
-                this.game.getPlayers().some((p) => p.activePlot && p.activePlot.hasTrait('Winter')),
+            condition: (context) =>
+                context.game
+                    .getPlayers()
+                    .some((p) => p.activePlot && p.activePlot.hasTrait('Winter')),
             match: (card) =>
                 card.getType() === 'character' &&
                 card.isParticipating() &&

@@ -2,11 +2,15 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class BrotherhoodsBounty extends DrawCard {
+    // Brotherhood's Bounty (27607)
+    // Play only if you control no loyal characters.
+    // Challenges Action: Gain X gold and draw X cards. X is the claim value on your revealed plot
+    // card. (Max 1 per round.)
     setupCardAbilities(ability) {
         this.action({
             title: 'Gain gold and draw cards',
-            condition: () =>
-                !this.controller.anyCardsInPlay(
+            condition: (context) =>
+                !context.player.anyCardsInPlay(
                     (card) => card.getType() === 'character' && card.isLoyal()
                 ),
             max: ability.limit.perRound(1),

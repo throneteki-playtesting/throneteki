@@ -2,12 +2,15 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class DaemonMarbrand extends DrawCard {
+    // Damon Marbrand (27525)
+    // Reaction: After a character is discarded from an opponent's hand, that player must choose a
+    // character they control and return it to their hand. (Limit twice per phase.)
     setupCardAbilities(ability) {
         this.reaction({
             when: {
-                onCardDiscarded: (event) =>
+                onCardDiscarded: (event, context) =>
                     event.card.getType() === 'character' &&
-                    event.cardStateWhenDiscarded.controller !== this.controller &&
+                    event.cardStateWhenDiscarded.controller !== context.player &&
                     event.cardStateWhenDiscarded.location === 'hand'
             },
             limit: ability.limit.perPhase(2),
@@ -15,29 +18,15 @@ class DaemonMarbrand extends DrawCard {
                 format: '{player} uses {source} to force {opponent} to return a character to their hand',
                 args: { opponent: (context) => context.event.cardStateWhenDiscarded.controller }
             },
-            handler: (context) => {
-                const opponent = context.event.cardStateWhenDiscarded.controller;
-                const eligibleCards = this.game.filterCardsInPlay(
-                    (card) => card.getType() === 'character' && card.controller === opponent
-                );
-                if (eligibleCards.length === 0) {
-                    return;
-                }
-                this.game.promptForSelect(opponent, {
-                    activePromptTitle: 'Select a character to return to hand',
-                    source: this,
-                    cardCondition: (card) =>
-                        card.location === 'play area' &&
-                        card.getType() === 'character' &&
-                        card.controller === opponent,
-                    onSelect: (player, card) => {
-                        this.game.resolveGameAction(GameActions.returnCardToHand({ card }));
-                        this.game.addMessage('{0} returns {1} to their hand', player, card);
-                        return true;
-                    },
-                    onCancel: () => true
-                });
-            }
+            gameAction: GameActions.chooseCards({
+                player: (context) => context.event.cardStateWhenDiscarded.controller,
+                title: 'Select a character',
+                cardCondition: (card, context) =>
+                    card.location === 'play area' &&
+                    card.getType() === 'character' &&
+                    card.controller === context.choosingPlayer,
+                gameAction: (card) => GameActions.returnCardToHand({ card })
+            })
         });
     }
 }

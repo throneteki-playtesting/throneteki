@@ -2,62 +2,40 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class SentToTheWall extends DrawCard {
+    // Sent to the Wall (27556)
+    // Non-loyal characters only. Terminal.
+    // Reaction: After the plot phase begins, name a Trait. If the controller of the attached
+    // character reveales a plot card with the same Trait during this phase, discard the attached
+    // character from play.
     setupCardAbilities() {
         this.attachmentRestriction({ loyal: false });
         this.reaction({
             when: {
                 onPhaseStarted: (event) => event.phase === 'plot'
             },
-            handler: (context) => {
-                this.context = context;
-                this.game.promptWithMenu(this.controller, this, {
-                    activePrompt: {
-                        menuTitle: 'Name a trait',
-                        controls: [
-                            { type: 'trait-name', command: 'menuButton', method: 'selectTraitName' }
-                        ]
-                    },
-                    source: this
-                });
-            }
+            message: '{player} uses {source} to name a trait',
+            gameAction: GameActions.nameTrait({
+                message: '{player} names the {trait} trait for {source}',
+                gameAction: GameActions.delayedEffect((context) => {
+                    const attached = context.source.parent;
+                    const trait = context.namedTrait;
+                    return {
+                        duration: 'untilEndOfPhase',
+                        title: attached.name,
+                        when: {
+                            onPlotRevealed: (event) =>
+                                event.plot.controller === attached.controller &&
+                                event.plot.hasTrait(trait)
+                        },
+                        message: {
+                            format: '{player} forces {controller} to discard {card} from play',
+                            args: { controller: () => attached.controller, card: () => attached }
+                        },
+                        gameAction: GameActions.discardCard({ card: attached })
+                    };
+                })
+            })
         });
-    }
-
-    selectTraitName(player, traitName) {
-        this.game.addMessage(
-            '{0} uses {1} on {2} and names the {3} trait',
-            player,
-            this,
-            this.parent,
-            traitName
-        );
-        this.namedTrait = traitName;
-
-        this.game.once('onPlotsRevealed', (event) => this.handlePlotsRevealed(event));
-
-        return true;
-    }
-
-    handlePlotsRevealed(event) {
-        if (!this.namedTrait) {
-            return;
-        }
-
-        const plotHasTrait = event.plots.some(
-            (plot) => plot.controller === this.parent.controller && plot.hasTrait(this.namedTrait)
-        );
-        const gameAction = GameActions.discardCard({ card: this.parent });
-        if (plotHasTrait && gameAction.allow()) {
-            this.game.addMessage(
-                '{0} is forced by {1} to discard {2} from play',
-                this.parent.controller,
-                this,
-                this.parent
-            );
-            this.game.resolveGameAction(gameAction, this.context);
-        }
-        delete this.namedTrait;
-        delete this.context;
     }
 }
 

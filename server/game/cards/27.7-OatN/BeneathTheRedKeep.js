@@ -1,14 +1,18 @@
 import PlotCard from '../../plotcard.js';
 
 class BeneathTheRedKeep extends PlotCard {
+    // Beneath the Red Keep (27614)
+    // During the challenges phase, players cannot trigger abilities on characters, locations, or
+    // attachments, unless those cards have shadow.
     setupCardAbilities(ability) {
         this.persistentEffect({
-            condition: () => this.game.currentPhase === 'challenge',
+            condition: (context) => context.game.currentPhase === 'challenge',
             targetController: 'any',
             effect: ability.effects.cannotTriggerCardAbilities(
-                (ability) =>
-                    ['character', 'location', 'attachment'].includes(ability.card.getType()) &&
-                    !ability.card.isShadow()
+                (abilityToCheck) =>
+                    ['character', 'location', 'attachment'].includes(
+                        abilityToCheck.card.getType()
+                    ) && !abilityToCheck.card.isShadow()
             )
         });
     }

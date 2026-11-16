@@ -1,15 +1,14 @@
 import DrawCard from '../../drawcard.js';
+
 class GoghorTheGiant extends DrawCard {
+    // Goghor the Giant (27575)
+    // No attachments except Weapon.
+    // While there is a Weapon attachment attached to Goghor the Giant, he gains intimidate.
     setupCardAbilities(ability) {
         this.persistentEffect({
-            condition: () =>
-                this.controller.anyCardsInPlay(
-                    (card) =>
-                        card.parent === this &&
-                        card.getType() === 'attachment' &&
-                        card.hasTrait('Weapon')
-                ),
-            match: this,
+            condition: (context) =>
+                context.source.attachments.some((attachment) => attachment.hasTrait('Weapon')),
+            match: (card, context) => card === context.source,
             effect: ability.effects.addKeyword('intimidate')
         });
     }

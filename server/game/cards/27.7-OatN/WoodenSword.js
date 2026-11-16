@@ -2,31 +2,29 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class WoodenSword extends DrawCard {
+    // Wooden Sword (27604)
+    // While you are the defending player, attached character gains a [military] icon.
+    // Challenges Action: Sacrifice Wooden Sword to choose and discard another Weapon attachment.
     setupCardAbilities(ability) {
         this.whileAttached({
-            condition: () => this.game.isDuringChallenge({ defendingPlayer: this.controller }),
+            condition: (context) =>
+                context.game.isDuringChallenge({ defendingPlayer: context.source.controller }),
             effect: ability.effects.addIcon('military')
         });
 
         this.action({
-            title: 'Select an attachment',
+            title: 'Discard a Weapon',
+            phase: 'challenge',
+            cost: ability.costs.sacrificeSelf(),
             target: {
-                activePromptTitle: 'Select an attachment',
-                cardCondition: (card) =>
+                cardCondition: (card, context) =>
                     card.location === 'play area' &&
                     card.getType() === 'attachment' &&
                     card.hasTrait('Weapon') &&
-                    card !== this
+                    card !== context.source,
+                gameAction: GameActions.discardCard((context) => ({ card: context.target }))
             },
-            phase: 'challenge',
-            cost: ability.costs.sacrificeSelf(),
-            message: '{player} sacrifices {costs.sacrifice} to discard {target} from play',
-            handler: (context) => {
-                this.game.resolveGameAction(
-                    GameActions.discardCard((context) => ({ card: context.target })),
-                    context
-                );
-            }
+            message: '{player} sacrifices {source} to discard {target}'
         });
     }
 }

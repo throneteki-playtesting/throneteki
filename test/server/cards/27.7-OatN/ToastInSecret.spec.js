@@ -1,61 +1,78 @@
-// Claude: event played via clickCard (getPlayActions path); toHavePrompt replaces toAllowTriggerAction for hand events
 describe('Toast in Secret', function () {
-    integration(function () {
+    function setup(
+        context,
+        { challenge = 'Power', defenders = [], extraShadows = [], attackWithKnight = true } = {}
+    ) {
+        context.setupTest({
+            phase: 'challenge',
+            player1: {
+                shadows: ['Toast in Secret', ...extraShadows],
+                inPlay: ['Margaery Tyrell (Core)', 'Tumblestone Knight'],
+                gold: 1
+            },
+            player2: { inPlay: defenders }
+        });
+        context.toast = context.player1.findCardByName('Toast in Secret', 'shadows');
+        context.eddard = context.player1.findCardByName('Margaery Tyrell', 'play area');
+        context.baseStrength = context.eddard.getStrength();
+        context.knight = context.player1.findCardByName('Tumblestone Knight', 'play area');
+        context.player1.clickPrompt(challenge);
+        context.player1.clickCard(context.eddard);
+        if (attackWithKnight) {
+            context.player1.clickCard(context.knight);
+        }
+        context.player1.clickPrompt('Done');
+    }
+
+    describe('during a power challenge', function () {
         beforeEach(function () {
-            const deck1 = this.buildDeck('targaryen', [
-                'A Noble Cause',
-                'Toast in Secret (OatN)',
-                'Margaery Tyrell (Core)',
-                'Hedge Knight'
-            ]);
-            const deck2 = this.buildDeck('targaryen', ['A Noble Cause', 'Hedge Knight']);
-            this.player1.selectDeck(deck1);
-            this.player2.selectDeck(deck2);
-            this.startGame();
-            this.keepStartingHands();
-
-            this.toast = this.player1.findCardByName('Toast in Secret', 'hand');
-            this.margaery = this.player1.findCardByName('Margaery Tyrell', 'hand');
-            this.knight = this.player1.findCardByName('Hedge Knight', 'hand');
-            this.p2knight = this.player2.findCardByName('Hedge Knight', 'hand');
-
-            this.player1.clickCard(this.margaery);
-            this.player2.clickCard(this.p2knight);
-            this.completeSetup();
-            this.selectFirstPlayer(this.player1);
-            this.completeMarshalPhase();
-
-            this.player1.dragCard(this.toast, 'shadows');
-            this.player1.dragCard(this.knight, 'shadows');
+            setup(this, {
+                extraShadows: ['Alan of Rosby', 'Ward (OatN)'],
+                defenders: ['Bastard in Hiding']
+            });
+            this.player1.clickCard(this.toast);
         });
 
-        describe('during a power challenge', function () {
-            beforeEach(function () {
-                this.player1.clickPrompt('Power');
-                this.player1.clickCard(this.margaery);
-                this.player1.clickPrompt('Done');
-                this.skipActionWindow();
-                this.player2.clickPrompt('Done');
-            });
+        it('can only choose a participating Lord or Lady character', function () {
+            expect(this.player1).toBeAbleToSelect(this.eddard);
+            expect(this.player1).not.toBeAbleToSelect(this.knight);
+        });
 
-            it('should show the target prompt when triggered', function () {
-                this.player1.clickCard(this.toast);
-                expect(this.player1).toHavePrompt('Select a character');
-            });
+        it('gives +1 STR for each card you control in shadows until the end of the challenge', function () {
+            const shadowsBefore = this.player1Object.shadows.length;
+            this.player1.clickCard(this.eddard);
 
-            describe('when the action is used', function () {
-                beforeEach(function () {
-                    this.player1.clickCard(this.toast);
-                    this.player1.clickCard(this.margaery);
-                });
+            expect(this.eddard.getStrength()).toBe(this.baseStrength + shadowsBefore);
+            expect(this.knight.getStrength()).toBe(2);
+            expect(this.toast.location).toBe('discard pile');
+        });
+    });
 
-                it('should boost Margaery by the number of cards in shadows', function () {
-                    const shadowsCount = this.player1Object.shadows.length;
-                    expect(this.margaery.getStrength()).toBe(
-                        this.margaery.cardData.strength + shadowsCount
-                    );
-                });
-            });
+    describe('when you win by 5 or more STR', function () {
+        beforeEach(function () {
+            setup(this, { extraShadows: ['Alan of Rosby', 'Ward (OatN)'] });
+            this.player1.clickCard(this.toast);
+            this.player1.clickCard(this.eddard);
+            this.player2.clickPrompt('Pass');
+            this.player1.clickPrompt('Pass');
+            this.player2.clickPrompt('Done');
+            this.skipActionWindow();
+        });
+
+        it('stands the character and has it gain 2 power', function () {
+            expect(this.eddard.kneeled).toBe(false);
+            expect(this.eddard.power).toBe(2);
+            expect(this.knight.kneeled).toBe(true);
+        });
+    });
+
+    describe('during a challenge that is not a power challenge', function () {
+        beforeEach(function () {
+            setup(this, { challenge: 'Intrigue', attackWithKnight: false });
+        });
+
+        it('cannot be played', function () {
+            expect(this.player1.actionUnavailableReason(this.toast)).toBe('condition');
         });
     });
 });

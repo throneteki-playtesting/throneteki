@@ -1,60 +1,50 @@
 describe('Castle Black Wormways', function () {
-    integration(function () {
+    describe('when it comes out of shadows', function () {
         beforeEach(function () {
-            const deck1 = this.buildDeck('thenightswatch', [
-                'A Noble Cause',
-                'Castle Black Wormways (OatN)',
-                'Hedge Knight'
-            ]);
-            const deck2 = this.buildDeck('thenightswatch', ['A Noble Cause', 'Hedge Knight']);
-            this.player1.selectDeck(deck1);
-            this.player2.selectDeck(deck2);
-            this.startGame();
-            this.keepStartingHands();
-
-            this.wormways = this.player1.findCardByName('Castle Black Wormways', 'hand');
-            this.knight = this.player1.findCardByName('Hedge Knight', 'hand');
-            this.p2knight = this.player2.findCardByName('Hedge Knight', 'hand');
-
-            this.player1.clickCard(this.knight);
-            this.player2.clickCard(this.p2knight);
-            this.completeSetup();
-            this.selectFirstPlayer(this.player1);
-            this.completeMarshalPhase();
-
-            this.player1.dragCard(this.wormways, 'shadows');
+            this.setupTest({
+                phase: 'marshal',
+                player1: {
+                    shadows: ['Castle Black Wormways'],
+                    inPlay: ['House Maester', 'The Roseroad'],
+                    gold: 1
+                },
+                player2: { inPlay: ['Bastard in Hiding'] }
+            });
+            this.maester = this.player1.findCardByName('House Maester', 'play area');
+            this.roseroad = this.player1.findCardByName('The Roseroad', 'play area');
+            this.opponentBastard = this.player2.findCardByName('Bastard in Hiding', 'play area');
+            this.player1.clickCard(this.castleBlackWormways);
         });
 
-        describe('when Castle Black Wormways comes out of shadows', function () {
-            beforeEach(function () {
-                this.player1Object.gold = 5;
-                this.player1.clickCard(this.wormways);
+        it('kneels to return a character you control to shadows', function () {
+            expect(this.player1).toAllowAbilityTrigger(this.castleBlackWormways);
+            this.player1.triggerAbility(this.castleBlackWormways);
+
+            expect(this.player1).toBeAbleToSelect(this.maester);
+            expect(this.player1).not.toBeAbleToSelect(this.roseroad);
+            expect(this.player1).not.toBeAbleToSelect(this.opponentBastard);
+
+            this.player1.clickCard(this.maester);
+
+            expect(this.maester.location).toBe('shadows');
+            expect(this.castleBlackWormways.kneeled).toBe(true);
+            expect(this.opponentBastard.location).toBe('play area');
+            expect(this.player1).isReadyToTakeAction();
+        });
+    });
+
+    describe('reserve', function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'marshal',
+                player1: { inPlay: ['Castle Black Wormways'] },
+                player2: {}
             });
+        });
 
-            it('should allow triggering the reaction', function () {
-                expect(this.player1).toAllowAbilityTrigger('Castle Black Wormways');
-            });
-
-            describe('when the reaction triggers', function () {
-                beforeEach(function () {
-                    this.player1.triggerAbility(this.wormways);
-                });
-
-                it('should prompt to select a friendly character', function () {
-                    expect(this.player1).toHavePrompt('Select a character');
-                    expect(this.player1).toAllowSelect(this.knight);
-                });
-
-                describe('when a character is selected', function () {
-                    beforeEach(function () {
-                        this.player1.clickCard(this.knight);
-                    });
-
-                    it('should put the selected character into shadows', function () {
-                        expect(this.knight.location).toBe('shadows');
-                    });
-                });
-            });
+        it('gives its controller +1 reserve', function () {
+            expect(this.player1Object.getReserve()).toBe(this.player2Object.getReserve() + 1);
+            expect(this.player1).isReadyToTakeAction();
         });
     });
 });

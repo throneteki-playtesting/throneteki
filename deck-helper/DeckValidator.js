@@ -95,7 +95,7 @@ class DeckValidator {
             format: this.format,
             variant: this.variant,
             noUnreleasedCards: unreleasedCards.length === 0,
-            extendedStatus: errors.concat(info).concat(legalityErrors)
+            extendedStatus: errors.concat(info).concat(legalityErrors ?? [])
         };
     }
 

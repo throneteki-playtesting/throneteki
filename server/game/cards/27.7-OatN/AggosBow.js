@@ -1,6 +1,12 @@
 import DrawCard from '../../drawcard.js';
+import GameActions from '../../GameActions/index.js';
 
 class AggosBow extends DrawCard {
+    // Aggo's Bow (27579)
+    // Dothraki character only.
+    // If this is attached to Aggo, he gains stealth.
+    // Action: During a [military] challenge, kneel attached character to have them participate in
+    // the challenge.
     setupCardAbilities(ability) {
         this.attachmentRestriction({ trait: 'Dothraki' });
         this.whileAttached({
@@ -9,14 +15,14 @@ class AggosBow extends DrawCard {
         });
         this.action({
             title: 'Kneel attached to participate',
-            condition: () => this.game.isDuringChallenge({ challengeType: 'military' }),
+            condition: (context) => context.game.isDuringChallenge({ challengeType: 'military' }),
             cost: ability.costs.kneelParent(),
             message:
                 '{player} uses {source} and kneels {costs.kneel} to have {costs.kneel} participate in the challenge',
-            handler: (context) => {
-                let card = context.costs.kneel;
-                this.game.currentChallenge.addParticipantToSide(context.player, card);
-            }
+            gameAction: GameActions.addToChallenge((context) => ({
+                card: context.source.parent,
+                player: context.player
+            }))
         });
     }
 }

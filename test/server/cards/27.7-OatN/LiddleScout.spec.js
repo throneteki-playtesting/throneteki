@@ -1,51 +1,50 @@
 describe('Liddle Scout', function () {
-    integration(function () {
-        beforeEach(function () {
-            const deck1 = this.buildDeck('stark', ['A Noble Cause', 'Liddle Scout (OatN)']);
-            const deck2 = this.buildDeck('lannister', [
-                'A Noble Cause',
-                'Ser Mandon Moore (AtG)',
-                'Hedge Knight'
-            ]);
-            this.player1.selectDeck(deck1);
-            this.player2.selectDeck(deck2);
-            this.startGame();
-            this.keepStartingHands();
-
-            this.scout = this.player1.findCardByName('Liddle Scout', 'hand');
-            this.mandon = this.player2.findCardByName('Ser Mandon Moore', 'hand');
-            this.knight = this.player2.findCardByName('Hedge Knight', 'hand');
-
-            this.player1.clickCard(this.scout);
-            this.player2.clickCard(this.knight);
-            this.completeSetup();
-            this.player2.dragCard(this.mandon, 'play area');
-            this.selectFirstPlayer(this.player1);
-            this.completeMarshalPhase();
+    beforeEach(function () {
+        this.setupTest({
+            phase: 'challenge',
+            player1: { inPlay: ['Liddle Scout', 'Bastard in Hiding'] },
+            player2: {
+                inPlay: ['Bastard in Hiding', 'Crannogmen (AHaH)']
+            }
         });
+        this.scout = this.liddleScout;
+        this.bastard = this.player1.findCardByName('Bastard in Hiding', 'play area');
+        this.shadowDefender = this.player2.findCardByName('Crannogmen (AHaH)', 'play area');
+        this.normalDefender = this.player2.findCardByName('Bastard in Hiding', 'play area');
+    });
 
-        it('should enter play as a character', function () {
-            expect(this.scout.location).toBe('play area');
-            expect(this.scout.getType()).toBe('character');
-        });
+    it('stops characters with shadow from being declared as defenders while attacking', function () {
+        this.player1.clickPrompt('Military');
+        this.player1.clickCard(this.scout);
+        this.player1.clickPrompt('Done');
+        this.player1.clickPrompt('Done');
+        this.skipActionWindow();
 
-        describe('when attacking', function () {
-            beforeEach(function () {
-                this.player1.clickPrompt('Military');
-                this.player1.clickCard(this.scout);
-                this.player1.clickPrompt('Done');
-                // Dismiss the stealth target prompt
-                this.player1.clickPrompt('Done');
-                this.skipActionWindow();
-            });
+        expect(this.player2).toBeAbleToSelect(this.normalDefender);
+        expect(this.player2).not.toBeAbleToSelect(this.shadowDefender);
+        this.player2.clickCard(this.normalDefender);
+        this.player2.clickPrompt('Done');
+        this.skipActionWindow();
+        this.player2.clickCard(this.normalDefender);
 
-            it('should prevent characters with shadow from being declared as defenders', function () {
-                expect(this.player2).not.toAllowSelect(this.mandon);
-            });
+        expect(this.normalDefender.location).toBe('dead pile');
+        expect(this.shadowDefender.location).toBe('play area');
+        expect(this.player1).isReadyToTakeAction();
+    });
 
-            it('should allow characters without shadow to defend', function () {
-                expect(this.player2).toAllowSelect(this.knight);
-            });
-        });
+    it('does not stop characters with shadow from defending when Liddle Scout is not attacking', function () {
+        this.player1.clickPrompt('Military');
+        this.player1.clickCard(this.bastard);
+        this.player1.clickPrompt('Done');
+        this.skipActionWindow();
+
+        expect(this.player2).toBeAbleToSelect(this.normalDefender);
+        expect(this.player2).toBeAbleToSelect(this.shadowDefender);
+        this.player2.clickCard(this.normalDefender);
+        this.player2.clickCard(this.shadowDefender);
+        this.player2.clickPrompt('Done');
+        this.skipActionWindow();
+
+        expect(this.player1).isReadyToTakeAction();
     });
 });

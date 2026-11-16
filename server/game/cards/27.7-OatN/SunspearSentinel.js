@@ -2,20 +2,22 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class SunspearSentinel extends DrawCard {
+    // Sunspear Sentinel (27540)
+    // Stealth. No attachments except Weapon.
+    // Interrupt: When Sunspear Sentinel is discarded for [intrigue] claim, put it into play instead
+    // of placing it in your discard pile.
     setupCardAbilities() {
         this.interrupt({
             when: {
-                onCardDiscarded: (event) =>
-                    event.card === this &&
-                    ['hand'].includes(event.originalLocation) &&
-                    this.game.currentChallenge &&
-                    this.game.claim.isApplying &&
-                    this.game.claim.type === 'intrigue'
+                onCardDiscarded: (event, context) => event.card === context.source && event.isClaim
             },
             location: ['hand'],
             message:
                 '{player} uses {source} to put {source} into play instead of placing it in their discard pile',
-            gameAction: GameActions.putIntoPlay((context) => ({ card: context.event.card }))
+            gameAction: GameActions.replaceEvent((context) => ({
+                event: context.event,
+                replacement: GameActions.putIntoPlay({ card: context.source })
+            }))
         });
     }
 }

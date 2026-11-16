@@ -1,10 +1,13 @@
 import DrawCard from '../../drawcard.js';
 
 class AcceptedDestiny extends DrawCard {
+    // Accepted Destiny (27508)
+    // [baratheon] character only.
+    // Attached character gets +1 STR for each power it has.
     setupCardAbilities(ability) {
         this.attachmentRestriction({ faction: 'baratheon' });
         this.whileAttached({
-            effect: ability.effects.dynamicStrength(() => parent.power)
+            effect: ability.effects.dynamicStrength((card) => card.power)
         });
     }
 }

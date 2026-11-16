@@ -36,7 +36,9 @@ async function loadCards(directory) {
 }
 
 let cards = {};
-let directories = getDirectories('.');
+// ToJ cards still use handlers, which the engine rejects, so they are not loaded until converted.
+const unconvertedDirectories = ['00.1-ToJ'];
+let directories = getDirectories('.').filter((dir) => !unconvertedDirectories.includes(dir));
 
 for (let directory of directories) {
     cards = Object.assign(cards, await loadCards(directory));

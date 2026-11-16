@@ -2,45 +2,36 @@ import GameActions from '../../GameActions/index.js';
 import PlotCard from '../../plotcard.js';
 
 class BloodMagic extends PlotCard {
+    // Blood Magic (27615)
+    // When Revealed: Kill a unique character you control. Then, choose another unique non-Army
+    // character in your dead pile and put it into play.
     setupCardAbilities() {
         this.whenRevealed({
             target: {
                 type: 'select',
-                cardCondition: {
-                    location: 'play area',
-                    controller: 'current',
-                    type: 'character',
-                    unique: true,
-                    condition: (card) => GameActions.kill({ card }).allow()
-                }
+                cardCondition: (card, context) =>
+                    card.location === 'play area' &&
+                    card.controller === context.player &&
+                    card.getType() === 'character' &&
+                    card.isUnique(),
+                gameAction: GameActions.kill((context) => ({ card: context.target })).then({
+                    target: {
+                        type: 'select',
+                        cardCondition: (card, context) =>
+                            card.location === 'dead pile' &&
+                            card.controller === context.player &&
+                            card.getType() === 'character' &&
+                            card.isUnique() &&
+                            !card.hasTrait('Army') &&
+                            card !== context.parentContext.target,
+                        gameAction: GameActions.putIntoPlay((context) => ({
+                            card: context.target
+                        }))
+                    },
+                    message: 'Then {player} puts {target} into play from their dead pile'
+                })
             },
-            message: '{player} uses {source} to kill {target}',
-            handler: (context) => {
-                this.resolveGameAction(
-                    GameActions.kill((context) => ({ card: context.target })).then({
-                        target: {
-                            cardCondition: {
-                                location: 'dead pile',
-                                controller: 'current',
-                                type: 'character',
-                                unique: true,
-                                not: { trait: 'Army' },
-                                condition: (card, context) =>
-                                    card !== context.parentContext.target &&
-                                    GameActions.putIntoPlay({ card }).allow()
-                            }
-                        },
-                        message: 'Then, {player} puts {target} into play from their dead pile',
-                        handler: (context) => {
-                            this.resolveGameAction(
-                                GameActions.putIntoPlay((context) => ({ card: context.target })),
-                                context
-                            );
-                        }
-                    }),
-                    context
-                );
-            }
+            message: '{player} uses {source} to kill {target}'
         });
     }
 }

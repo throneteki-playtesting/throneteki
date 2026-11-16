@@ -1,60 +1,89 @@
 describe("Euron Crow's Eye", function () {
-    integration(function () {
+    function setup(context, phase = 'challenge') {
+        context.setupTest({
+            phase,
+            player1: {
+                shadows: ['Alan of Rosby'],
+                inPlay: [
+                    "Euron Crow's Eye (OatN)",
+                    'Bastard in Hiding',
+                    'The Roseroad',
+                    { card: 'The Iron Throne (Core)', kneeling: true }
+                ],
+                gold: 1
+            },
+            player2: { inPlay: [{ card: "Tobho Mott's Armory" }, 'Bastard in Hiding'] }
+        });
+        context.roseroad = context.player1.findCardByName('The Roseroad', 'play area');
+        context.throne = context.player1.findCardByName('The Iron Throne', 'play area');
+        context.armory = context.player2.findCardByName("Tobho Mott's Armory", 'play area');
+        context.bastard = context.player1.findCardByName('Bastard in Hiding', 'play area');
+        context.opponentBastard = context.player2.findCardByName('Bastard in Hiding', 'play area');
+    }
+
+    function bringOutAlan(context) {
+        context.player1.clickPrompt('Military');
+        context.player1.clickCard(context.bastard);
+        context.player1.clickPrompt('Done');
+        context.player1.clickCard(context.alanOfRosby);
+    }
+
+    describe('when a card comes out of shadows during the challenges phase', function () {
         beforeEach(function () {
-            const deck1 = this.buildDeck('greyjoy', [
-                'A Noble Cause',
-                "Euron Crow's Eye (OatN)",
-                "Hagen's Daughter",
-                'Iron Islands Market'
-            ]);
-            const deck2 = this.buildDeck('greyjoy', ['A Noble Cause', 'Hedge Knight']);
-            this.player1.selectDeck(deck1);
-            this.player2.selectDeck(deck2);
-            this.startGame();
-            this.keepStartingHands();
-
-            this.euron = this.player1.findCardByName("Euron Crow's Eye", 'hand');
-            this.hagensdaughter = this.player1.findCardByName("Hagen's Daughter", 'hand');
-            this.location = this.player1.findCardByName('Iron Islands Market', 'hand');
-
-            this.player1.clickCard(this.location);
-            this.completeSetup();
-            this.player1.dragCard(this.euron, 'play area');
-            this.selectFirstPlayer(this.player1);
-            this.completeMarshalPhase();
-
-            this.player1.dragCard(this.hagensdaughter, 'shadows');
-            this.player1Object.gold = 5;
-            this.player1.clickCard(this.hagensdaughter);
+            setup(this);
+            bringOutAlan(this);
         });
 
-        describe('when a friendly card comes out of shadows', function () {
-            it('should allow triggering the reaction', function () {
-                expect(this.player1).toAllowAbilityTrigger("Euron Crow's Eye");
-            });
+        it('can choose any location', function () {
+            expect(this.player1).toAllowAbilityTrigger(this.euronCrowsEye);
+            this.player1.triggerAbility(this.euronCrowsEye);
 
-            describe('when a location with printed cost above initiative is chosen', function () {
-                beforeEach(function () {
-                    this.player1.triggerAbility(this.euron);
-                    this.player1.clickCard(this.location);
-                });
+            expect(this.player1).toBeAbleToSelect(this.roseroad);
+            expect(this.player1).toBeAbleToSelect(this.throne);
+            expect(this.player1).toBeAbleToSelect(this.armory);
+            expect(this.player1).not.toBeAbleToSelect(this.bastard);
+            expect(this.player1).not.toBeAbleToSelect(this.opponentBastard);
+        });
 
-                it('should offer to kneel or stand', function () {
-                    expect(this.player1).toHavePromptButton('Kneel');
-                    expect(this.player1).toHavePromptButton('Stand');
-                });
+        it('kneels a location whose printed cost is not greater than your initiative', function () {
+            this.player1.triggerAbility(this.euronCrowsEye);
+            this.player1.clickCard(this.roseroad);
 
-                it('should kneel the location when Kneel is chosen', function () {
-                    this.player1.clickPrompt('Kneel');
-                    expect(this.location.kneeled).toBe(true);
-                });
+            expect(this.roseroad.kneeled).toBe(true);
+            expect(this.player1).not.toHavePromptButton('Stand');
+        });
 
-                it('should stand the location when Stand is chosen', function () {
-                    this.location.kneeled = true;
-                    this.player1.clickPrompt('Stand');
-                    expect(this.location.kneeled).toBe(false);
-                });
-            });
+        it('lets you stand a location whose printed cost is greater than your initiative', function () {
+            this.player1.triggerAbility(this.euronCrowsEye);
+            this.player1.clickCard(this.throne);
+
+            expect(this.player1).toHaveDisabledPromptButton('Kneel');
+            expect(this.player1).toHavePromptButton('Stand');
+
+            this.player1.clickPrompt('Stand');
+
+            expect(this.throne.kneeled).toBe(false);
+        });
+
+        it('lets you kneel a location whose printed cost is greater than your initiative', function () {
+            this.player1.triggerAbility(this.euronCrowsEye);
+            this.player1.clickCard(this.armory);
+            this.player1.clickPrompt('Kneel');
+
+            expect(this.armory.kneeled).toBe(true);
+            expect(this.roseroad.kneeled).toBe(false);
+        });
+    });
+
+    describe('when a card comes out of shadows outside the challenges phase', function () {
+        beforeEach(function () {
+            setup(this, 'marshal');
+            this.player1.clickCard(this.alanOfRosby);
+        });
+
+        it('is not offered', function () {
+            expect(this.alanOfRosby.location).toBe('play area');
+            expect(this.player1).not.toAllowAbilityTrigger(this.euronCrowsEye);
         });
     });
 });

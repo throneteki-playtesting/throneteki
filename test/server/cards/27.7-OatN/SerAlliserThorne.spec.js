@@ -1,71 +1,54 @@
 describe('Ser Alliser Thorne', function () {
-    integration(function () {
+    function setup(context, challenge) {
+        context.setupTest({
+            phase: 'challenge',
+            player1: {
+                shadows: ['Ser Alliser Thorne (OatN)'],
+                inPlay: ['Samwell Tarly (Core)', 'Bastard in Hiding', 'Tumblestone Knight'],
+                gold: 5
+            },
+            player2: { inPlay: ['House Maester', 'Bastard in Hiding'] }
+        });
+        context.sam = context.player1.findCardByName('Samwell Tarly', 'play area');
+        context.bastard = context.player1.findCardByName('Bastard in Hiding', 'play area');
+        context.knight = context.player1.findCardByName('Tumblestone Knight', 'play area');
+        context.player1.clickPrompt(challenge);
+        context.player1.clickCard(context.bastard);
+        context.player1.clickPrompt('Done');
+        context.player1.clickCard(context.serAlliserThorne);
+    }
+
+    describe('when a card comes out of shadows during a military challenge', function () {
         beforeEach(function () {
-            const deck1 = this.buildDeck('thenightswatch', [
-                'A Noble Cause',
-                'Ser Alliser Thorne (OatN)',
-                'Alan of Rosby (OatN)'
-            ]);
-            const deck2 = this.buildDeck('thenightswatch', ['A Noble Cause', 'Hedge Knight']);
-            this.player1.selectDeck(deck1);
-            this.player2.selectDeck(deck2);
-            this.startGame();
-            this.keepStartingHands();
-
-            this.alliser = this.player1.findCardByName('Ser Alliser Thorne', 'hand');
-            this.alan = this.player1.findCardByName('Alan of Rosby', 'hand');
-            this.p2knight = this.player2.findCardByName('Hedge Knight', 'hand');
-
-            this.player2.clickCard(this.p2knight);
-            this.completeSetup();
-            this.player1.dragCard(this.alliser, 'play area');
-            this.selectFirstPlayer(this.player1);
-            this.completeMarshalPhase();
-
-            this.player1.dragCard(this.alan, 'shadows');
+            setup(this, 'Military');
         });
 
-        describe('when a card comes out of shadows during a military challenge', function () {
-            beforeEach(function () {
-                this.player1.clickPrompt('Military');
-                this.player1.clickCard(this.alliser);
-                this.player1.clickPrompt('Done');
-                this.skipActionWindow();
-                this.player2.clickPrompt('Done');
-                this.player1Object.gold = 1;
-                this.player1.clickCard(this.alan);
-            });
+        it('has a Night Watch character you control participate in the challenge', function () {
+            expect(this.player1).toAllowAbilityTrigger(this.serAlliserThorne);
+            this.player1.triggerAbility(this.serAlliserThorne);
 
-            it('should allow adding a non-participating NW character to the challenge', function () {
-                expect(this.player1).toAllowAbilityTrigger('Ser Alliser Thorne');
-            });
+            expect(this.player1).toBeAbleToSelect(this.sam);
+            expect(this.player1).toBeAbleToSelect(this.serAlliserThorne);
+            expect(this.player1).not.toBeAbleToSelect(this.bastard);
+            expect(this.player1).not.toBeAbleToSelect(this.knight);
 
-            describe('when triggered', function () {
-                beforeEach(function () {
-                    this.player1.triggerAbility(this.alliser);
-                    this.player1.clickCard(this.alan);
-                });
+            this.player1.clickCard(this.sam);
 
-                it('should add Yoren to the challenge', function () {
-                    expect(this.alan.isParticipating()).toBe(true);
-                });
-            });
+            expect(this.game.currentChallenge.isAttacking(this.sam)).toBe(true);
+            expect(this.game.currentChallenge.isAttacking(this.bastard)).toBe(true);
+            expect(this.game.currentChallenge.isAttacking(this.knight)).toBe(false);
+            expect(this.player2).isReadyToTakeAction();
+        });
+    });
+
+    describe('when a card comes out of shadows during a challenge that is not military', function () {
+        beforeEach(function () {
+            setup(this, 'Power');
         });
 
-        describe('outside of a military challenge', function () {
-            beforeEach(function () {
-                this.player1.clickPrompt('Power');
-                this.player1.clickCard(this.alliser);
-                this.player1.clickPrompt('Done');
-                this.skipActionWindow();
-                this.player2.clickPrompt('Done');
-                this.player1Object.gold = 1;
-                this.player1.clickCard(this.alan);
-            });
-
-            it('should not trigger outside a military challenge', function () {
-                expect(this.player1).not.toAllowAbilityTrigger('Ser Alliser Thorne');
-            });
+        it('is not offered', function () {
+            expect(this.serAlliserThorne.location).toBe('play area');
+            expect(this.player1).not.toAllowAbilityTrigger(this.serAlliserThorne);
         });
     });
 });

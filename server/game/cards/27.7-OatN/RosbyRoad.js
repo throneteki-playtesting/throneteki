@@ -2,6 +2,10 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class RosbyRoad extends DrawCard {
+    // Rosby Road (27534)
+    // Limited.
+    // Challenges Action: Kneel and sacrifice Rosby Road to gain 3 gold.
+    // +1 Initiative.
     setupCardAbilities(ability) {
         this.plotModifiers({
             initiative: 1

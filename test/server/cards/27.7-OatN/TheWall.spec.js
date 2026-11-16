@@ -1,52 +1,66 @@
 describe('The Wall', function () {
-    integration(function () {
+    function setup(context, plots) {
+        context.setupTest({
+            phase: 'challenge',
+            player1: {
+                plot: plots.player1,
+                inPlay: ['The Wall (OatN)', 'Bastard in Hiding', 'House Maester']
+            },
+            player2: {
+                plot: plots.player2,
+                inPlay: ['Tumblestone Knight', 'Bastard in Hiding']
+            }
+        });
+        context.bastard = context.player1.findCardByName('Bastard in Hiding', 'play area');
+        context.maester = context.player1.findCardByName('House Maester', 'play area');
+        context.knight = context.player2.findCardByName('Tumblestone Knight', 'play area');
+        context.opponentBastard = context.player2.findCardByName('Bastard in Hiding', 'play area');
+        context.player1.clickPrompt('Power');
+        context.player1.clickCard(context.bastard);
+        context.player1.clickCard(context.maester);
+        context.player1.clickPrompt('Done');
+        context.skipActionWindow();
+        context.player2.clickCard(context.knight);
+        context.player2.clickPrompt('Done');
+    }
+
+    describe('while a Winter plot is revealed by one player', function () {
         beforeEach(function () {
-            const deck1 = this.buildDeck('baratheon', [
-                'The Winds of Winter (Core)',
-                'The Wall (OatN)',
-                'Hedge Knight'
-            ]);
-            const deck2 = this.buildDeck('lannister', ['A Noble Cause', 'The Tickler (Core)']);
-            this.player1.selectDeck(deck1);
-            this.player2.selectDeck(deck2);
-            this.startGame();
-            this.keepStartingHands();
-
-            this.theWall = this.player1.findCardByName('The Wall', 'hand');
-            this.knight = this.player1.findCardByName('Hedge Knight', 'hand');
-            this.tickler = this.player2.findCardByName('The Tickler', 'hand');
-
-            this.player1.clickCard(this.knight);
-            this.player2.clickCard(this.tickler);
-            this.completeSetup();
-            this.selectFirstPlayer(this.player1);
-            this.player1Object.gold = 10;
-            this.player1.clickCard(this.theWall);
-            this.completeMarshalPhase();
+            setup(this, { player1: 'A Noble Cause', player2: 'The Winds of Winter' });
         });
 
-        it('should lose all factions', function () {
+        it('gives -1 STR to participating characters of players without a Winter plot', function () {
+            expect(this.bastard.getStrength()).toBe(1);
+            expect(this.maester.getStrength()).toBe(1);
+            expect(this.knight.getStrength()).toBe(2);
+            expect(this.opponentBastard.getStrength()).toBe(2);
+            expect(this.player1).isReadyToTakeAction();
+        });
+    });
+
+    describe('while no Winter plot is revealed', function () {
+        beforeEach(function () {
+            setup(this, { player1: 'A Noble Cause', player2: 'A Noble Cause' });
+        });
+
+        it('gives no penalty', function () {
+            expect(this.bastard.getStrength()).toBe(2);
+            expect(this.knight.getStrength()).toBe(2);
+        });
+    });
+
+    describe('being out-of-faction', function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'marshal',
+                player1: { inPlay: ['The Wall (OatN)'] },
+                player2: {}
+            });
+        });
+
+        it('is not considered Baratheon for card effects', function () {
             expect(this.theWall.isFaction('baratheon')).toBe(false);
-            expect(this.theWall.isFaction('neutral')).toBe(false);
-        });
-
-        describe('during a challenge with a Winter plot revealed', function () {
-            beforeEach(function () {
-                this.player1.clickPrompt('Military');
-                this.player1.clickCard(this.knight);
-                this.player1.clickPrompt('Done');
-                this.skipActionWindow();
-                this.player2.clickCard(this.tickler);
-                this.player2.clickPrompt('Done');
-            });
-
-            it('should give -1 STR to the defender (no Winter plot)', function () {
-                expect(this.tickler.getStrength()).toBe(this.tickler.cardData.strength - 1);
-            });
-
-            it('should not give -1 STR to player1 Hedge Knight (controller has Winter plot)', function () {
-                expect(this.knight.getStrength()).toBe(this.knight.cardData.strength);
-            });
+            expect(this.player1).isReadyToTakeAction();
         });
     });
 });

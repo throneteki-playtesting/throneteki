@@ -1,52 +1,105 @@
 describe('Ancient Traditions', function () {
-    integration(function () {
+    describe('while you control an Old Gods character', function () {
         beforeEach(function () {
-            const deck1 = this.buildDeck('stark', [
-                'A Noble Cause',
-                'Ancient Traditions (OatN)',
-                'Bran Stark (BtB)',
-                'Hedge Knight'
-            ]);
-            const deck2 = this.buildDeck('lannister', ['A Noble Cause', 'Cersei Lannister (Core)']);
-            this.player1.selectDeck(deck1);
-            this.player2.selectDeck(deck2);
-            this.startGame();
-            this.keepStartingHands();
+            this.setupTest({
+                phase: 'challenge',
+                firstPlayer: 'player2',
+                player1: {
+                    inPlay: [
+                        { card: 'Tumblestone Knight', attachments: ['Ancient Traditions'] },
+                        'Woods Witch',
+                        'Bastard in Hiding'
+                    ]
+                },
+                player2: {
+                    hand: ['Put to the Sword'],
+                    inPlay: ['Bastard in Hiding', 'Bastard in Hiding', 'Bastard in Hiding'],
+                    gold: 2
+                }
+            });
+            this.protected = this.player1.findCardByName('Tumblestone Knight', 'play area');
+            this.witch = this.player1.findCardByName('Woods Witch', 'play area');
+            this.bystander = this.player1.findCardByName('Bastard in Hiding', 'play area');
+            this.put = this.player2.findCardByName('Put to the Sword', 'hand');
+            this.attackers = this.player2.filterCardsByName('Bastard in Hiding', 'play area');
 
-            this.traditions = this.player1.findCardByName('Ancient Traditions', 'hand');
-            this.bran = this.player1.findCardByName('Bran Stark', 'hand');
-            this.knight = this.player1.findCardByName('Hedge Knight', 'hand');
-
-            this.player1.clickCard(this.bran);
-            this.player2.clickCard(this.player2.findCardByName('Cersei Lannister', 'hand'));
-            this.completeSetup();
-            this.selectFirstPlayer(this.player1);
-            this.player1Object.gold = 5;
+            this.player2.clickPrompt('Military');
+            for (const attacker of this.attackers) {
+                this.player2.clickCard(attacker);
+            }
+            this.player2.clickPrompt('Done');
+            this.skipActionWindow();
+            this.player1.clickPrompt('Done');
+            this.skipActionWindow();
         });
 
-        describe('when attached to Bran Stark (Old Gods)', function () {
-            beforeEach(function () {
-                this.player1.clickCard(this.traditions);
-                this.player1.clickCard(this.bran);
-                this.completeMarshalPhase();
-            });
+        it('makes the attached character immune to opponent card effects', function () {
+            this.player2.clickCard(this.put);
 
-            it('should not modify Bran STR', function () {
-                expect(this.bran.getStrength()).toBe(this.bran.cardData.strength);
+            expect(this.player2).not.toBeAbleToSelect(this.protected);
+            expect(this.player2).toBeAbleToSelect(this.witch);
+            expect(this.player2).toBeAbleToSelect(this.bystander);
+        });
+    });
+
+    describe('while you control no Old Gods character', function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'challenge',
+                firstPlayer: 'player2',
+                player1: {
+                    inPlay: [
+                        { card: 'Tumblestone Knight', attachments: ['Ancient Traditions'] },
+                        'Bastard in Hiding'
+                    ]
+                },
+                player2: {
+                    hand: ['Put to the Sword'],
+                    inPlay: ['Bastard in Hiding', 'Bastard in Hiding', 'Bastard in Hiding'],
+                    gold: 2
+                }
             });
+            this.protected = this.player1.findCardByName('Tumblestone Knight', 'play area');
+            this.put = this.player2.findCardByName('Put to the Sword', 'hand');
+            this.attackers = this.player2.filterCardsByName('Bastard in Hiding', 'play area');
+
+            this.player2.clickPrompt('Military');
+            for (const attacker of this.attackers) {
+                this.player2.clickCard(attacker);
+            }
+            this.player2.clickPrompt('Done');
+            this.skipActionWindow();
+            this.player1.clickPrompt('Done');
+            this.skipActionWindow();
         });
 
-        describe('when attached to any character', function () {
-            it('should allow attaching to a non-Old Gods character', function () {
-                this.player1.dragCard(this.knight, 'play area');
-                this.player1.clickCard(this.traditions);
-                expect(this.player1).toAllowSelect(this.knight);
-            });
+        it('does not make the attached character immune', function () {
+            this.player2.clickCard(this.put);
 
-            it('should allow attaching to an Old Gods character', function () {
-                this.player1.clickCard(this.traditions);
-                expect(this.player1).toAllowSelect(this.bran);
+            expect(this.player2).toBeAbleToSelect(this.protected);
+        });
+    });
+
+    describe('against plot and agenda effects', function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'plot',
+                player1: {
+                    inPlay: [
+                        { card: 'Tumblestone Knight', attachments: ['Ancient Traditions'] },
+                        'Woods Witch'
+                    ]
+                },
+                player2: { plotDeck: ['Filthy Accusations'] }
             });
+            this.protected = this.player1.findCardByName('Tumblestone Knight', 'play area');
+            this.player1.selectPlot('Filler Plot');
+            this.player2.selectPlot('Filthy Accusations');
+            this.selectFirstPlayer(this.player2);
+        });
+
+        it('does not make the attached character immune to a plot', function () {
+            expect(this.player2).toBeAbleToSelect(this.protected);
         });
     });
 });

@@ -2,29 +2,27 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class KhalDrogo extends DrawCard {
+    // Khal Drogo (27573)
+    // Renown.
+    // Reaction: After you win a challenge as the attacking player, choose and stand a unique
+    // Dothraki character. (Limit once per phase.)
     setupCardAbilities(ability) {
         this.reaction({
             when: {
-                afterChallenge: (event) =>
-                    event.challenge.winner === this.controller &&
-                    event.challenge.attackingPlayer === this.controller
+                afterChallenge: (event, context) =>
+                    event.challenge.winner === context.player &&
+                    event.challenge.attackingPlayer === context.player
             },
             target: {
-                type: 'select',
                 cardCondition: (card) =>
                     card.location === 'play area' &&
                     card.getType() === 'character' &&
                     card.isUnique() &&
-                    card.hasTrait('Dothraki')
+                    card.hasTrait('Dothraki'),
+                gameAction: GameActions.standCard((context) => ({ card: context.target }))
             },
             limit: ability.limit.perPhase(1),
-            message: '{player} uses {source} to stand {target}',
-            handler: (context) => {
-                this.game.resolveGameAction(
-                    GameActions.standCard((context) => ({ card: context.target })),
-                    context
-                );
-            }
+            message: '{player} uses {source} to stand {target}'
         });
     }
 }

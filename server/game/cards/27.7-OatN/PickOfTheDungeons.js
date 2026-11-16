@@ -2,39 +2,50 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class PickOfTheDungeons extends DrawCard {
+    // Pick of the Dungeons (27559)
+    // Challenges Action: Choose a character in an opponent's discard pile with a printed cost of 4
+    // or lower. Put that character into play under your control. At the end of the phase, if that
+    // card is still in play, place it on the bottom of its owner's deck.
     setupCardAbilities() {
         this.action({
             title: 'Put character into play',
+            phase: 'challenge',
             target: {
-                cardCondition: (card) =>
+                cardCondition: (card, context) =>
                     card.location === 'discard pile' &&
-                    card.controller !== this.controller &&
+                    card.owner !== context.player &&
                     card.getType() === 'character' &&
-                    card.hasPrintedCost() &&
-                    card.printedCost() <= 4 &&
-                    GameActions.putIntoPlay({ card }).allow()
-            },
-            message: {
-                format: "{player} plays {source} to put {target} into play from {opponent}'s discard pile",
-                args: { opponent: (context) => context.target.controller }
-            },
-            handler: (context) => {
-                this.game.resolveGameAction(
+                    card.getPrintedCost() <= 4,
+                gameAction: GameActions.simultaneously([
                     GameActions.putIntoPlay((context) => ({
-                        card: context.target,
-                        player: context.player
-                    })).thenExecute((event) => {
-                        this.atEndOfPhase((ability) => ({
-                            match: event.card,
-                            condition: () =>
-                                ['play area', 'duplicate'].includes(event.card.location),
-                            targetLocation: 'any',
-                            effect: ability.effects.moveToBottomOfDeckIfStillInPlay(true)
-                        }));
-                    }),
-                    context
-                );
-            }
+                        player: context.player,
+                        card: context.target
+                    })),
+                    GameActions.delayedEffect((context) => {
+                        const card = context.target;
+                        return {
+                            duration: 'untilTriggered',
+                            title: card.name,
+                            when: { onAtEndOfPhase: () => true },
+                            until: { onCardLeftPlay: (event) => event.card === card },
+                            gameAction: GameActions.ifCondition({
+                                condition: () => ['play area', 'duplicate'].includes(card.location),
+                                thenAction: {
+                                    message:
+                                        '{player} resolves the delayed effect from {source}: {gameAction}',
+                                    gameAction: GameActions.returnCardToDeck({
+                                        card,
+                                        bottom: true,
+                                        allowSave: true
+                                    })
+                                }
+                            })
+                        };
+                    })
+                ])
+            },
+            message:
+                '{player} plays {source} to put {target} into play from the discard pile of an opponent'
         });
     }
 }

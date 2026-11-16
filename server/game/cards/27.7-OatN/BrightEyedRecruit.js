@@ -2,26 +2,23 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class BrightEyedRecruit extends DrawCard {
+    // Bright-Eyed Recruit (27554)
+    // Reaction: After Bright-Eyed Recruit is declared as a defender, stand another Recruit
+    // character or a character owned by an opponent.
     setupCardAbilities() {
         this.reaction({
             when: {
-                onDeclaredAsDefender: (event) => event.card === this
+                onDeclaredAsDefender: (event, context) => event.card === context.source
             },
             target: {
-                cardCondition: (card) =>
+                cardCondition: (card, context) =>
                     card.location === 'play area' &&
                     card.getType() === 'character' &&
-                    card !== this &&
-                    card.kneeled &&
-                    (card.hasTrait('Recruit') || card.owner !== this.controller)
+                    card !== context.source &&
+                    (card.hasTrait('Recruit') || card.owner !== context.player),
+                gameAction: GameActions.standCard((context) => ({ card: context.target }))
             },
-            message: '{player} uses {source} to stand {target}',
-            handler: (context) => {
-                this.game.resolveGameAction(
-                    GameActions.standCard((context) => ({ card: context.target })),
-                    context
-                );
-            }
+            message: '{player} uses {source} to stand {target}'
         });
     }
 }

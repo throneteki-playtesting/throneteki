@@ -2,41 +2,36 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class ANecessarySacrifice extends DrawCard {
+    // A Necessary Sacrifice (27571)
+    // Interrupt: When a non-[stark] character would be killed, save it. Then, sacrifice another
+    // character.
     setupCardAbilities() {
         this.interrupt({
             canCancel: true,
+            would: true,
             when: {
-                onCharacterKilled: (event) => !event.card.isFaction('stark')
+                onCharacterKilled: (event) => event.allowSave && !event.card.isFaction('stark')
             },
             message: {
                 format: '{player} plays {source} to save {character}',
                 args: { character: (context) => context.event.card }
             },
-            gameAction: GameActions.genericHandler((context) => {
-                // TODO: Convert to gameaction, somehow
-                context.event.saveCard();
-                this.game.promptForSelect(context.player, {
-                    activePromptTitle: 'Select another character',
-                    cardCondition: (card) =>
-                        card.getType() === 'character' && card !== context.event.card,
-                    onSelect: (player, card) => {
-                        this.game.addMessage('Then, {0} sacrifices {1}', player, card);
-                        this.game.resolveGameAction(GameActions.sacrificeCard({ card }));
-                        return true;
-                    },
-                    onCancel: (player) => {
-                        this.game.addMessage(
-                            '{0} does not choose to sacrifice a character',
-                            player
-                        );
-                        return true;
-                    },
-                    source: this
-                });
+            gameAction: GameActions.saveCard((context) => ({ event: context.event })).then({
+                message: 'Then {player} sacrifices another character',
+                gameAction: GameActions.chooseCards({
+                    title: 'Select another character',
+                    cardCondition: (card, context) =>
+                        card.location === 'play area' &&
+                        card.getType() === 'character' &&
+                        card.controller === context.choosingPlayer &&
+                        card !== context.parentContext.event.card,
+                    gameAction: (card) => GameActions.sacrificeCard({ card })
+                })
             })
         });
     }
 }
+
 ANecessarySacrifice.code = '27571';
 ANecessarySacrifice.version = '1.0.0';
 

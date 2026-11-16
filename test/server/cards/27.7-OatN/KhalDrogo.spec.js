@@ -1,68 +1,76 @@
-describe('Khal Drogo (OatN)', function () {
-    integration(function () {
+describe('Khal Drogo', function () {
+    function setup(context, { attacker }) {
+        context.setupTest({
+            phase: 'challenge',
+            player1: {
+                inPlay: [
+                    'Khal Drogo (OatN)',
+                    { card: 'Aggo', kneeling: true },
+                    { card: 'Braided Warrior', kneeling: true },
+                    { card: 'Eddard Stark (Core)', kneeling: true }
+                ]
+            },
+            player2: { inPlay: ['Tumblestone Knight'] }
+        });
+        context.aggo = context.player1.findCardByName('Aggo', 'play area');
+        context.warrior = context.player1.findCardByName('Braided Warrior', 'play area');
+        context.eddard = context.player1.findCardByName('Eddard Stark', 'play area');
+        context.knight = context.player2.findCardByName('Tumblestone Knight', 'play area');
+        context.player1.clickPrompt('Military');
+        context.player1.clickCard(context[attacker]);
+        context.player1.clickPrompt('Done');
+        context.skipActionWindow();
+        context.player2.clickPrompt('Done');
+        context.skipActionWindow();
+    }
+
+    describe('after you win a challenge as the attacking player', function () {
         beforeEach(function () {
-            const deck1 = this.buildDeck('targaryen', [
-                'A Noble Cause',
-                'Khal Drogo (OatN)',
-                'Zollo the Fat',
-                'Hedge Knight'
-            ]);
-            const deck2 = this.buildDeck('targaryen', ['A Noble Cause', 'Hedge Knight']);
-            this.player1.selectDeck(deck1);
-            this.player2.selectDeck(deck2);
-            this.startGame();
-            this.keepStartingHands();
-
-            this.drogo = this.player1.findCardByName('Khal Drogo', 'hand');
-            this.honor = this.player1.findCardByName('Zollo the Fat', 'hand');
-            this.knight = this.player1.findCardByName('Hedge Knight', 'hand');
-            this.p2knight = this.player2.findCardByName('Hedge Knight', 'hand');
-
-            this.player1.clickCard(this.drogo);
-            this.player2.clickCard(this.p2knight);
-            this.completeSetup();
-            this.selectFirstPlayer(this.player1);
-            this.player1.clickCard(this.honor);
-            this.completeMarshalPhase();
-
-            this.honor.kneeled = true;
+            setup(this, { attacker: 'khalDrogo' });
         });
 
-        describe('after winning a challenge as attacker', function () {
-            beforeEach(function () {
-                this.player1.clickPrompt('Military');
-                this.player1.clickCard(this.drogo);
-                this.player1.clickCard(this.honor);
-                this.player1.clickPrompt('Done');
-                this.skipActionWindow();
-                this.player2.clickPrompt('Done');
-                this.skipActionWindow();
-            });
+        it('can only stand a unique Dothraki character', function () {
+            expect(this.player1).toAllowAbilityTrigger(this.khalDrogo);
+            this.player1.triggerAbility(this.khalDrogo);
 
-            it('should allow standing a Dothraki character', function () {
-                expect(this.player1).toAllowAbilityTrigger('Khal Drogo');
-            });
-
-            describe('when the reaction triggers', function () {
-                beforeEach(function () {
-                    this.player1.triggerAbility(this.drogo);
-                });
-
-                it('should allow selecting only Dothraki characters', function () {
-                    expect(this.player1).toAllowSelect(this.honor);
-                    expect(this.player1).not.toAllowSelect(this.knight);
-                });
-
-                describe('after standing a Dothraki character', function () {
-                    beforeEach(function () {
-                        this.player1.clickCard(this.honor);
-                    });
-
-                    it('should stand the Dothraki character', function () {
-                        expect(this.honor.kneeled).toBe(false);
-                    });
-                });
-            });
+            expect(this.player1).toBeAbleToSelect(this.khalDrogo);
+            expect(this.player1).toBeAbleToSelect(this.aggo);
+            expect(this.player1).not.toBeAbleToSelect(this.warrior);
+            expect(this.player1).not.toBeAbleToSelect(this.eddard);
+            expect(this.player1).not.toBeAbleToSelect(this.knight);
         });
+
+        it('stands the chosen character', function () {
+            this.player1.triggerAbility(this.khalDrogo);
+            this.player1.clickCard(this.aggo);
+            this.player2.clickCard(this.knight);
+
+            expect(this.aggo.kneeled).toBe(false);
+            expect(this.warrior.kneeled).toBe(true);
+            expect(this.eddard.kneeled).toBe(true);
+        });
+    });
+});
+
+describe('Khal Drogo when defending', function () {
+    beforeEach(function () {
+        this.setupTest({
+            phase: 'challenge',
+            firstPlayer: 'player2',
+            player1: { inPlay: ['Khal Drogo (OatN)', { card: 'Aggo', kneeling: true }] },
+            player2: { inPlay: ['Tumblestone Knight'] }
+        });
+        this.attacker = this.player2.findCardByName('Tumblestone Knight', 'play area');
+        this.player2.clickPrompt('Military');
+        this.player2.clickCard(this.attacker);
+        this.player2.clickPrompt('Done');
+        this.skipActionWindow();
+        this.player1.clickCard(this.khalDrogo);
+        this.player1.clickPrompt('Done');
+        this.skipActionWindow();
+    });
+
+    it('is not offered after winning as the defending player', function () {
+        expect(this.player1).not.toAllowAbilityTrigger(this.khalDrogo);
     });
 });
