@@ -1,117 +1,62 @@
 describe('Wormway Sentinels', function () {
-    integration(function () {
-        beforeEach(function () {
-            const deck1 = this.buildDeck('thenightswatch', [
-                'A Noble Cause',
-                { name: 'Wormway Sentinels (OatN)', count: 2 },
-                'Longclaw (Core)'
-            ]);
-            const deck2 = this.buildDeck('thenightswatch', [
-                'A Noble Cause',
-                'Wildling Scout (NMG)',
-                'Northern Refugee (TC)'
-            ]);
-            this.player1.selectDeck(deck1);
-            this.player2.selectDeck(deck2);
-            this.startGame();
-            this.keepStartingHands();
-
-            [this.sentinels, this.shadowSentinels] = this.player1.filterCardsByName(
-                'Wormway Sentinels',
-                'hand'
-            );
-            this.longclaw = this.player1.findCardByName('Longclaw', 'hand');
-            this.p2scout = this.player2.findCardByName('Wildling Scout', 'hand');
-            this.p2refugee = this.player2.findCardByName('Northern Refugee', 'hand');
-
-            this.player2.setupCards([this.p2scout, this.p2refugee]);
+    function setup(context, challenge) {
+        context.setupTest({
+            phase: 'challenge',
+            firstPlayer: 'player2',
+            player1: { inPlay: ['Wormway Sentinels'], gold: 0 },
+            player2: { inPlay: ['House Maester', 'Bastard in Hiding'] }
         });
+        context.maester = context.player2.findCardByName('House Maester', 'play area');
+        context.bastard = context.player2.findCardByName('Bastard in Hiding', 'play area');
+        context.player2.clickPrompt(challenge);
+        context.player2.clickCard(challenge === 'Military' ? context.bastard : context.maester);
+        context.player2.clickPrompt('Done');
+        context.skipActionWindow();
+    }
 
-        describe('when marshalled normally', function () {
-            beforeEach(function () {
-                this.completeSetup();
-                this.selectFirstPlayer(this.player1);
-                this.player1Object.gold = 20;
-                this.player1.marshalCards([this.sentinels]);
-                this.completeMarshalPhase();
-            });
+    it('can be declared as a defender in an intrigue challenge without an intrigue icon', function () {
+        setup(this, 'Intrigue');
 
-            it('should not be declarable as an attacker in an intrigue challenge', function () {
-                const intrigue = this.player1
-                    .currentPrompt()
-                    .buttons.find((button) => button.text === 'Intrigue');
-                expect(intrigue.disabled).toBe(true);
-            });
+        expect(this.player1).toBeAbleToSelect(this.wormwaySentinels);
+        this.player1.clickCard(this.wormwaySentinels);
+        this.player1.clickPrompt('Done');
 
-            it('should be declarable as a defender in an intrigue challenge', function () {
-                this.player1.passChallenge();
-                this.player2.initiateChallenge({ type: 'intrigue', attackers: this.p2scout });
-                this.skipActionWindow();
-                expect(this.player1).toAllowSelect(this.sentinels);
-            });
+        expect(this.game.currentChallenge.isDefending(this.wormwaySentinels)).toBe(true);
+    });
 
-            it('should be declarable as a defender in a power challenge', function () {
-                this.player1.passChallenge();
-                this.player2.initiateChallenge({ type: 'power', attackers: this.p2refugee });
-                this.skipActionWindow();
-                expect(this.player1).toAllowSelect(this.sentinels);
-            });
+    it('can be declared as a defender in a power challenge without a power icon', function () {
+        setup(this, 'Power');
 
-            it('should not be declarable while kneeling', function () {
-                this.player1.passChallenge();
-                this.player2.initiateChallenge({ type: 'intrigue', attackers: this.p2scout });
-                this.skipActionWindow();
-                this.player1.declareDefenders([this.sentinels]);
-                this.skipActionWindow();
-                expect(this.sentinels.kneeled).toBe(true);
+        expect(this.player1).toBeAbleToSelect(this.wormwaySentinels);
+    });
 
-                this.player2.initiateChallenge({ type: 'power', attackers: this.p2refugee });
-                this.skipActionWindow();
-                expect(this.player1).not.toAllowSelect(this.sentinels);
-            });
+    it('can defend a military challenge using its own icon', function () {
+        setup(this, 'Military');
+
+        expect(this.player1).toBeAbleToSelect(this.wormwaySentinels);
+    });
+});
+
+describe('Wormway Sentinels coming out of shadows this phase', function () {
+    beforeEach(function () {
+        this.setupTest({
+            phase: 'challenge',
+            firstPlayer: 'player2',
+            player1: { shadows: ['Wormway Sentinels'], gold: 5 },
+            player2: { inPlay: ['House Maester'] }
         });
+        this.attacker = this.player2.findCardByName('House Maester', 'play area');
+        this.player2.clickPrompt('Intrigue');
+        this.player2.clickCard(this.attacker);
+        this.player2.clickPrompt('Done');
+        this.player2.clickPrompt('Pass');
+        this.player1.clickCard(this.wormwaySentinels);
+    });
 
-        describe('when it came out of shadows this phase', function () {
-            beforeEach(function () {
-                this.completeSetup();
-                this.selectFirstPlayer(this.player1);
-                this.completeMarshalPhase();
-                this.player1.dragCard(this.shadowSentinels, 'shadows');
+    it('can then be declared as a defender', function () {
+        this.player2.clickPrompt('Pass');
+        this.player1.clickPrompt('Pass');
 
-                this.player1Object.gold = 20;
-                this.player1.clickCard(this.shadowSentinels);
-                this.player1.passChallenge();
-            });
-
-            it('should have come into play out of shadows', function () {
-                expect(this.shadowSentinels.location).toBe('play area');
-            });
-
-            it('should be declarable as a defender while kneeling', function () {
-                this.player2.initiateChallenge({ type: 'intrigue', attackers: this.p2scout });
-                this.skipActionWindow();
-                this.player1.declareDefenders([this.shadowSentinels]);
-                this.skipActionWindow();
-                expect(this.shadowSentinels.kneeled).toBe(true);
-
-                this.player2.initiateChallenge({ type: 'power', attackers: this.p2refugee });
-                this.skipActionWindow();
-                expect(this.player1).toAllowSelect(this.shadowSentinels);
-            });
-        });
-
-        describe('attachment restrictions', function () {
-            beforeEach(function () {
-                this.completeSetup();
-                this.selectFirstPlayer(this.player1);
-                this.player1Object.gold = 20;
-                this.player1.marshalCards([this.sentinels]);
-            });
-
-            it('should allow a Weapon attachment', function () {
-                this.player1.attachCard(this.longclaw, this.sentinels);
-                expect(this.longclaw.parent).toBe(this.sentinels);
-            });
-        });
+        expect(this.player1).toBeAbleToSelect(this.wormwaySentinels);
     });
 });

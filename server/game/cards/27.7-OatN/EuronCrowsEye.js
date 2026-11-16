@@ -2,12 +2,17 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class EuronCrowsEye extends DrawCard {
+    // Euron Crow's Eye (27513)
+    // Shadow (5). Pillage. Stealth.
+    // Reaction: After a card you control comes out of shadows during the challenges phase, choose
+    // and kneel a location. If that location's printed cost is greater than your initiative value,
+    // you may stand it instead. (Limit twice per phase.)
     setupCardAbilities(ability) {
         this.reaction({
             when: {
-                onCardOutOfShadows: (event) =>
-                    this.game.currentPhase === 'challenge' &&
-                    event.card.controller === this.controller
+                onCardOutOfShadows: (event, context) =>
+                    context.game.currentPhase === 'challenge' &&
+                    event.card.controller === context.player
             },
             target: {
                 cardCondition: (card) =>
@@ -15,44 +20,27 @@ class EuronCrowsEye extends DrawCard {
             },
             limit: ability.limit.perPhase(2),
             message: '{player} uses {source} to choose {target}',
-            handler: (context) => {
-                const location = context.target;
-                const kneel = () => {
-                    this.game.addMessage('{0} kneels {1}', context.player, location);
-                    this.game.resolveGameAction(GameActions.kneelCard({ card: location }), context);
-                    return true;
-                };
-
-                if (location.getPrintedCost() <= context.player.getInitiative()) {
-                    kneel();
-                    return;
-                }
-
-                this.game.promptWithMenu(
-                    context.player,
-                    {
-                        kneel,
-                        stand: () => {
-                            this.game.addMessage('{0} stands {1}', context.player, location);
-                            this.game.resolveGameAction(
-                                GameActions.standCard({ card: location }),
-                                context
-                            );
-                            return true;
-                        }
-                    },
-                    {
-                        activePrompt: {
-                            menuTitle: `Kneel or stand ${location.name}?`,
-                            buttons: [
-                                { text: 'Kneel', method: 'kneel' },
-                                { text: 'Stand', method: 'stand' }
-                            ]
+            gameAction: GameActions.ifCondition({
+                condition: (context) =>
+                    context.target.getPrintedCost() > context.player.getInitiative(),
+                thenAction: GameActions.choose({
+                    choices: {
+                        Kneel: {
+                            message: '{player} kneels {target}',
+                            gameAction: GameActions.kneelCard((context) => ({
+                                card: context.target
+                            }))
                         },
-                        source: this
+                        Stand: {
+                            message: '{player} stands {target}',
+                            gameAction: GameActions.standCard((context) => ({
+                                card: context.target
+                            }))
+                        }
                     }
-                );
-            }
+                }),
+                elseAction: GameActions.kneelCard((context) => ({ card: context.target }))
+            })
         });
     }
 }

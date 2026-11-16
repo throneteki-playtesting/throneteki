@@ -3,35 +3,36 @@ import DrawCard from '../../drawcard.js';
 import GenericTracker from '../../EventTrackers/GenericTracker.js';
 
 class GalazzaGalare extends DrawCard {
+    // Galazza Galare (27574)
+    // Interrupt: When the challenge phase ends, gain 1 power for your faction for each player who
+    // did not apply [military] claim this phase.
     setupCardAbilities() {
-        this.tracker = GenericTracker.forPhase(this.game, 'onClaimApplied');
+        const tracker = GenericTracker.forPhase(this.game, 'onClaimApplied');
+        const playersWithoutMilitaryClaim = (game) =>
+            game
+                .getPlayers()
+                .filter(
+                    (player) =>
+                        !tracker.some(
+                            (event) =>
+                                event.player === player && event.claim.challengeType === 'military'
+                        )
+                );
 
         this.interrupt({
             when: {
                 onPhaseEnded: (event) => event.phase === 'challenge'
             },
-            condition: () => this.getPlayersWithoutMilitaryClaim().length > 0,
+            condition: (context) => playersWithoutMilitaryClaim(context.game).length > 0,
             message: {
                 format: '{player} uses {source} to gain {amount} power for their faction',
-                args: { amount: () => this.getPlayersWithoutMilitaryClaim().length }
+                args: { amount: (context) => playersWithoutMilitaryClaim(context.game).length }
             },
             gameAction: GameActions.gainPower((context) => ({
                 card: context.player.faction,
-                amount: this.getPlayersWithoutMilitaryClaim().length
+                amount: playersWithoutMilitaryClaim(context.game).length
             }))
         });
-    }
-
-    getPlayersWithoutMilitaryClaim() {
-        return this.game
-            .getPlayers()
-            .filter(
-                (player) =>
-                    !this.tracker.some(
-                        (event) =>
-                            event.player === player && event.claim.challengeType === 'military'
-                    )
-            );
     }
 }
 

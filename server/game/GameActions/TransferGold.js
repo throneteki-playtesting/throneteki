@@ -1,55 +1,79 @@
 import GameAction from './GameAction.js';
+import Message from '../Message.js';
+import ChooseGoldSourceAmounts from '../gamesteps/ChooseGoldSourceAmounts.js';
+
+const isPlayer = (target) => target.getGameElementType() === 'player';
 
 class TransferGold extends GameAction {
     constructor() {
         super('transferGold');
     }
 
-    canChangeGameState({ source, amount, activePlayer }) {
-        const game = source.game;
-        activePlayer =
-            activePlayer || (game.currentAbilityContext && game.currentAbilityContext.player);
-
-        const availableGold =
-            source.getGameElementType() === 'player'
-                ? source.getSpendableGold({ player: source, activePlayer: activePlayer })
-                : source.gold;
-
-        return amount > 0 && amount <= availableGold;
+    message({ from, to, amount = 1, context, activePlayer }) {
+        return Message.fragment('moves {amount} gold from {from} to {to}', {
+            amount: this.availableAmount({ from, amount, context, activePlayer }),
+            from,
+            to
+        });
     }
 
-    createEvent({ source, target, amount, activePlayer }) {
-        const game = source.game;
+    resultMessage(props, event) {
+        return this.hasResult(event)
+            ? Message.fragment('moves {amount} gold from {from} to {to}', {
+                  amount: event.amount,
+                  from: event.source,
+                  to: event.target
+              })
+            : '';
+    }
 
-        activePlayer =
-            activePlayer || (game.currentAbilityContext && game.currentAbilityContext.player);
+    canChangeGameState({ from, to, amount = 1, context, activePlayer }) {
+        return (
+            !!to && from !== to && this.availableAmount({ from, amount, context, activePlayer }) > 0
+        );
+    }
 
-        const availableGold =
-            source.getGameElementType() === 'player'
-                ? source.getSpendableGold({ player: source, activePlayer: activePlayer })
-                : source.gold;
+    availableAmount({ from, amount, context, activePlayer }) {
+        if (amount <= 0) {
+            return 0;
+        }
 
-        let appliedAmount = Math.min(availableGold, amount);
+        if (isPlayer(from)) {
+            activePlayer = activePlayer || (context && context.player);
+            return Math.min(from.getSpendableGold({ player: from, activePlayer }), amount);
+        }
 
+        return Math.min(from.gold, amount);
+    }
+
+    createEvent({ from, to, amount = 1, context, activePlayer }) {
+        activePlayer = activePlayer || (context && context.player);
         return this.event(
             'onGoldTransferred',
-            { source, target, amount: appliedAmount, desiredAmount: amount, activePlayer },
+            {
+                source: from,
+                target: to,
+                amount: this.availableAmount({ from, amount, context, activePlayer })
+            },
             (event) => {
-                if (event.source.getGameElementType() === 'player') {
-                    game.spendGold(
-                        {
-                            amount: event.amount,
-                            player: event.source,
-                            activePlayer: event.activePlayer
-                        },
-                        () => {
-                            event.target.modifyGold(event.amount);
-                        }
+                if (isPlayer(event.source)) {
+                    event.source.game.queueStep(
+                        new ChooseGoldSourceAmounts(
+                            event.source.game,
+                            {
+                                amount: event.amount,
+                                player: event.source,
+                                activePlayer,
+                                playingType: 'ability'
+                            },
+                            () => event.target.modifyGold(event.amount)
+                        )
                     );
-                } else {
-                    event.source.modifyGold(-event.amount);
-                    event.target.modifyGold(event.amount);
+                    return;
                 }
+
+                event.source.modifyGold(-event.amount);
+                event.target.modifyGold(event.amount);
             }
         );
     }

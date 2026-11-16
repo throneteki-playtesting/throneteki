@@ -1,76 +1,98 @@
-describe('Stannis Baratheon', function () {
-    integration(function () {
+describe('Stannis Baratheon (OatN)', function () {
+    function setup(context, { plot = 'The Winds of Winter', firstPlayer = 'player1' } = {}) {
+        context.setupTest({
+            phase: 'challenge',
+            firstPlayer,
+            player1: {
+                plot,
+                inPlay: [
+                    'Stannis Baratheon (OatN)',
+                    'Bastard in Hiding',
+                    'Tumblestone Knight',
+                    'House Maester'
+                ]
+            },
+            player2: { inPlay: ['Bastard in Hiding', 'Tumblestone Knight'] }
+        });
+        context.stannis = context.player1.findCardByName('Stannis Baratheon', 'play area');
+        context.bastard = context.player1.findCardByName('Bastard in Hiding', 'play area');
+        context.knight = context.player1.findCardByName('Tumblestone Knight', 'play area');
+        context.maester = context.player1.findCardByName('House Maester', 'play area');
+        context.opponentBastard = context.player2.findCardByName('Bastard in Hiding', 'play area');
+        context.opponentKnight = context.player2.findCardByName('Tumblestone Knight', 'play area');
+    }
+
+    describe('during a military challenge you initiated with a Winter plot revealed', function () {
         beforeEach(function () {
-            const deck1 = this.buildDeck('baratheon', [
-                'The Winds of Winter (Core)',
-                'Stannis Baratheon (OatN)',
-                'Hedge Knight',
-                'Melisandre (Core)'
-            ]);
-            const deck2 = this.buildDeck('lannister', ['A Noble Cause', 'Hedge Knight']);
-            this.player1.selectDeck(deck1);
-            this.player2.selectDeck(deck2);
-            this.startGame();
-            this.keepStartingHands();
-
-            this.stannis = this.player1.findCardByName('Stannis Baratheon', 'hand');
-            this.p2knight = this.player2.findCardByName('Hedge Knight', 'hand');
-
-            this.player1.clickCard(this.stannis);
-            this.player2.clickCard(this.p2knight);
-            this.completeSetup();
-            this.selectFirstPlayer(this.player2);
-            this.player2Object.gold = 10;
-            this.completeMarshalPhase();
+            setup(this);
+            this.player1.clickPrompt('Military');
+            this.player1.clickCard(this.bastard);
+            this.player1.clickPrompt('Done');
+            this.player1.clickMenu(this.stannis, 'End challenge with no winner or loser');
         });
 
-        describe('when a military challenge is in progress and a Winter plot is revealed', function () {
-            beforeEach(function () {
-                this.player2.clickPrompt('Military');
-                this.player2.clickCard(this.p2knight);
-                this.player2.clickPrompt('Done');
-            });
+        it('ends the challenge and lets you initiate an additional challenge of that type', function () {
+            expect(this.game.currentChallenge.cancelled).toBe(true);
+            expect(this.player1Object.faction.kneeled).toBe(true);
+            expect(this.player1Object.faction.power).toBe(0);
+            expect(this.player2Object.faction.power).toBe(0);
 
-            it('should allow Stannis to cancel the challenge', function () {
-                expect(this.player1).toAllowTriggerAction(
-                    this.stannis,
-                    'End challenge with no winner or loser'
-                );
-            });
+            this.player2.clickPrompt('Pass');
+            this.player1.clickPrompt('Military');
+            this.player1.clickCard(this.knight);
+            this.player1.clickPrompt('Done');
 
-            describe('when the action is used', function () {
-                beforeEach(function () {
-                    this.player1.clickMenu(this.stannis, 'End challenge with no winner or loser');
-                });
+            expect(this.game.currentChallenge.attackingPlayer).toBe(this.player1Object);
+            expect(this.game.currentChallenge.challengeType).toBe('military');
+        });
+    });
 
-                it('should cancel the challenge', function () {
-                    expect(this.game.currentChallenge.cancelled).toBe(true);
-                });
-
-                it('should allow the attacking player to initiate an additional military challenge', function () {
-                    expect(this.player2Object.challenges.allowedChallenges.length).toBeGreaterThan(
-                        0
-                    );
-                });
-            });
+    describe('during a challenge initiated against you', function () {
+        beforeEach(function () {
+            setup(this, { firstPlayer: 'player2' });
+            this.player2.clickPrompt('Power');
+            this.player2.clickCard(this.opponentBastard);
+            this.player2.clickPrompt('Done');
+            this.player2.clickPrompt('Pass');
+            this.player1.clickMenu(this.stannis, 'End challenge with no winner or loser');
         });
 
-        describe('when there is no Winter plot revealed', function () {
-            beforeEach(function () {
-                this.player2.clickPrompt('Military');
-                this.player2.clickCard(this.p2knight);
-                this.player2.clickPrompt('Done');
-            });
+        it('lets the attacking player initiate the additional challenge', function () {
+            expect(this.game.currentChallenge.cancelled).toBe(true);
 
-            it('should not be activatable without a Winter plot', function () {
-                const winterPlot = this.player1Object.activePlot;
-                if (!winterPlot || !winterPlot.hasTrait('Winter')) {
-                    expect(this.player1).not.toAllowTriggerAction(
-                        this.stannis,
-                        'End challenge with no winner or loser'
-                    );
-                }
-            });
+            this.player2.clickPrompt('Pass');
+            this.player2.clickPrompt('Power');
+            this.player2.clickCard(this.opponentKnight);
+            this.player2.clickPrompt('Done');
+
+            expect(this.game.currentChallenge.attackingPlayer).toBe(this.player2Object);
+            expect(this.game.currentChallenge.challengeType).toBe('power');
+        });
+    });
+
+    describe('without a Winter plot revealed', function () {
+        beforeEach(function () {
+            setup(this, { plot: 'A Noble Cause' });
+            this.player1.clickPrompt('Military');
+            this.player1.clickCard(this.bastard);
+            this.player1.clickPrompt('Done');
+        });
+
+        it('cannot be used', function () {
+            expect(this.player1.actionUnavailableReason(this.stannis)).toBe('condition');
+        });
+    });
+
+    describe('during an intrigue challenge', function () {
+        beforeEach(function () {
+            setup(this);
+            this.player1.clickPrompt('Intrigue');
+            this.player1.clickCard(this.maester);
+            this.player1.clickPrompt('Done');
+        });
+
+        it('cannot be used', function () {
+            expect(this.player1.actionUnavailableReason(this.stannis)).toBe('condition');
         });
     });
 });

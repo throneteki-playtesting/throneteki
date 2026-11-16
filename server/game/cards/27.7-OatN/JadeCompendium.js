@@ -2,53 +2,51 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class JadeCompendium extends DrawCard {
+    // Jade Compendium (27555)
+    // If attached character is Jon Snow or has the Maester trait, it gets +1 STR for every 2
+    // facedown cards under your agenda.
+    // Reaction: After you win an [intrigue] challenge in which attached character is participating,
+    // kneel Jade Compendium to draw 2 cards. Then, place 1 card from your hand under your agenda.
     setupCardAbilities(ability) {
         this.whileAttached({
-            condition: () =>
-                this.parent && (this.parent.name === 'Jon Snow' || this.parent.hasTrait('Maester')),
-            effect: ability.effects.dynamicStrength(() => {
-                if (!this.controller.agenda) {
+            condition: (context) =>
+                context.source.parent.name === 'Jon Snow' ||
+                context.source.parent.hasTrait('Maester'),
+            effect: ability.effects.dynamicStrength((card, context) => {
+                const agenda = context.source.controller.agenda;
+                if (!agenda) {
                     return 0;
                 }
-                return Math.floor(
-                    this.controller.agenda.underneath.filter((c) => c.facedown).length / 2
-                );
+                return Math.floor(agenda.underneath.filter((c) => c.facedown).length / 2);
             })
         });
         this.reaction({
             when: {
-                afterChallenge: (event) =>
-                    event.challenge.winner === this.controller &&
+                afterChallenge: (event, context) =>
+                    event.challenge.winner === context.player &&
                     event.challenge.challengeType === 'intrigue' &&
-                    this.parent &&
-                    event.challenge.isParticipating(this.parent)
+                    !!context.source.parent &&
+                    event.challenge.isParticipating(context.source.parent)
             },
             cost: ability.costs.kneelSelf(),
             message: '{player} kneels {costs.kneel} to draw 2 cards',
-            handler: (context) => {
-                this.game.resolveGameAction(
-                    GameActions.drawCards({ player: context.player, amount: 2 }).then({
-                        target: {
-                            activePromptTitle: 'Select a card',
-                            cardCondition: (card, context) =>
-                                card.location === 'hand' && card.controller === context.player
-                        },
-                        message:
-                            'Then, {player} places a card from their hand facedown under their agenda',
-                        handler: (context) => {
-                            this.game.resolveGameAction(
-                                GameActions.placeCardUnderneath({
-                                    card: context.target,
-                                    parentCard: context.player.agenda,
-                                    facedown: true
-                                }),
-                                context
-                            );
-                        }
-                    }),
-                    context
-                );
-            }
+            gameAction: GameActions.drawCards((context) => ({
+                player: context.player,
+                amount: 2
+            })).then({
+                target: {
+                    type: 'select',
+                    activePromptTitle: 'Select a card',
+                    cardCondition: (card, context) =>
+                        card.location === 'hand' && card.controller === context.player,
+                    gameAction: GameActions.placeCardUnderneath((context) => ({
+                        card: context.target,
+                        parentCard: context.player.agenda,
+                        facedown: true
+                    }))
+                },
+                message: 'Then {player} places a card from their hand facedown under their agenda'
+            })
         });
     }
 }

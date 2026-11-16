@@ -1,28 +1,27 @@
 import DrawCard from '../../drawcard.js';
+import GameActions from '../../GameActions/index.js';
 
 class DrapedInSeaweed extends DrawCard {
+    // Draped in Seaweed (27520)
+    // Drowned God character only.
+    // Interrupt: When a character you control is killed, kill attached character to save it.
     setupCardAbilities(ability) {
         this.attachmentRestriction({ trait: 'Drowned God' });
 
         this.interrupt({
             canCancel: true,
             when: {
-                onCharacterKilled: (event) =>
-                    event.card.controller === this.controller &&
+                onCharacterKilled: (event, context) =>
+                    event.card.controller === context.player &&
                     event.card.canBeSaved() &&
                     event.allowSave
             },
             cost: ability.costs.killParent(),
-            handler: (context) => {
-                context.event.saveCard();
-                this.game.addMessage(
-                    '{0} uses {1} and kills {2} to save {3}',
-                    context.player,
-                    this,
-                    context.costs.kill,
-                    context.event.card
-                );
-            }
+            message: {
+                format: '{player} uses {source} and kills {costs.kill} to save {saved}',
+                args: { saved: (context) => context.event.card }
+            },
+            gameAction: GameActions.saveCard((context) => ({ event: context.event }))
         });
     }
 }

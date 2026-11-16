@@ -2,10 +2,15 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class AlanOfRosby extends DrawCard {
+    // Alan of Rosby (27551)
+    // Shadow (1).
+    // Reaction: After Alan of Rosby comes out of shadows during a challenge, stand a defending
+    // [thenightswatch] character you control.
     setupCardAbilities() {
         this.reaction({
             when: {
-                onCardOutOfShadows: (event) => event.card === this && this.game.isDuringChallenge()
+                onCardOutOfShadows: (event, context) =>
+                    event.card === context.source && context.game.isDuringChallenge()
             },
             target: {
                 cardCondition: {
@@ -13,15 +18,10 @@ class AlanOfRosby extends DrawCard {
                     defending: true,
                     controller: 'current',
                     faction: 'thenightswatch'
-                }
+                },
+                gameAction: GameActions.standCard((context) => ({ card: context.target }))
             },
-            message: '{player} uses {source} to stand {target}',
-            handler: (context) => {
-                this.game.resolveGameAction(
-                    GameActions.standCard((context) => ({ card: context.target })),
-                    context
-                );
-            }
+            message: '{player} uses {source} to stand {target}'
         });
     }
 }

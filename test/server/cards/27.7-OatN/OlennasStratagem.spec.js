@@ -1,67 +1,72 @@
-// Claude: removed broken cost-reduction describe; fixed challenge flow, skipActionWindow x2
 describe("Olenna's Stratagem", function () {
-    integration(function () {
+    function setup(context, { inPlay = [], gold = 2 } = {}) {
+        context.setupTest({
+            phase: 'challenge',
+            player1: {
+                faction: 'tyrell',
+                hand: ["Olenna's Stratagem"],
+                inPlay: ['House Maester', ...inPlay],
+                discard: ['Hedge Knight', 'Bodyguard', 'Tithe'],
+                gold
+            },
+            player2: { inPlay: ['Tumblestone Knight'], discard: ['Winterfell Steward'] }
+        });
+        context.event = context.player1.findCardByName("Olenna's Stratagem", 'hand');
+        context.hedgeKnight = context.player1.findCardByName('Hedge Knight', 'discard pile');
+        context.bodyguard = context.player1.findCardByName('Bodyguard', 'discard pile');
+        context.tithe = context.player1.findCardByName('Tithe', 'discard pile');
+        context.opponentDiscard = context.player2.findCardByName(
+            'Winterfell Steward',
+            'discard pile'
+        );
+        context.player1.clickPrompt('Intrigue');
+        context.player1.clickCard(context.houseMaester);
+        context.player1.clickPrompt('Done');
+        context.skipActionWindow();
+        context.player2.clickPrompt('Done');
+        context.skipActionWindow();
+    }
+
+    describe('after you win an intrigue challenge', function () {
         beforeEach(function () {
-            const deck1 = this.buildDeck('tyrell', [
-                'A Noble Cause',
-                "Olenna's Stratagem (OatN)",
-                'The Queen of Thorns (Core)',
-                'Hedge Knight'
-            ]);
-            const deck2 = this.buildDeck('tyrell', ['A Noble Cause', 'Hedge Knight']);
-            this.player1.selectDeck(deck1);
-            this.player2.selectDeck(deck2);
-            this.startGame();
-            this.keepStartingHands();
-
-            this.stratagem = this.player1.findCardByName("Olenna's Stratagem", 'hand');
-            this.qot = this.player1.findCardByName('The Queen of Thorns', 'hand');
-            this.knight = this.player1.findCardByName('Hedge Knight', 'hand');
-            this.p2knight = this.player2.findCardByName('Hedge Knight', 'hand');
-
-            this.player1.clickCard(this.qot);
-            this.player2.clickCard(this.p2knight);
-            this.completeSetup();
-            this.selectFirstPlayer(this.player1);
-            this.completeMarshalPhase();
-
-            this.player1.dragCard(this.knight, 'discard pile');
+            setup(this);
+            this.player1.triggerAbility(this.event);
         });
 
-        describe('after winning an intrigue challenge', function () {
-            beforeEach(function () {
-                this.player1.clickPrompt('Intrigue');
-                this.player1.clickCard(this.qot);
-                this.player1.clickPrompt('Done');
-                this.skipActionWindow();
-                this.player2.clickPrompt('Done');
-                this.skipActionWindow();
-                // afterChallenge → Olenna's Stratagem reaction available
-            });
+        it('can choose a non-event card in your discard pile', function () {
+            expect(this.player1).toBeAbleToSelect(this.hedgeKnight);
+            expect(this.player1).toBeAbleToSelect(this.bodyguard);
+            expect(this.player1).not.toBeAbleToSelect(this.tithe);
+            expect(this.player1).not.toBeAbleToSelect(this.opponentDiscard);
+        });
 
-            it('should allow the reaction', function () {
-                expect(this.player1).toAllowAbilityTrigger("Olenna's Stratagem");
-            });
+        it('places it in shadows with shadow equal to its printed cost', function () {
+            this.player1.clickCard(this.hedgeKnight);
 
-            describe('when the reaction triggers', function () {
-                beforeEach(function () {
-                    this.player1.triggerAbility(this.stratagem);
-                    this.player1.clickCard(this.knight);
-                });
+            expect(this.hedgeKnight.location).toBe('shadows');
+            expect(this.hedgeKnight.isShadow()).toBe(true);
+            expect(this.bodyguard.location).toBe('discard pile');
+            expect(this.event.location).toBe('discard pile');
+        });
+    });
 
-                it('should place the card in shadows', function () {
-                    expect(this.knight.location).toBe('shadows');
-                });
+    describe('with The Queen of Thorns in play', function () {
+        beforeEach(function () {
+            setup(this, { inPlay: ['The Queen of Thorns (TTWDFL)'], gold: 0 });
+        });
 
-                it('should give the card a shadow keyword equal to its printed cost', function () {
-                    const shadowCost = this.knight.getCost();
-                    expect(this.knight.hasKeyword(`shadow (${shadowCost})`)).toBe(true);
-                });
+        it('costs 2 less to play', function () {
+            expect(this.player1).toAllowAbilityTrigger(this.event);
+        });
+    });
 
-                it('should not be triggerable again this challenge', function () {
-                    expect(this.player1).not.toAllowAbilityTrigger("Olenna's Stratagem");
-                });
-            });
+    describe('without The Queen of Thorns in play', function () {
+        beforeEach(function () {
+            setup(this, { gold: 1 });
+        });
+
+        it('cannot be played without enough gold', function () {
+            expect(this.player1).not.toAllowAbilityTrigger(this.event);
         });
     });
 });

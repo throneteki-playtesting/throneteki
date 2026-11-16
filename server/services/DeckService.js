@@ -1,7 +1,9 @@
+import EventEmitter from 'events';
 import { formatDeckAsFullCards } from '../../deck-helper/formatDeckAsFullCards.js';
 import { validateDeck } from '../../deck-helper/index.js';
 import defaultDb from '../db/index.js';
 import logger from '../log.js';
+import { FinishedGameSql } from './UserStatsService.js';
 import { idColumn } from '../db/ids.js';
 
 export const Factions = [
@@ -177,16 +179,51 @@ function eventIdExpression(index, eventId) {
     return `(SELECT id FROM events WHERE ${idColumn(eventId)} = $${index})`;
 }
 
-class DeckService {
+function deckCardCodes(deck) {
+    const codeOf = (card) => (typeof card === 'object' ? card?.code : card);
+    const countedCodes = (cardCounts = []) =>
+        cardCounts.map((cardCount) => codeOf(cardCount.cardcode ?? cardCount.card));
+
+    return [
+        codeOf(deck.agenda),
+        ...(deck.bannerCards ?? []).map(codeOf),
+        ...countedCodes(deck.drawCards),
+        ...countedCodes(deck.plotCards)
+    ].filter((code) => !!code);
+}
+
+class DeckService extends EventEmitter {
     constructor(cardService, eventService, db = defaultDb) {
+        super();
         this.cardService = cardService;
         this.eventService = eventService;
         this.db = db;
     }
 
     async init() {
+        await this.loadCardData();
+    }
+
+    async loadCardData() {
         this.packs = await this.cardService.getAllPacks();
         this.cards = await this.cardService.getAllCards();
+        this.unknownCardCodes = new Set();
+    }
+
+    // Card data is imported separately from deploys, so it can be newer than this cache.
+    async ensureCardData(deck) {
+        const isMissing = (code) => !this.cards[code] && !this.unknownCardCodes.has(code);
+        if (!deckCardCodes(deck).some(isMissing)) {
+            return;
+        }
+
+        const unknownCardCodes = this.unknownCardCodes;
+        await this.loadCardData();
+        this.unknownCardCodes = unknownCardCodes;
+        for (const code of deckCardCodes(deck).filter((code) => !this.cards[code])) {
+            this.unknownCardCodes.add(code);
+        }
+        this.emit('cardDataReloaded');
     }
 
     processDeck = async (deck, options = {}) => {
@@ -213,6 +250,7 @@ class DeckService {
         // Only validate if all required parameters were provided
         // Note: Sometimes, deck validation is not needed, such as fetching deck id for deck update
         if (format && variant && legalityObj) {
+            await this.ensureCardData(deck);
             const fullDeck = formatDeckAsFullCards(deck, { cards: this.cards });
             deck.status = validateDeck(fullDeck, {
                 packs: this.packs,
@@ -267,7 +305,7 @@ class DeckService {
         }
     }
 
-    async findDecks(baseCondition, baseParams, options) {
+    async findDecks(baseCondition, baseParams, options, { withRecords = false } = {}) {
         const params = [...baseParams];
         const { conditions, order, page, pageSize } = getQueryOptions(options, params);
         const where = [baseCondition, ...conditions].join(' AND ');
@@ -286,16 +324,40 @@ class DeckService {
             params
         );
 
+        const records = withRecords ? await this.getRecords(rows.map((row) => row.id)) : new Map();
+
         const data = [];
         for (const row of rows) {
-            data.push(await this.processDeck(rowToDeck(row), options));
+            const deck = rowToDeck(row);
+            if (records.has(row.id)) {
+                deck.record = records.get(row.id);
+            }
+
+            data.push(await this.processDeck(deck, options));
         }
 
         return { totalCount: count, page, pageSize, success: true, data };
     }
 
+    // Each deck's record from its owner's games, counted the same way as the stats page
+    async getRecords(deckIds) {
+        const rows = await this.db.query(
+            `SELECT gp.deck_id, count(*) AS games, count(*) FILTER (WHERE gp.name = ANY(g.winners)) AS wins
+            FROM game_players gp
+            JOIN games g ON g.id = gp.game_id
+            JOIN decks d ON d.id = gp.deck_id AND d.user_id = gp.user_id
+            WHERE gp.deck_id = ANY($1) AND ${FinishedGameSql}
+            GROUP BY gp.deck_id`,
+            [deckIds]
+        );
+
+        return new Map(rows.map((row) => [row.deck_id, { games: row.games, wins: row.wins }]));
+    }
+
     findByUserName(username, options = {}) {
-        return this.findDecks('lower(u.username) = lower($1)', [username], options);
+        return this.findDecks('lower(u.username) = lower($1)', [username], options, {
+            withRecords: true
+        });
     }
 
     getStandaloneDecks(options = {}) {

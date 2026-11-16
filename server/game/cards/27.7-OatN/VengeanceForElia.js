@@ -2,29 +2,28 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class VengeanceForElia extends DrawCard {
+    // Vengeance for Elia (27548)
+    // Reaction: After a [martell] character you control is killed, choose and stand any number of
+    // Bastard characters you control.
     setupCardAbilities() {
         this.reaction({
             when: {
-                onCharacterKilled: (event) =>
-                    event.card.controller === this.controller && event.card.isFaction('martell')
+                onCharacterKilled: (event, context) =>
+                    event.card.controller === context.player && event.card.isFaction('martell')
             },
             target: {
                 mode: 'unlimited',
-                cardCondition: (card) =>
+                cardCondition: (card, context) =>
                     card.location === 'play area' &&
                     card.getType() === 'character' &&
-                    card.controller === this.controller &&
+                    card.controller === context.player &&
+                    card.kneeled &&
                     card.hasTrait('Bastard')
             },
             message: '{player} plays {source} to stand {target}',
-            handler: (context) => {
-                this.game.resolveGameAction(
-                    GameActions.simultaneously(
-                        context.target.map((card) => GameActions.standCard({ card }))
-                    ),
-                    context
-                );
-            }
+            gameAction: GameActions.simultaneously((context) =>
+                context.target.map((card) => GameActions.standCard({ card }))
+            )
         });
     }
 }

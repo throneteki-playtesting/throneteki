@@ -1,38 +1,94 @@
 describe('Riverrun Besiegers', function () {
-    integration(function () {
+    function setup(context, { thirdChallenge = true, frey = false }) {
+        context.setupTest({
+            phase: 'challenge',
+            player1: {
+                inPlay: [
+                    'Riverrun Besiegers',
+                    frey ? 'Frey Tollkeeper' : 'Tumblestone Knight',
+                    'Bastard in Hiding',
+                    'House Maester'
+                ]
+            },
+            player2: { inPlay: ['The Roseroad'] }
+        });
+        context.besiegers = context.riverrunBesiegers;
+        context.partner = context.player1.findCardByName(
+            frey ? 'Frey Tollkeeper' : 'Tumblestone Knight',
+            'play area'
+        );
+        context.bastard = context.player1.findCardByName('Bastard in Hiding', 'play area');
+        context.maester = context.player1.findCardByName('House Maester', 'play area');
+        context.roseroad = context.player2.findCardByName('The Roseroad', 'play area');
+
+        context.player1.clickPrompt('Power');
+        context.player1.clickCard(context.bastard);
+        context.player1.clickPrompt('Done');
+        context.skipActionWindow();
+        context.player2.clickPrompt('Done');
+        context.skipActionWindow();
+
+        if (thirdChallenge) {
+            context.player1.clickPrompt('Intrigue');
+            context.player1.clickCard(context.maester);
+            context.player1.clickPrompt('Done');
+            context.skipActionWindow();
+            context.player2.clickPrompt('Done');
+            context.skipActionWindow();
+        }
+
+        context.player1.clickPrompt('Military');
+        context.player1.clickCard(context.besiegers);
+        context.player1.clickCard(context.partner);
+        context.player1.clickPrompt('Done');
+    }
+
+    describe('when it kneels a location using assault in the third challenge you initiated', function () {
         beforeEach(function () {
-            const deck1 = this.buildDeck('lannister', [
-                'A Noble Cause',
-                { name: 'Riverrun Besiegers (OatN)', count: 2 },
-                'Hedge Knight'
-            ]);
-            const deck2 = this.buildDeck('stark', ['A Noble Cause', 'Hedge Knight']);
-            this.player1.selectDeck(deck1);
-            this.player2.selectDeck(deck2);
-            this.startGame();
-            this.keepStartingHands();
-
-            [this.besiegers1, this.besiegers2] = this.player1.filterCardsByName(
-                'Riverrun Besiegers',
-                'hand'
-            );
-            this.p2knight = this.player2.findCardByName('Hedge Knight', 'hand');
-
-            this.player1.clickCard(this.besiegers1);
-            this.player2.clickCard(this.p2knight);
-            this.completeSetup();
-            this.selectFirstPlayer(this.player1);
-            this.player1Object.gold = 10;
-            this.completeMarshalPhase();
+            setup(this, {});
+            this.player1.clickCard(this.roseroad);
+            this.skipActionWindow();
+            this.player2.clickPrompt('Done');
+            this.skipActionWindow();
         });
 
-        it('should enter play as a character', function () {
-            expect(this.besiegers1.location).toBe('play area');
+        it('discards the location', function () {
+            expect(this.player1).toAllowAbilityTrigger(this.besiegers);
+            this.player1.triggerAbility(this.besiegers);
+
+            expect(this.roseroad.location).toBe('discard pile');
+        });
+    });
+
+    describe('when you control 2 or more attacking House Frey characters', function () {
+        beforeEach(function () {
+            setup(this, { frey: true });
+            this.player1.clickCard(this.roseroad);
+            this.skipActionWindow();
+            this.player2.clickPrompt('Done');
+            this.skipActionWindow();
         });
 
-        it('should have the Army and House Frey traits', function () {
-            expect(this.besiegers1.hasTrait('Army')).toBe(true);
-            expect(this.besiegers1.hasTrait('House Frey')).toBe(true);
+        it('takes control of the location instead', function () {
+            this.player1.triggerAbility(this.besiegers);
+
+            expect(this.roseroad.location).toBe('play area');
+            expect(this.roseroad).toBeControlledBy(this.player1);
+        });
+    });
+
+    describe('when it is not the third challenge you initiated', function () {
+        beforeEach(function () {
+            setup(this, { thirdChallenge: false });
+            this.player1.clickCard(this.roseroad);
+            this.skipActionWindow();
+            this.player2.clickPrompt('Done');
+            this.skipActionWindow();
+        });
+
+        it('is not offered', function () {
+            expect(this.player1).not.toAllowAbilityTrigger(this.besiegers);
+            expect(this.roseroad.location).toBe('play area');
         });
     });
 });

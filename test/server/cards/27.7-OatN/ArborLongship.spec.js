@@ -1,88 +1,98 @@
-// Claude: Arbor Longship (code 27594) - gives solo attacker +2 STR, stands if came from shadows
 describe('Arbor Longship', function () {
-    integration(function () {
+    describe('when it did not come out of shadows this phase', function () {
         beforeEach(function () {
-            const deck1 = this.buildDeck('tyrell', [
-                'A Noble Cause',
-                'Arbor Longship (OatN)',
-                'Hedge Knight'
-            ]);
-            const deck2 = this.buildDeck('tyrell', ['A Noble Cause', 'Hedge Knight']);
-            this.player1.selectDeck(deck1);
-            this.player2.selectDeck(deck2);
-            this.startGame();
-            this.keepStartingHands();
+            this.setupTest({
+                phase: 'challenge',
+                player1: {
+                    inPlay: ['Arbor Longship', 'Bastard in Hiding', 'House Maester']
+                },
+                player2: { inPlay: ['Tumblestone Knight', 'Bastard in Hiding'] }
+            });
+            this.bastard = this.player1.findCardByName('Bastard in Hiding', 'play area');
+            this.maester = this.player1.findCardByName('House Maester', 'play area');
+            this.knight = this.player2.findCardByName('Tumblestone Knight', 'play area');
+            this.dayne = this.player2.findCardByName('Bastard in Hiding', 'play area');
+        });
 
-            this.longship = this.player1.findCardByName('Arbor Longship', 'hand');
-            this.knight = this.player1.findCardByName('Hedge Knight', 'hand');
-            this.p2knight = this.player2.findCardByName('Hedge Knight', 'hand');
+        it('gives a character attacking alone +2 STR without standing it', function () {
+            this.player1.clickPrompt('Military');
+            this.player1.clickCard(this.bastard);
+            this.player1.clickPrompt('Done');
+            this.player1.clickMenu(this.arborLongship, 'Give solo character +2 STR');
 
-            this.player1.clickCard(this.longship);
-            this.player1.clickPrompt('Setup');
-            this.player2.clickCard(this.p2knight);
-            this.completeSetup();
-            this.selectFirstPlayer(this.player1);
+            expect(this.player1).toBeAbleToSelect(this.bastard);
+            expect(this.player1).not.toBeAbleToSelect(this.maester);
+            expect(this.player1).not.toBeAbleToSelect(this.knight);
+
+            this.player1.clickCard(this.bastard);
+
+            expect(this.bastard.getStrength()).toBe(4);
+            expect(this.bastard.kneeled).toBe(true);
+            expect(this.arborLongship.kneeled).toBe(true);
+            expect(this.player2).isReadyToTakeAction();
+        });
+
+        it('cannot choose a character that is not attacking or defending alone', function () {
+            this.player1.clickPrompt('Power');
+            this.player1.clickCard(this.bastard);
+            this.player1.clickCard(this.maester);
+            this.player1.clickPrompt('Done');
+            this.skipActionWindow();
+            this.player2.clickCard(this.knight);
+            this.player2.clickCard(this.dayne);
+            this.player2.clickPrompt('Done');
+
+            expect(this.player1.actionUnavailableReason(this.arborLongship)).toBe('target');
+        });
+
+        it('gives a lone defender +2 STR', function () {
+            this.player1.clickPrompt('Military');
+            this.player1.clickCard(this.bastard);
+            this.player1.clickPrompt('Done');
+            this.skipActionWindow();
+            this.player2.clickCard(this.knight);
+            this.player2.clickPrompt('Done');
+            this.player1.clickMenu(this.arborLongship, 'Give solo character +2 STR');
+
+            expect(this.player1).toBeAbleToSelect(this.bastard);
+            expect(this.player1).toBeAbleToSelect(this.knight);
             this.player1.clickCard(this.knight);
-            this.completeMarshalPhase();
+
+            expect(this.knight.getStrength()).toBe(4);
+            expect(this.bastard.getStrength()).toBe(2);
+            expect(this.player2).isReadyToTakeAction();
         });
 
-        describe('during a challenge with a solo attacker', function () {
-            beforeEach(function () {
-                this.player1.clickPrompt('Military');
-                this.player1.clickCard(this.knight);
-                this.player1.clickPrompt('Done');
-                this.skipActionWindow();
-                this.player2.clickPrompt('Done');
-                // In defendersDeclared action window
+        it('cannot be used outside a challenge', function () {
+            expect(this.player1.actionUnavailableReason(this.arborLongship)).toBeDefined();
+        });
+    });
+
+    describe('when it came out of shadows this phase', function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'challenge',
+                player1: {
+                    shadows: ['Arbor Longship'],
+                    inPlay: ['Bastard in Hiding'],
+                    gold: 1
+                },
+                player2: { inPlay: ['Tumblestone Knight'] }
             });
-
-            it('should allow the action on the solo attacker', function () {
-                expect(this.player1).toAllowTriggerAction(
-                    this.longship,
-                    'Give solo character +2 STR'
-                );
-            });
-
-            describe('when the action is used', function () {
-                beforeEach(function () {
-                    this.player1.clickMenu(this.longship, 'Give solo character +2 STR');
-                    this.player1.clickCard(this.knight);
-                });
-
-                it('should give the attacker +2 STR', function () {
-                    expect(this.knight.getStrength()).toBe(this.knight.cardData.strength + 2);
-                });
-
-                it('should kneel Arbor Longship', function () {
-                    expect(this.longship.kneeled).toBe(true);
-                });
-            });
+            this.player1.clickPrompt('Military');
+            this.player1.clickCard(this.bastardInHiding);
+            this.player1.clickPrompt('Done');
+            this.player1.clickCard(this.arborLongship);
+            this.player2.clickPrompt('Pass');
         });
 
-        describe('when Arbor Longship came out of shadows this phase', function () {
-            beforeEach(function () {
-                this.player1.dragCard(this.longship, 'shadows');
-                this.player1Object.gold = 5;
-                this.player1.clickCard(this.longship);
+        it('also stands the chosen character', function () {
+            this.player1.clickMenu(this.arborLongship, 'Give solo character +2 STR');
+            this.player1.clickCard(this.bastardInHiding);
 
-                this.player1.clickPrompt('Military');
-                this.player1.clickCard(this.knight);
-                this.player1.clickPrompt('Done');
-                this.skipActionWindow();
-                this.player2.clickPrompt('Done');
-            });
-
-            describe('and it buffs a solo attacker', function () {
-                beforeEach(function () {
-                    this.knight.kneeled = true;
-                    this.player1.clickMenu(this.longship, 'Give solo character +2 STR');
-                    this.player1.clickCard(this.knight);
-                });
-
-                it('should also stand the character', function () {
-                    expect(this.knight.kneeled).toBe(false);
-                });
-            });
+            expect(this.bastardInHiding.getStrength()).toBe(4);
+            expect(this.bastardInHiding.kneeled).toBe(false);
+            expect(this.player2).isReadyToTakeAction();
         });
     });
 });

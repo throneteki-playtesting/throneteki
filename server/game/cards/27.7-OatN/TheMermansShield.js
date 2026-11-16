@@ -2,37 +2,35 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class TheMermansShield extends DrawCard {
-    setupCardAbilities() {
+    // The Merman's Shield (27564)
+    // Shadow (4).
+    // Reaction: After The Merman's Shield comes out of shadows, choose and stand a character that
+    // shares a Trait with it. If that character is defending, it gains renown until the end of the
+    // phase.
+    setupCardAbilities(ability) {
         this.reaction({
             when: {
-                onCardOutOfShadows: (event) => event.card === this
+                onCardOutOfShadows: (event, context) => event.card === context.source
             },
             target: {
-                cardCondition: (card) =>
-                    card !== this &&
+                cardCondition: (card, context) =>
+                    card !== context.source &&
                     card.location === 'play area' &&
                     card.getType() === 'character' &&
-                    this.getTraits().some((trait) => card.hasTrait(trait))
-            },
-            message: '{player} uses {source} to stand {target}',
-            handler: (context) => {
-                this.game.resolveGameAction(
+                    context.source.getTraits().some((trait) => card.hasTrait(trait)),
+                gameAction: GameActions.simultaneously([
                     GameActions.standCard((context) => ({ card: context.target })),
-                    context
-                );
-                if (context.target.isDefending()) {
-                    this.game.addMessage(
-                        '{0} uses {1} to give {2} Renown until end of phase',
-                        context.player,
-                        this,
-                        context.target
-                    );
-                    this.untilEndOfPhase((ability) => ({
-                        match: context.target,
-                        effect: ability.effects.addKeyword('renown')
-                    }));
-                }
-            }
+                    GameActions.ifCondition({
+                        condition: (context) => context.target.isDefending(),
+                        thenAction: GameActions.lastingEffect((context) => ({
+                            duration: 'untilEndOfPhase',
+                            match: context.target,
+                            effect: ability.effects.addKeyword('renown')
+                        }))
+                    })
+                ])
+            },
+            message: '{player} uses {source} to stand {target}'
         });
     }
 }

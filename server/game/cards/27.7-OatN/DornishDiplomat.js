@@ -2,10 +2,14 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class DornishDiplomat extends DrawCard {
+    // Dornish Diplomat (27541)
+    // Shadow (3).
+    // Reaction: After Dornish Diplomat comes out of shadows, search the top 10 cards of your deck
+    // for up to 3 [martell] attachments with printed cost 1 or lower, and put them into play.
     setupCardAbilities() {
         this.reaction({
             when: {
-                onCardOutOfShadows: (event) => event.card === this
+                onCardOutOfShadows: (event, context) => event.card === context.source
             },
             message:
                 '{player} uses {source} to search the top 10 cards of their deck for up to 3 martell attachments with printed cost 1 or lower',

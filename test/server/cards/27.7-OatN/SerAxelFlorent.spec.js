@@ -1,48 +1,72 @@
 describe('Ser Axell Florent', function () {
-    integration(function () {
+    function setup(context, { player1 = [], player2 = [] }) {
+        context.setupTest({
+            phase: 'challenge',
+            player1: { inPlay: ['Ser Axell Florent (OatN)', ...player1] },
+            player2: { inPlay: player2 }
+        });
+        context.completeChallengesPhase();
+    }
+
+    describe('when you win dominance and control the only King in play', function () {
         beforeEach(function () {
-            const deck1 = this.buildDeck('baratheon', [
-                'A Noble Cause',
-                'Ser Axell Florent (OatN)',
-                'Robert Baratheon (Core)'
-            ]);
-            const deck2 = this.buildDeck('baratheon', ['A Noble Cause', 'Hedge Knight']);
-            this.player1.selectDeck(deck1);
-            this.player2.selectDeck(deck2);
-            this.startGame();
-            this.keepStartingHands();
-
-            this.axell = this.player1.findCardByName('Ser Axell Florent', 'hand');
-            this.robert = this.player1.findCardByName('Robert Baratheon', 'hand');
-            this.p2knight = this.player2.findCardByName('Hedge Knight', 'hand');
-
-            this.player1.clickCard(this.axell);
-            this.player2.clickCard(this.p2knight);
-            this.completeSetup();
-            this.selectFirstPlayer(this.player1);
-            this.player1Object.gold = 10;
-            this.player1.clickCard(this.robert);
-            this.completeMarshalPhase();
-            // Player1 must have more gold to win dominance
-            this.player1Object.gold = 5;
-            this.player2Object.gold = 0;
-            this.completeChallengesPhase();
+            setup(this, { player1: ['Viserys Targaryen (AtSK)'], player2: ['House Maester'] });
+            this.viserys = this.player1.findCardByName('Viserys Targaryen', 'play area');
         });
 
-        describe('when player1 wins dominance with only one King in play', function () {
-            it('should allow the dominance reaction', function () {
-                expect(this.player1).toAllowAbilityTrigger('Ser Axell Florent');
-            });
+        it('has that King gain 1 power', function () {
+            expect(this.player1).toAllowAbilityTrigger(this.serAxellFlorent);
 
-            describe('when the reaction triggers', function () {
-                beforeEach(function () {
-                    this.player1.triggerAbility(this.axell);
-                });
+            this.player1.triggerAbility(this.serAxellFlorent);
 
-                it('should give Robert Baratheon 1 power', function () {
-                    expect(this.robert.getPower()).toBe(1);
-                });
+            expect(this.viserys.power).toBe(1);
+            expect(this.serAxellFlorent.power).toBe(0);
+        });
+    });
+
+    describe('when you win dominance and control no King', function () {
+        beforeEach(function () {
+            setup(this, { player2: ['House Maester'] });
+        });
+
+        it('is not offered', function () {
+            expect(this.player1).not.toAllowAbilityTrigger(this.serAxellFlorent);
+        });
+    });
+
+    describe('when you win dominance but there is another King in play', function () {
+        beforeEach(function () {
+            setup(this, {
+                player1: ['Viserys Targaryen (AtSK)'],
+                player2: ['Tommen Baratheon (LoCR)']
             });
+        });
+
+        it('is not offered', function () {
+            expect(this.player1).not.toAllowAbilityTrigger(this.serAxellFlorent);
+        });
+    });
+
+    describe('when an opponent controls the only King', function () {
+        beforeEach(function () {
+            setup(this, { player2: ['Tommen Baratheon (LoCR)'] });
+        });
+
+        it('is not offered', function () {
+            expect(this.player1).not.toAllowAbilityTrigger(this.serAxellFlorent);
+        });
+    });
+
+    describe('when you do not win dominance', function () {
+        beforeEach(function () {
+            setup(this, {
+                player1: ['Viserys Targaryen (AtSK)'],
+                player2: ['Eddard Stark (Core)', 'Eddard Stark (WotN)']
+            });
+        });
+
+        it('is not offered', function () {
+            expect(this.player1).not.toAllowAbilityTrigger(this.serAxellFlorent);
         });
     });
 });

@@ -6,7 +6,8 @@ export const Flags = Object.freeze({
     card: Object.freeze({
         consideredOutOfFaction: Symbol('card.consideredOutOfFaction'),
         entersPlayKneeled: Symbol('card.entersPlayKneeled'),
-        notConsideredToBeInPlotDeck: Symbol('card.notConsideredToBeInPlotDeck')
+        notConsideredToBeInPlotDeck: Symbol('card.notConsideredToBeInPlotDeck'),
+        notConsideredWhenRecyclingPlots: Symbol('card.notConsideredWhenRecyclingPlots')
     }),
     challengeOptions: Object.freeze({
         canBeDeclaredWhileKneeling: Symbol('challengeOptions.canBeDeclaredWhileKneeling'),

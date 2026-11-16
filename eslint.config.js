@@ -6,6 +6,7 @@ import globals from 'globals';
 import js from '@eslint/js';
 
 export default [
+    { ignores: ['server/game/cards/00.1-ToJ/**'] },
     js.configs.recommended,
     reactRecommended,
     prettierRecommended,
@@ -19,14 +20,20 @@ export default [
         }
     },
     {
-        files: ['client/**/*.jsx', 'client/**/*.js', 'server/**/*.js', 'test/server/**/*.js'],
+        files: [
+            'client/**/*.jsx',
+            'client/**/*.js',
+            'server/**/*.js',
+            'test/**/*.js',
+            'vitest*.js'
+        ],
         ignores: ['coverage'],
         languageOptions: {
             ...reactRecommended.languageOptions,
             globals: {
                 ...globals.browser,
                 ...globals.node,
-                ...globals.jasmine,
+                ...globals.vitest,
                 integration: 'readable'
             },
             ecmaVersion: 'latest',

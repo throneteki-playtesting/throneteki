@@ -2,17 +2,20 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class SerPatrekOfKingsMountain extends DrawCard {
+    // Ser Patrek of King's Mountain (27503)
+    // Reaction: After you win a challenge in which Ser Patrek of King’s Mountain is participating,
+    // if there is a Winter plot revealed, stand him. (Limit twice per phase.)
     setupCardAbilities(ability) {
         this.reaction({
             when: {
-                afterChallenge: (event) =>
-                    event.challenge.winner === this.controller &&
-                    this.game.anyPlotHasTrait('Winter') &&
-                    this.isParticipating()
+                afterChallenge: (event, context) =>
+                    event.challenge.winner === context.player &&
+                    context.game.anyPlotHasTrait('Winter') &&
+                    context.source.isParticipating()
             },
             limit: ability.limit.perPhase(2),
             message: '{player} uses {source} to stand {source}',
-            gameAction: GameActions.standCard({ card: this })
+            gameAction: GameActions.standCard((context) => ({ card: context.source }))
         });
     }
 }

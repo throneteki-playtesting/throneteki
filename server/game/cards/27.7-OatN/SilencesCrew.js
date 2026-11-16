@@ -1,26 +1,32 @@
 import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
+const getCharactersWithPillage = (player) =>
+    player.filterCardsInPlay(
+        (card) => card.getType() === 'character' && card.hasKeyword('pillage')
+    );
+
 class SilencesCrew extends DrawCard {
+    // Silence's Crew (27516)
+    // Shadow (5). Pillage.
+    // Reaction: After Silence's Crew comes out of shadows, if you are the first player, stand each
+    // character you control with pillage.
     setupCardAbilities() {
         this.reaction({
             when: {
-                onCardOutOfShadows: (event) => event.card === this && this.controller.firstPlayer
+                onCardOutOfShadows: (event, context) =>
+                    event.card === context.source && context.player.firstPlayer
             },
             message: {
                 format: '{player} uses {source} to stand {cards}',
-                args: { cards: () => this.getCharactersWithPillage() }
+                args: { cards: (context) => getCharactersWithPillage(context.player) }
             },
-            gameAction: GameActions.simultaneously(() =>
-                this.getCharactersWithPillage().map((card) => GameActions.standCard({ card }))
+            gameAction: GameActions.simultaneously((context) =>
+                getCharactersWithPillage(context.player).map((card) =>
+                    GameActions.standCard({ card })
+                )
             )
         });
-    }
-
-    getCharactersWithPillage() {
-        return this.controller.filterCardsInPlay(
-            (card) => card.getType() === 'character' && card.hasKeyword('pillage')
-        );
     }
 }
 

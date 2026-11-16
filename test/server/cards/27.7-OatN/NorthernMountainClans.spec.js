@@ -1,87 +1,72 @@
-// Claude: fixed challenge flow; player2 passes manually before completeChallengesPhase; use completeRound for standing check
 describe('Northern Mountain Clans', function () {
-    integration(function () {
+    function setup(context, plot) {
+        context.setupTest({
+            phase: 'challenge',
+            player1: {
+                plot,
+                inPlay: [
+                    'Northern Mountain Clans',
+                    { card: 'House Maester', kneeling: true },
+                    { card: 'Bastard in Hiding', kneeling: true },
+                    { card: 'Tumblestone Knight', kneeling: true }
+                ]
+            },
+            player2: { inPlay: ['Tumblestone Knight', 'Bastard in Hiding'] }
+        });
+        context.maester = context.player1.findCardByName('House Maester', 'play area');
+        context.bastard = context.player1.findCardByName('Bastard in Hiding', 'play area');
+        context.knight = context.player1.findCardByName('Tumblestone Knight', 'play area');
+        context.opponentKnight = context.player2.findCardByName('Tumblestone Knight', 'play area');
+        context.player1.clickPrompt('Military');
+        context.player1.clickCard(context.northernMountainClans);
+        context.player1.clickPrompt('Done');
+        context.skipActionWindow();
+        context.player2.clickPrompt('Done');
+        context.skipActionWindow();
+    }
+
+    describe('with a claim value of 1', function () {
         beforeEach(function () {
-            const deck1 = this.buildDeck('baratheon', [
-                'A Noble Cause',
-                'Northern Mountain Clans (OatN)',
-                'Hedge Knight',
-                'Hedge Knight'
-            ]);
-            const deck2 = this.buildDeck('baratheon', [
-                'A Noble Cause',
-                'Hedge Knight',
-                'Hedge Knight'
-            ]);
-            this.player1.selectDeck(deck1);
-            this.player2.selectDeck(deck2);
-            this.startGame();
-            this.keepStartingHands();
-
-            this.clans = this.player1.findCardByName('Northern Mountain Clans', 'hand');
-            [this.knight1, this.knight2] = this.player1.filterCardsByName('Hedge Knight', 'hand');
-            [this.p2knight1, this.p2knight2] = this.player2.filterCardsByName(
-                'Hedge Knight',
-                'hand'
-            );
-
-            this.player1.clickCard(this.clans);
-            this.player2.clickCard(this.p2knight1);
-            this.player2.clickCard(this.p2knight2);
-            this.completeSetup();
-
-            this.selectFirstPlayer(this.player1);
-            this.completeMarshalPhase();
-
-            this.p2knight1.kneeled = true;
-            this.p2knight2.kneeled = true;
+            setup(this, 'A Noble Cause');
+            this.player1.triggerAbility(this.northernMountainClans);
         });
 
-        describe('after winning a challenge as attacker', function () {
-            beforeEach(function () {
-                this.player1.clickPrompt('Military');
-                this.player1.clickCard(this.clans);
-                this.player1.clickPrompt('Done');
-                this.skipActionWindow();
-                this.player2.clickPrompt('Done');
-                this.skipActionWindow();
-            });
+        it('chooses a character that cannot stand during the standing phase', function () {
+            expect(this.player1).toBeAbleToSelect(this.maester);
+            expect(this.player1).toBeAbleToSelect(this.opponentKnight);
+            expect(this.player1).toBeAbleToSelect(this.northernMountainClans);
 
-            it('should trigger the reaction', function () {
-                expect(this.player1).toAllowAbilityTrigger('Northern Mountain Clans');
-            });
+            this.player1.clickCard(this.maester);
+            this.player1.clickPrompt('Done');
+            this.player2.clickCard(this.opponentKnight);
+            this.completeChallengesPhase();
 
-            describe('when the reaction is triggered', function () {
-                beforeEach(function () {
-                    this.player1.triggerAbility(this.clans);
-                });
+            expect(this.game.currentPhase).toBe('plot');
+            expect(this.maester.kneeled).toBe(true);
+            expect(this.bastard.kneeled).toBe(false);
+            expect(this.knight.kneeled).toBe(false);
+        });
+    });
 
-                it('should prompt to choose kneeling characters equal to claim value', function () {
-                    expect(this.player1).toHavePrompt('Select 1 character');
-                });
+    describe('with a claim value of 2', function () {
+        beforeEach(function () {
+            setup(this, 'The Winds of Winter');
+            this.player1.triggerAbility(this.northernMountainClans);
+        });
 
-                it('should only allow selecting kneeling characters', function () {
-                    expect(this.player1).toAllowSelect(this.p2knight1);
-                    expect(this.player1).toAllowSelect(this.p2knight2);
-                });
+        it('chooses 2 characters', function () {
+            this.player1.clickCard(this.maester);
+            this.player1.clickCard(this.bastard);
+            this.player1.clickPrompt('Done');
+            this.player2.clickCard(this.opponentKnight);
+            this.player2.clickCard(this.player2.findCardByName('Bastard in Hiding', 'play area'));
+            this.player2.clickPrompt('Done');
+            this.player2.clickPrompt('Done');
+            this.completeChallengesPhase();
 
-                describe('after selecting a character', function () {
-                    beforeEach(function () {
-                        this.player1.clickCard(this.p2knight1);
-                        this.player1.clickPrompt('Done');
-                        this.player1.clickPrompt('Apply Claim');
-                        this.player2.clickCard(this.p2knight2);
-                    });
-
-                    it('should prevent the selected character from standing during the standing phase', function () {
-                        // player1 passes first (attacker/first player), then player2
-                        this.player1.clickPrompt('Done');
-                        this.player2.clickPrompt('Done');
-                        this.completeRound();
-                        expect(this.p2knight1.kneeled).toBe(true);
-                    });
-                });
-            });
+            expect(this.maester.kneeled).toBe(true);
+            expect(this.bastard.kneeled).toBe(true);
+            expect(this.knight.kneeled).toBe(false);
         });
     });
 });

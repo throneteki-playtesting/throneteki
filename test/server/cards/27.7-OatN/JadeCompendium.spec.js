@@ -1,76 +1,89 @@
 describe('Jade Compendium', function () {
-    integration(function () {
+    describe('STR bonus', function () {
         beforeEach(function () {
-            const deck1 = this.buildDeck('thenightswatch', [
-                'Fealty',
-                'A Noble Cause',
-                'Jade Compendium (OatN)',
-                'Maester Harmune',
-                { name: 'Hedge Knight', count: 30 }
-            ]);
-            const deck2 = this.buildDeck('lannister', ['A Noble Cause', 'Cersei Lannister (Core)']);
-            this.player1.selectDeck(deck1);
-            this.player2.selectDeck(deck2);
-            this.startGame();
-            this.keepStartingHands();
-
-            this.compendium = this.player1.findCardByName('Jade Compendium');
-            this.harmune = this.player1.findCardByName('Maester Harmune');
-            this.player1.dragCard(this.compendium, 'hand');
-            this.player1.dragCard(this.harmune, 'hand');
-
-            this.player1.clickCard(this.harmune);
-            this.completeSetup();
-            this.selectFirstPlayer(this.player1);
-            this.player1Object.gold = 10;
-            this.player1.clickCard(this.compendium);
-            this.player1.clickCard(this.harmune);
-            this.completeMarshalPhase();
+            this.setupTest({
+                phase: 'challenge',
+                player1: {
+                    faction: 'thenightswatch',
+                    agenda: 'The Conclave',
+                    deck: ['Jade Compendium', 'Jade Compendium', 'Jade Compendium'],
+                    inPlay: [
+                        { card: 'House Maester', attachments: ['Jade Compendium'] },
+                        'House Maester'
+                    ]
+                },
+                player2: {}
+            });
+            this.agenda = this.theConclave;
         });
 
-        it('should enter play attached to Maester Harmune', function () {
-            expect(this.compendium.location).toBe('play area');
-            expect(this.compendium.parent).toBe(this.harmune);
+        it('gives +1 STR for every 2 facedown cards under your agenda to a Maester', function () {
+            const bonus = Math.floor(
+                this.agenda.underneath.filter((card) => card.facedown).length / 2
+            );
+            expect(bonus).toBeGreaterThan(0);
+            const [attached, other] = this.player1
+                .filterCardsByName('House Maester', 'play area')
+                .sort((a, b) => b.attachments.length - a.attachments.length);
+            expect(attached.getStrength()).toBe(2 + bonus);
+            expect(other.getStrength()).toBe(2);
+        });
+    });
+
+    describe('when attached to a character that is not a Maester', function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'challenge',
+                player1: {
+                    faction: 'thenightswatch',
+                    inPlay: [{ card: 'Samwell Tarly (Core)', attachments: ['Jade Compendium'] }]
+                },
+                player2: {}
+            });
         });
 
-        describe('when player1 wins an intrigue challenge with Maester Harmune participating', function () {
-            beforeEach(function () {
-                this.player1.clickPrompt('Intrigue');
-                this.player1.clickCard(this.harmune);
-                this.player1.clickPrompt('Done');
-                this.skipActionWindow();
-                this.player2.clickPrompt('Done');
-                this.skipActionWindow();
+        it('gives no bonus', function () {
+            expect(this.samwellTarly.getStrength()).toBe(1);
+        });
+    });
+
+    describe('after winning an intrigue challenge with the attached character participating', function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'challenge',
+                player1: {
+                    faction: 'thenightswatch',
+                    agenda: 'The Conclave',
+                    deck: ['Jade Compendium', 'Jade Compendium', 'Jade Compendium'],
+                    inPlay: [{ card: 'House Maester', attachments: ['Jade Compendium'] }]
+                },
+                player2: {}
             });
+            this.jade = this.jadeCompendium;
+            this.agenda = this.theConclave;
+            this.handBefore = this.player1Object.hand.length;
+            this.underneathBefore = this.agenda.underneath.length;
+            this.player1.clickPrompt('Intrigue');
+            this.player1.clickCard(this.houseMaester);
+            this.player1.clickPrompt('Done');
+            this.skipActionWindow();
+            this.player2.clickPrompt('Done');
+            this.skipActionWindow();
+        });
 
-            it('should allow the Compendium reaction', function () {
-                expect(this.player1).toAllowAbilityTrigger('Jade Compendium');
-            });
+        it('kneels to draw 2 cards, then places 1 card from hand facedown under the agenda', function () {
+            expect(this.player1).toAllowAbilityTrigger(this.jade);
+            this.player1.triggerAbility(this.jade);
 
-            describe('when triggered', function () {
-                beforeEach(function () {
-                    this.handSizeBefore = this.player1.handSize;
-                    this.player1.triggerAbility(this.compendium);
-                });
+            expect(this.jade.kneeled).toBe(true);
+            expect(this.player1).toHavePrompt('Select a card');
 
-                it('should kneel the Compendium and draw 2 cards', function () {
-                    expect(this.compendium.kneeled).toBe(true);
-                    expect(this.player1.handSize).toBe(this.handSizeBefore + 2);
-                });
+            const placed = this.player1Object.hand[0];
+            this.player1.clickCard(placed);
 
-                describe('when a card is placed under the agenda', function () {
-                    beforeEach(function () {
-                        this.handCard = this.player1.filterCardsByName('Hedge Knight', 'hand')[0];
-                        this.player1.clickCard(this.handCard);
-                    });
-
-                    it('should place the card facedown under the agenda', function () {
-                        expect(this.player1Object.agenda.underneath).toContain(this.handCard);
-                        expect(this.handCard.facedown).toBe(true);
-                        expect(this.player1.handSize).toBe(this.handSizeBefore + 1);
-                    });
-                });
-            });
+            expect(this.agenda.underneath.length).toBe(this.underneathBefore + 1);
+            expect(placed.location).toBe('underneath');
+            expect(this.player1Object.hand.length).toBe(this.handBefore + 2 - 1);
         });
     });
 });

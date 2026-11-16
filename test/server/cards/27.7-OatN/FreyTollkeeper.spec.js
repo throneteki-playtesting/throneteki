@@ -1,62 +1,61 @@
 describe('Frey Tollkeeper', function () {
-    integration(function () {
+    function setup(context, { opponentGold }) {
+        context.setupTest({
+            phase: 'challenge',
+            player1: {
+                hand: ['Frey Tollkeeper'],
+                inPlay: ['House Maester', 'Bastard in Hiding'],
+                gold: 5
+            },
+            player2: { inPlay: ['Tumblestone Knight'], gold: opponentGold }
+        });
+        context.tollkeeper = context.player1.findCardByName('Frey Tollkeeper', 'hand');
+        context.maester = context.player1.findCardByName('House Maester', 'play area');
+        context.attacker = context.player2.findCardByName('Tumblestone Knight', 'play area');
+        context.player1.clickCard(context.tollkeeper);
+        context.player1.triggerAbility(context.tollkeeper);
+        context.player1.clickPrompt('Done');
+        context.player2.clickPrompt('Military');
+        context.player2.clickCard(context.attacker);
+        context.player2.clickPrompt('Done');
+    }
+
+    describe('when the opponent has enough gold', function () {
         beforeEach(function () {
-            const deck1 = this.buildDeck('neutral', [
-                'A Noble Cause',
-                'Frey Tollkeeper (OatN)',
-                'Hedge Knight'
-            ]);
-            const deck2 = this.buildDeck('lannister', ['A Noble Cause', 'Cersei Lannister (Core)']);
-            this.player1.selectDeck(deck1);
-            this.player2.selectDeck(deck2);
-            this.startGame();
-            this.keepStartingHands();
-
-            this.tollkeeper = this.player1.findCardByName('Frey Tollkeeper', 'hand');
-            this.cersei = this.player2.findCardByName('Cersei Lannister', 'hand');
-
-            this.player2.clickCard(this.cersei);
-            this.completeSetup();
-            this.selectFirstPlayer(this.player1);
-            this.completeMarshalPhase();
-            this.player1Object.gold = 10;
+            setup(this, { opponentGold: 3 });
         });
 
-        describe('when Frey Tollkeeper is ambushed during the challenge phase', function () {
-            beforeEach(function () {
-                this.player1.clickCard(this.tollkeeper);
-            });
+        it('lets them move 2 gold to a card of your choice to be able to win', function () {
+            expect(this.player2).toHavePromptButton('Move 2 gold');
+            expect(this.player2).toHavePromptButton('Cannot win');
 
-            it('should enter play', function () {
-                expect(this.tollkeeper.location).toBe('play area');
-            });
+            this.player2.clickPrompt('Move 2 gold');
+            this.player1.clickCard(this.maester);
 
-            it('should trigger a reaction to choose an opponent', function () {
-                expect(this.player1).toAllowAbilityTrigger('Frey Tollkeeper');
-            });
+            expect(this.maester.gold).toBe(2);
+            expect(this.player2Object.gold).toBe(1);
+        });
 
-            describe('when the reaction triggers', function () {
-                beforeEach(function () {
-                    this.player1.triggerAbility(this.tollkeeper);
-                });
+        it('stops them winning the challenge if they refuse', function () {
+            this.player2.clickPrompt('Cannot win');
 
-                describe('when the opponent initiates a challenge with too little gold', function () {
-                    beforeEach(function () {
-                        this.player2Object.gold = 0;
-                        this.player1.clickPrompt('Done');
-                        this.player2.clickPrompt('Intrigue');
-                        this.player2.clickCard(this.cersei);
-                        this.player2.clickPrompt('Done');
-                        this.skipActionWindow();
-                        this.player1.clickPrompt('Done');
-                        this.skipActionWindow();
-                    });
+            expect(this.maester.gold).toBe(0);
+            expect(this.player2Object.gold).toBe(3);
+        });
+    });
 
-                    it('should prevent the opponent from winning the challenge', function () {
-                        expect(this.player2Object.getTotalPower()).toBe(0);
-                    });
-                });
-            });
+    describe('when the opponent cannot afford to move 2 gold', function () {
+        beforeEach(function () {
+            setup(this, { opponentGold: 1 });
+        });
+
+        it('stops them winning the challenge', function () {
+            expect(this.player2).toHaveDisabledPromptButton('Move 2 gold');
+            expect(this.player2).toHavePromptButton('Cannot win');
+
+            this.player2.clickPrompt('Cannot win');
+
+            expect(this.player2Object.gold).toBe(1);
         });
     });
 });

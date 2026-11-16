@@ -1,59 +1,55 @@
 describe('Writ in Ink', function () {
-    integration(function () {
+    function setup(context, challenge) {
+        context.setupTest({
+            phase: 'challenge',
+            player1: {
+                hand: ['Writ in Ink'],
+                inPlay: ['House Maester', 'Earl Harlaw', 'Bastard in Hiding'],
+                gold: 1
+            },
+            player2: { inPlay: ['House Maester'] }
+        });
+        context.writ = context.player1.findCardByName('Writ in Ink', 'hand');
+        context.maester = context.player1.findCardByName('House Maester', 'play area');
+        context.earl = context.player1.findCardByName('Earl Harlaw', 'play area');
+        context.bastard = context.player1.findCardByName('Bastard in Hiding', 'play area');
+        context.opponentMaester = context.player2.findCardByName('House Maester', 'play area');
+        context.player1.clickPrompt(challenge);
+        context.player1.clickCard(context.maester);
+        context.player1.clickPrompt('Done');
+    }
+
+    describe('during an intrigue challenge', function () {
         beforeEach(function () {
-            const deck1 = this.buildDeck('greyjoy', [
-                'A Noble Cause',
-                'Writ in Ink (OatN)',
-                'Earl Harlaw (OatN)',
-                'Fleet from Ten Towers (BtB)'
-            ]);
-            const deck2 = this.buildDeck('greyjoy', ['A Noble Cause', 'Hedge Knight']);
-            this.player1.selectDeck(deck1);
-            this.player2.selectDeck(deck2);
-            this.startGame();
-            this.keepStartingHands();
+            setup(this, 'Intrigue');
+            this.player1.clickCard(this.writ);
+        });
 
-            this.earl = this.player1.findCardByName('Earl Harlaw', 'hand');
-            this.fleet = this.player1.findCardByName('Fleet from Ten Towers', 'hand');
-            this.writ = this.player1.findCardByName('Writ in Ink', 'hand');
+        it('can only choose a House Harlaw character with a military icon that is not participating', function () {
+            expect(this.player1).toBeAbleToSelect(this.earl);
+            expect(this.player1).not.toBeAbleToSelect(this.bastard);
+            expect(this.player1).not.toBeAbleToSelect(this.maester);
+            expect(this.player1).not.toBeAbleToSelect(this.opponentMaester);
+        });
 
+        it('has the character participate in the challenge on your side', function () {
             this.player1.clickCard(this.earl);
-            this.player1.clickCard(this.fleet);
-            this.completeSetup();
-            this.selectFirstPlayer(this.player1);
-            this.completeMarshalPhase();
+
+            expect(this.game.currentChallenge.isAttacking(this.earl)).toBe(true);
+            expect(this.writ.location).toBe('discard pile');
+            expect(this.player2).isReadyToTakeAction();
+        });
+    });
+
+    describe('during a challenge that is not an intrigue challenge', function () {
+        beforeEach(function () {
+            setup(this, 'Power');
         });
 
-        describe('during an intrigue challenge with Earl Harlaw attacking', function () {
-            beforeEach(function () {
-                this.player1.clickPrompt('Intrigue');
-                this.player1.clickCard(this.earl);
-                this.player1.clickPrompt('Done');
-                this.skipActionWindow();
-                this.player2.clickPrompt('Done');
-            });
-
-            it('should be playable to add the Fleet to the challenge', function () {
-                this.player1.clickCard(this.writ);
-                expect(this.player1).toAllowSelect(this.fleet);
-            });
-
-            describe('when played', function () {
-                beforeEach(function () {
-                    this.player1.clickCard(this.writ);
-                    this.player1.clickCard(this.fleet);
-                });
-
-                it('should add the Fleet to the intrigue challenge', function () {
-                    expect(this.fleet.isParticipating()).toBe(true);
-                });
-            });
-        });
-
-        describe('outside of an intrigue challenge', function () {
-            it('should not be playable', function () {
-                expect(this.player1).not.toAllowTriggerAction(this.writ, 'Add to challenge');
-            });
+        it('cannot be played', function () {
+            expect(this.player1.actionUnavailableReason(this.writ)).toBeDefined();
+            this.player1.clickCard(this.writ);
+            expect(this.writ.location).toBe('hand');
         });
     });
 });

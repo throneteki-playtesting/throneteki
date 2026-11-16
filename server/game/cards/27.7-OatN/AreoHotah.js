@@ -3,37 +3,30 @@ import GameActions from '../../GameActions/index.js';
 import { ChallengeTracker } from '../../EventTrackers/index.js';
 
 class AreoHotah extends DrawCard {
+    // Areo Hotah (27537)
+    // Ambush (6).
+    // Interrupt: When the challenges phase ends, kneel your faction card to have Areo Hotah gain 1
+    // power for each challenge type not initiated against you this phase.
     setupCardAbilities(ability) {
-        this.tracker = ChallengeTracker.forPhase(this.game);
+        const tracker = ChallengeTracker.forPhase(this.game);
+        const uninitiatedTypes = (context) =>
+            ['military', 'intrigue', 'power'].filter(
+                (challengeType) => !tracker.some({ challengeType, defendingPlayer: context.player })
+            );
 
         this.interrupt({
             when: {
                 onPhaseEnded: (event) => event.phase === 'challenge'
             },
             cost: ability.costs.kneelFactionCard(),
-            handler: (context) => {
-                const challengeTypesAgainstMe = ['military', 'intrigue', 'power'].filter((type) =>
-                    this.tracker.some({
-                        challengeType: type,
-                        defendingPlayer: this.controller
-                    })
-                );
-                const powerGain = 3 - challengeTypesAgainstMe.length;
-
-                this.game.addMessage(
-                    '{0} uses {1} and kneels their faction card to have {1} gain {2} power',
-                    context.player,
-                    this,
-                    powerGain
-                );
-
-                if (powerGain > 0) {
-                    this.game.resolveGameAction(
-                        GameActions.gainPower({ card: this, amount: powerGain }),
-                        context
-                    );
-                }
-            }
+            message: {
+                format: '{player} uses {source} and kneels their faction card to have {source} gain {amount} power',
+                args: { amount: (context) => uninitiatedTypes(context).length }
+            },
+            gameAction: GameActions.gainPower((context) => ({
+                card: context.source,
+                amount: uninitiatedTypes(context).length
+            }))
         });
     }
 }

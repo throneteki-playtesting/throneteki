@@ -1,43 +1,32 @@
-// Claude: Cheesemonger's Galley (code 27582) - interrupt to return to shadows and gain gold at income
 describe("Cheesemonger's Galley", function () {
-    integration(function () {
-        beforeEach(function () {
-            const deck1 = this.buildDeck('targaryen', [
-                'A Noble Cause',
-                "Cheesemonger's Galley (OatN)",
-                'Hedge Knight'
-            ]);
-            const deck2 = this.buildDeck('targaryen', ['A Noble Cause', 'Hedge Knight']);
-            this.player1.selectDeck(deck1);
-            this.player2.selectDeck(deck2);
-            this.startGame();
-            this.keepStartingHands();
-
-            this.galley = this.player1.findCardByName("Cheesemonger's Galley", 'hand');
-
-            this.player1.clickCard(this.galley);
-            this.player1.clickPrompt('Setup');
-            this.completeSetup();
-            this.selectFirstPlayer(this.player1);
+    beforeEach(function () {
+        this.setupTest({
+            phase: 'plot',
+            player1: { faction: 'targaryen', inPlay: ["Cheesemonger's Galley"] },
+            player2: { inPlay: ["Cheesemonger's Galley"] }
         });
+        this.galley = this.player1.findCardByName("Cheesemonger's Galley", 'play area');
+        this.opponentGalley = this.player2.findCardByName("Cheesemonger's Galley", 'play area');
+        this.player1.selectPlot('Filler Plot');
+        this.player2.selectPlot('Filler Plot');
+        this.selectFirstPlayer(this.player1);
+    });
 
-        it('should allow the interrupt to return to shadows and gain gold', function () {
-            expect(this.player1).toAllowAbilityTrigger("Cheesemonger's Galley");
-        });
+    it('is offered to each player as they collect income', function () {
+        expect(this.player1).toAllowAbilityTrigger(this.galley);
+        expect(this.player2).not.toAllowAbilityTrigger(this.opponentGalley);
+        this.player1.triggerAbility(this.galley);
+        this.player1.clickPrompt('Done');
 
-        describe('when the interrupt triggers', function () {
-            beforeEach(function () {
-                this.player1Object.gold = 0;
-                this.player1.triggerAbility(this.galley);
-            });
+        expect(this.player2).toAllowAbilityTrigger(this.opponentGalley);
+    });
 
-            it('should return the galley to shadows', function () {
-                expect(this.galley.location).toBe('shadows');
-            });
+    it('returns to shadows to gain 1 gold', function () {
+        const goldBefore = this.player1Object.gold;
+        this.player1.triggerAbility(this.galley);
 
-            it('should gain 1 gold', function () {
-                expect(this.player1Object.gold).toBeGreaterThan(0);
-            });
-        });
+        expect(this.galley.location).toBe('shadows');
+        expect(this.opponentGalley.location).toBe('play area');
+        expect(this.player1Object.gold).toBe(goldBefore + 1);
     });
 });

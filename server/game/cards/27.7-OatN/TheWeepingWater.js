@@ -2,6 +2,9 @@ import DrawCard from '../../drawcard.js';
 import GameActions from '../../GameActions/index.js';
 
 class TheWeepingWater extends DrawCard {
+    // The Weeping Water (27569)
+    // Interrupt: When a character is sacrificed, kneel The Weeping Water to place that card in its
+    // owner's dead pile instead of its owner's discard pile.
     setupCardAbilities(ability) {
         this.interrupt({
             when: {
@@ -9,20 +12,16 @@ class TheWeepingWater extends DrawCard {
             },
             cost: ability.costs.kneelSelf(),
             message: {
-                format: "{player} kneels {costs.kneel} to place {card} in it's owners dead pile instead of their discard pile",
+                format: '{player} kneels {costs.kneel} to place {card} in its owner dead pile instead of their discard pile',
                 args: { card: (context) => context.event.card }
             },
-            handler: (context) => {
-                context.event.replaceHandler(() => {
-                    this.game.resolveGameAction(
-                        GameActions.placeCard((context) => ({
-                            card: context.event.card,
-                            location: 'dead pile'
-                        })),
-                        context
-                    );
-                });
-            }
+            gameAction: GameActions.replaceEvent((context) => ({
+                event: context.event,
+                replacement: GameActions.placeCard({
+                    card: context.event.card,
+                    location: 'dead pile'
+                })
+            }))
         });
     }
 }

@@ -3,54 +3,39 @@ import GameActions from '../../GameActions/index.js';
 import { ChallengeTracker } from '../../EventTrackers/index.js';
 
 class RiverrunBesiegers extends DrawCard {
+    // Riverrun Besiegers (27528)
+    // Assault. No attachments.
+    // Reaction: After a location is knelt using assault, if it is the third challenge you initiated
+    // this phase, discard it (take control of it instead if you control 2 or more attacking House
+    // Frey characters).
     setupCardAbilities() {
-        this.tracker = ChallengeTracker.forPhase(this.game);
+        const tracker = ChallengeTracker.forPhase(this.game);
 
         this.reaction({
             when: {
-                onCardKneeled: (event) =>
+                onCardKneeled: (event, context) =>
                     event.reason === 'assault' &&
                     event.card.getType() === 'location' &&
-                    event.source.controller === this.controller &&
-                    this.isParticipating() &&
-                    this.isAttacking() &&
-                    this.tracker.count({ attackingPlayer: this.controller }) === 3
+                    event.source.controller === context.player &&
+                    context.source.isParticipating() &&
+                    context.source.isAttacking() &&
+                    tracker.count({ attackingPlayer: context.player }) === 3
             },
-            handler: (context) => {
-                const location = context.event.card;
-                const freyAttackers = this.game.currentChallenge
-                    ? this.game.currentChallenge.attackers.filter((card) =>
-                          card.hasTrait('House Frey')
-                      ).length
-                    : 0;
-
-                if (freyAttackers >= 2) {
-                    this.game.addMessage(
-                        '{0} uses {1} to take control of {2}',
-                        this.controller,
-                        this,
-                        location
-                    );
-                    this.game.resolveGameAction(
-                        GameActions.takeControl(() => ({
-                            card: location,
-                            player: this.controller
-                        })),
-                        context
-                    );
-                } else {
-                    this.game.addMessage(
-                        '{0} uses {1} to discard {2}',
-                        this.controller,
-                        this,
-                        location
-                    );
-                    this.game.resolveGameAction(
-                        GameActions.discardCard({ card: location }),
-                        context
-                    );
-                }
-            }
+            message: {
+                format: '{player} uses {source} on {location}',
+                args: { location: (context) => context.event.card }
+            },
+            gameAction: GameActions.ifCondition({
+                condition: (context) =>
+                    context.game.currentChallenge.attackers.filter((card) =>
+                        card.hasTrait('House Frey')
+                    ).length >= 2,
+                thenAction: GameActions.takeControl((context) => ({
+                    card: context.event.card,
+                    player: context.player
+                })),
+                elseAction: GameActions.discardCard((context) => ({ card: context.event.card }))
+            })
         });
     }
 }

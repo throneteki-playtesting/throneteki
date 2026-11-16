@@ -1,12 +1,11 @@
-// Generated with Claude Code - claude-opus-4-5-20251101
-// - 2026-01-25: Created plot card with forced reaction to reveal hands and discard lowest cost cards
-// - 2026-01-31: Refactored to use .then() pattern and GameActions for discarding
-
 import { flatMap } from '../../../Array.js';
 import GameActions from '../../GameActions/index.js';
 import PlotCard from '../../plotcard.js';
 
 class LetMyPorridgeFly extends PlotCard {
+    // Let My Porridge Fly (27610)
+    // Forced Reaction: After the challenge phase begins, each player reveals their hand. Then,
+    // discard each card with the lowest printed cost among revealed cards.
     setupCardAbilities() {
         const getAllHandCards = (game) => {
             return flatMap(game.getPlayersInFirstPlayerOrder(), (player) => [...player.hand]);

@@ -1,33 +1,40 @@
 describe('Whoresbane Umber', function () {
-    integration(function () {
+    describe('with fewer than 3 plots in the used pile', function () {
         beforeEach(function () {
-            const deck1 = this.buildDeck('stark', [
-                'A Noble Cause',
-                'Whoresbane Umber (OatN)',
-                'Hedge Knight'
-            ]);
-            const deck2 = this.buildDeck('stark', ['A Noble Cause', 'Hedge Knight']);
-            this.player1.selectDeck(deck1);
-            this.player2.selectDeck(deck2);
-            this.startGame();
-            this.keepStartingHands();
-
-            this.whoresbane = this.player1.findCardByName('Whoresbane Umber', 'hand');
-
-            this.player1.clickCard(this.whoresbane);
-            this.completeSetup();
-            this.selectFirstPlayer(this.player1);
-            this.completeMarshalPhase();
+            this.setupTest({
+                phase: 'marshal',
+                player1: {
+                    usedPlots: ['A Noble Cause', 'Sneak Attack'],
+                    inPlay: ['Whoresbane Umber', 'Tumblestone Knight']
+                },
+                player2: { usedPlots: ['A Noble Cause'] }
+            });
         });
 
-        describe('when controller has fewer than 3 used plots (round 1)', function () {
-            it('should gain the Intrigue icon', function () {
-                expect(this.whoresbane.hasIcon('intrigue')).toBe(true);
-            });
+        it('gains an intrigue icon and stealth', function () {
+            expect(this.whoresbaneUmber.hasIcon('intrigue')).toBe(true);
+            expect(this.whoresbaneUmber.hasKeyword('stealth')).toBe(true);
+            expect(this.tumblestoneKnight.hasIcon('intrigue')).toBe(false);
+            expect(this.player1).isReadyToTakeAction();
+        });
+    });
 
-            it('should gain Stealth keyword', function () {
-                expect(this.whoresbane.hasKeyword('stealth')).toBe(true);
+    describe('with 3 plots in the used pile', function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'marshal',
+                player1: {
+                    usedPlots: ['A Noble Cause', 'Sneak Attack', 'Trading with the Pentoshi'],
+                    inPlay: ['Whoresbane Umber']
+                },
+                player2: {}
             });
+        });
+
+        it('has neither the icon nor stealth', function () {
+            expect(this.whoresbaneUmber.hasIcon('intrigue')).toBe(false);
+            expect(this.whoresbaneUmber.hasKeyword('stealth')).toBe(false);
+            expect(this.player1).isReadyToTakeAction();
         });
     });
 });

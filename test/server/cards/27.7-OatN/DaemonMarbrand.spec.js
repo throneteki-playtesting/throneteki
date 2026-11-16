@@ -1,69 +1,52 @@
-// Claude: renamed Daemon->Damon (JSON name), fixed challenge flow, skipActionWindow x2, intrigue claim handling
 describe('Damon Marbrand', function () {
-    integration(function () {
+    function setup(context, opponentHand) {
+        context.setupTest({
+            phase: 'challenge',
+            player1: { inPlay: ['Damon Marbrand'] },
+            player2: {
+                hand: opponentHand,
+                inPlay: ['Bastard in Hiding', 'House Maester']
+            }
+        });
+        context.bastard = context.player2.findCardByName('Bastard in Hiding', 'play area');
+        context.maester = context.player2.findCardByName('House Maester', 'play area');
+        context.player1.clickPrompt('Intrigue');
+        context.player1.clickCard(context.damonMarbrand);
+        context.player1.clickPrompt('Done');
+        context.skipActionWindow();
+        context.player2.clickPrompt('Done');
+        context.skipActionWindow();
+    }
+
+    describe('when a character is discarded from an opponent hand', function () {
         beforeEach(function () {
-            const deck1 = this.buildDeck('lannister', [
-                'A Noble Cause',
-                'Damon Marbrand (OatN)',
-                'Hedge Knight'
-            ]);
-            const deck2 = this.buildDeck('lannister', [
-                'A Noble Cause',
-                'Hedge Knight',
-                'Cersei Lannister (Core)'
-            ]);
-            this.player1.selectDeck(deck1);
-            this.player2.selectDeck(deck2);
-            this.startGame();
-            this.keepStartingHands();
-
-            this.daemon = this.player1.findCardByName('Damon Marbrand', 'hand');
-            this.knight = this.player1.findCardByName('Hedge Knight', 'hand');
-            this.p2knight = this.player2.findCardByName('Hedge Knight', 'hand');
-            this.cersei = this.player2.findCardByName('Cersei Lannister', 'hand');
-
-            this.player1.clickCard(this.daemon);
-            this.player2.clickCard(this.p2knight);
-            this.completeSetup();
-            this.selectFirstPlayer(this.player1);
-            this.completeMarshalPhase();
+            setup(this, ['Hedge Knight']);
         });
 
-        describe("when a character is discarded from opponent's hand via intrigue claim", function () {
-            beforeEach(function () {
-                this.player1.clickPrompt('Intrigue');
-                this.player1.clickCard(this.daemon);
-                this.player1.clickPrompt('Done');
-                this.skipActionWindow();
-                this.player2.clickPrompt('Done');
-                this.skipActionWindow();
-                this.player1.clickPrompt('Apply Claim');
-                this.player2.clickCard(this.cersei);
-            });
+        it('has that player choose a character they control and return it to their hand', function () {
+            expect(this.player1).toAllowAbilityTrigger(this.damonMarbrand);
+            this.player1.triggerAbility(this.damonMarbrand);
 
-            it('should allow Damon Marbrand to react', function () {
-                expect(this.player1).toAllowAbilityTrigger('Damon Marbrand');
-            });
+            expect(this.player2).toBeAbleToSelect(this.bastard);
+            expect(this.player2).toBeAbleToSelect(this.maester);
+            expect(this.player2).not.toBeAbleToSelect(this.damonMarbrand);
 
-            describe('when the reaction triggers', function () {
-                beforeEach(function () {
-                    this.player1.triggerAbility(this.daemon);
-                });
+            this.player2.clickCard(this.maester);
 
-                it('should prompt the opponent to return a character to hand', function () {
-                    expect(this.player2).toHavePrompt('Select a character to return to hand');
-                });
+            expect(this.maester.location).toBe('hand');
+            expect(this.bastard.location).toBe('play area');
+            expect(this.damonMarbrand.location).toBe('play area');
+        });
+    });
 
-                describe('when the opponent selects a character', function () {
-                    beforeEach(function () {
-                        this.player2.clickCard(this.p2knight);
-                    });
+    describe('when a non-character is discarded from an opponent hand', function () {
+        beforeEach(function () {
+            setup(this, ['Tithe']);
+        });
 
-                    it('should return that character to hand', function () {
-                        expect(this.p2knight.location).toBe('hand');
-                    });
-                });
-            });
+        it('is not offered', function () {
+            expect(this.player1).not.toAllowAbilityTrigger(this.damonMarbrand);
+            expect(this.bastard.location).toBe('play area');
         });
     });
 });
